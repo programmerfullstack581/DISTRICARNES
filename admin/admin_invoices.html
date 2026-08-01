@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <title>Gestión de Facturas - DistriCarnes Admin</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -770,10 +771,10 @@
                 var data = raw ? JSON.parse(raw) : null;
                 var user = data && data.user ? data.user : data;
                 if (!user || user.rol !== 'admin') {
-                    window.location.href = '../login/login.html';
+                    window.openAuthModal('login');
                 }
             } catch(e) {
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
             }
         })();
     </script>
@@ -782,7 +783,7 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="logo">
-            <a href="../index.html">
+            <a href="../index.php">
                 <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
             </a>
         </div>

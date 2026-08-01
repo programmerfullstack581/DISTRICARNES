@@ -73,7 +73,7 @@
                     <i class="bi bi-cart"></i>
                     <span class="mh-badge" id="mhCartCount">0</span>
                 </a>
-                <a href="../login.html" class="mh-icon" id="mhUserLink" aria-label="Perfil o Iniciar sesión">
+                <a href="../login/login.php" class="mh-icon" id="mhUserLink" aria-label="Perfil o Iniciar sesión">
                     <i class="far fa-user-circle" id="mhUserIcon"></i>
                 </a>
             </div>

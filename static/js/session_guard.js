@@ -5,7 +5,7 @@
 
   function isLoginPage() {
     const p = location.pathname.toLowerCase();
-    return p.includes('/login/') || p.endsWith('login.php') || p.endsWith('/login') || p.includes('admin_login.php');
+    return p.includes('/login/') || p.endsWith('login.php') || p.endsWith('/login') || p.includes('admin_login');
   }
 
   function isAdminArea() {
@@ -66,6 +66,28 @@
     } catch (e) { }
   }
 
+  // Abre el modal de acceso una vez que auth_modal.js haya inicializado su overlay
+  // (session_guard corre antes de DOMContentLoaded; ahí el modal aún no existe).
+  function openLoginModal() {
+    const run = function () {
+      try {
+        if (typeof window.openAuthModal === 'function') {
+          try { sessionStorage.setItem('postLoginRedirect', location.pathname + location.search); } catch (e) {}
+          window.openAuthModal('login');
+        } else {
+          redirectToLogin();
+        }
+      } catch (e) {
+        redirectToLogin();
+      }
+    };
+    if (document.readyState === 'complete') {
+      run();
+    } else {
+      document.addEventListener('DOMContentLoaded', run);
+    }
+  }
+
   function markLoggedOut() {
     try {
       sessionStorage.setItem(LOGOUT_FLAG_KEY, '1');
@@ -85,31 +107,25 @@
   function protect() {
     const { logged, user } = getSession();
 
-    // Refuerzo de área admin: exige sesión válida y rol admin
+    // Refuerzo de área admin: exige sesión válida y rol admin.
+    // Sin sesión: abre el mismo modal de acceso de la tienda (login único admin/usuario).
+    // Usuario normal logueado: no accede al panel, va a la home.
     if (isAdminArea()) {
       // Permitir libre acceso a la página de login del admin
       if (!isLoginPage()) {
-        if (!logged || !isAdminUser(user)) {
+        if (!logged) {
+          openLoginModal();
+          return;
+        }
+        if (!isAdminUser(user)) {
           redirectToLogin();
           return;
         }
       }
     }
     if (!logged && isProtectedPage() && !isLoginPage()) {
-      try {
-        if (typeof window.openAuthModal === 'function') {
-          // Mostrar el modal de acceso en la misma página en vez de ir al login
-          try { sessionStorage.setItem('postLoginRedirect', location.pathname + location.search); } catch (e) {}
-          window.openAuthModal('login');
-        } else {
-          const target = getLoginUrl() + '?returnUrl=' + encodeURIComponent(location.pathname + location.search);
-          location.replace(target);
-        }
-        return;
-      } catch (e) {
-        redirectToLogin();
-        return;
-      }
+      openLoginModal();
+      return;
     }
 
     // Si se marcó logout, cualquier intento de retroceso debe ir al login

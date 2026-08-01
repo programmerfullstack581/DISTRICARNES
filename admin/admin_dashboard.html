@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <title>Dashboard Administrativo - DistriCarnes</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -621,7 +622,7 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="logo">
-            <a href="../index.html">
+            <a href="../index.php">
                     <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
                 </a>
         </div>
@@ -772,7 +773,7 @@
                                 <span>Configuración</span>
                             </a>
                             <div class="menu-divider"></div>
-                            <a href="../login/login.html" class="menu-item logout" onclick="logout()">
+                            <a href="../index.php" class="menu-item logout" onclick="logout()">
                                 <i class="fas fa-sign-out-alt"></i>
                                 <span>Cerrar Sesión</span>
                             </a>
@@ -947,7 +948,7 @@
         function checkAuthentication() {
             const userData = localStorage.getItem('userData');
             if (!userData) {
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
                 return;
             }
 
@@ -963,7 +964,7 @@
                 // Verificar rol de admin
                 if (!currentUser || currentUser.rol !== 'admin') {
                     console.log('Usuario no es admin:', currentUser);
-                    window.location.href = '../index.html';
+                    window.location.href = '../index.php';
                     return;
                 }
 
@@ -971,7 +972,7 @@
                 updateUserInterface();
             } catch (error) {
                 console.error('Error al parsear datos de usuario:', error);
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
             }
         }
 

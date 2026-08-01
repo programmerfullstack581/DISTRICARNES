@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <title>DISTRICARNES - Login Administrador</title>
     <link rel="stylesheet" href="../login/css/login.css">
     <link rel="stylesheet" href="./css/admin_login.css">
@@ -23,7 +24,7 @@
     <div class="container" role="main">
         <section class="logo-section" aria-label="Logotipo de DistriCarnes Hermanos Navarro">
             <div class="logo-container">
-                <a href="../index.html">
+                <a href="../index.php">
                     <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
                 </a>
             </div>
@@ -81,7 +82,7 @@
                     ¿No eres administrador?
                 </p>
 
-                <a href="../login/login.html" class="btn btn-login-link-custom "><i class="bi bi-box-arrow-in-right "></i>  Volver al login de usuarios  </a>
+                <a href="../index.php" class="btn btn-login-link-custom "><i class="bi bi-box-arrow-in-right "></i>  Ir a la tienda  </a>
             </div>
         </section>
     </div>
@@ -101,5 +102,19 @@
 <script src="../admin/js/admin_login.js"></script>
 <script src="../static/js/session_guard.js" defer></script>
 <script src="../static/js/network_guard.js" defer></script>
+<script>
+    // Login único: si no hay sesión, abrir el mismo modal de acceso de la tienda.
+    document.addEventListener('DOMContentLoaded', function () {
+        var logged = false;
+        try {
+            var raw = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
+            var d = raw ? JSON.parse(raw) : null;
+            logged = !!(d && (d.isLoggedIn === true || d.isLoggedIn === 'true' || d.user));
+        } catch (e) { }
+        if (!logged && typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+    });
+</script>
 
 </html>

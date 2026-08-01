@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <title>Mi Perfil - DistriCarnes Admin</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -455,7 +456,7 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="logo">
-            <a href="../index.html">
+            <a href="../index.php">
                     <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
                 </a>
         </div>
@@ -646,7 +647,7 @@
         function checkAuthentication() {
             const userData = localStorage.getItem('userData');
             if (!userData) {
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
                 return;
             }
 
@@ -655,13 +656,13 @@
                 currentUser = parsedData.user ? parsedData.user : parsedData;
 
                 if (!currentUser || currentUser.rol !== 'admin') {
-                    window.location.href = '../index.html';
+                    window.location.href = '../index.php';
                     return;
                 }
                 updateUserInterface();
             } catch (error) {
                 console.error('Error al parsear datos de usuario:', error);
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
             }
         }
 

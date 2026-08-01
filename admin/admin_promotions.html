@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <title>Gestión de Promociones - DistriCarnes Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
@@ -774,10 +775,10 @@
                 var data = raw ? JSON.parse(raw) : null;
                 var user = data && data.user ? data.user : data;
                 if (!user || user.rol !== 'admin') {
-                    window.location.href = '../login/login.html';
+                    window.openAuthModal('login');
                 }
             } catch(e) {
-                window.location.href = '../login/login.html';
+                window.openAuthModal('login');
             }
         })();
     </script>
@@ -786,7 +787,7 @@
     <!-- Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="logo">
-            <a href="../index.html">
+            <a href="../index.php">
                     <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
                 </a>
         </div>
@@ -1780,7 +1781,7 @@
         // El manejador del botón ya se configuró arriba
       }
 
-      window.logout = function(){ try{ localStorage.removeItem('userData'); sessionStorage.clear(); }catch(e){} location.href = 'admin_login.html'; };
+      window.logout = function(){ try{ localStorage.removeItem('userData'); sessionStorage.clear(); }catch(e){} if (window.openAuthModal) { window.openAuthModal('login'); } else { location.href = 'https://districarnes-83qm.onrender.com'; } };
 
       document.addEventListener('DOMContentLoaded', () => { initUI(); loadStats(); loadList(); });
     })();
