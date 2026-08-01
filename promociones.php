@@ -509,7 +509,7 @@ $ofertas = getActiveOffers($conexion);
             .mh-icon i{font-size:1.2rem}
             .mh-cart{position:relative}
             .mh-badge{position:absolute;top:-4px;right:-4px;background:#ff0000;color:#fff;border-radius:999px;font-size:.65rem;padding:2px 6px;line-height:1}
-            @media (max-width:768px){
+            @media (max-width:992px){
                 .mobile-header{display:flex}
                 .ml-search{display:none}
                 #quickLinks{display:none}
@@ -521,7 +521,7 @@ $ofertas = getActiveOffers($conexion);
             }
             .header-content,.nav-menu,.ml-search{border-bottom:none !important; box-shadow:none !important}
             .user-avatar.has-photo,.user-avatar-large.has-photo{background-color: transparent !important}
-            @media (min-width:769px){
+            @media (min-width:993px){
                 .mobile-drawer,.mobile-drawer-overlay{display:none !important}
             }
         </style>
@@ -1048,7 +1048,7 @@ $ofertas = getActiveOffers($conexion);
             <script>
                 (function(){
                     function ensureResponsiveState(){
-                        var isMobile = window.matchMedia('(max-width: 768px)').matches;
+                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
                         var ql = document.getElementById('quickLinks');
                         var nav = document.getElementById('navMenu');
                         var logo = document.querySelector('.header .logo');

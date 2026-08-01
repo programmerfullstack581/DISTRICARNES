@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Colocar el menú del usuario junto a la lupa en móvil
     function placeUserButtons() {
         if (!userLoggedButtons) return;
-        if (window.matchMedia('(max-width: 768px)').matches) {
+        if (window.matchMedia('(max-width: 992px)').matches) {
             // Mostrar solo el botón/trigger, no todo el bloque
             quickLinks && quickLinks.appendChild(userLoggedButtons);
         } else {
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function shouldUseModal(){
-    return window.matchMedia('(max-width: 768px)').matches;
+    return window.matchMedia('(max-width: 992px)').matches;
   }
 
   document.addEventListener('DOMContentLoaded', function(){

@@ -270,7 +270,7 @@ body.logged-in #userLoggedButtons { display: flex; }
     max-width: 120px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .mobile-header { display: flex; }
 }
 
@@ -393,7 +393,7 @@ body.logged-in #userLoggedButtons { display: flex; }
     .nav-menu { flex: 0 0 auto; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
     .header { padding: 12px 16px; padding-left: 8px; }
     .header .header-content { position: relative; min-height: 48px; }
     .ml-search { display: none !important; }
@@ -529,7 +529,7 @@ body.logged-in #userLoggedButtons { display: flex; }
 
 /* Desktop: el drawer nunca se ve y la visibilidad de botones depende de la sesión
    (clase .logged-in en <body>, ya no depende de que JS aplique estilos inline) */
-@media (min-width: 769px) {
+@media (min-width: 993px) {
     .mobile-drawer,
     .mobile-drawer-overlay { display: none !important; }
     body:not(.logged-in) #authButtons { display: flex !important; }

@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
       const applyLayout = () => {
-        if (window.matchMedia('(max-width: 768px)').matches) { moveToDrawer(); }
+        if (window.matchMedia('(max-width: 992px)').matches) { moveToDrawer(); }
         else { document.body.classList.remove('drawer-open'); moveToHeader(); }
       };
       applyLayout();
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchForm && searchInput && searchBtn) {
     searchForm.addEventListener('submit', (e) => {
       const q = (searchInput.value || '').trim();
-      if (!q.length && window.matchMedia('(max-width: 768px)').matches) {
+      if (!q.length && window.matchMedia('(max-width: 992px)').matches) {
         e.preventDefault();
         mlSearch.classList.add('expanded');
         searchInput.focus();
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     searchBtn.addEventListener('click', (e) => {
       const q = (searchInput.value || '').trim();
-      if (!q.length && window.matchMedia('(max-width: 768px)').matches) {
+      if (!q.length && window.matchMedia('(max-width: 992px)').matches) {
         e.preventDefault();
         mlSearch.classList.toggle('expanded');
         if (mlSearch.classList.contains('expanded')) searchInput.focus();
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', (evt) => {
       if (mlSearch && mlSearch.classList.contains('expanded')) {
         const inside = mlSearch.contains(evt.target);
-        if (!inside && window.matchMedia('(max-width: 768px)').matches) mlSearch.classList.remove('expanded');
+        if (!inside && window.matchMedia('(max-width: 992px)').matches) mlSearch.classList.remove('expanded');
       }
     });
   }

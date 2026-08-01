@@ -94,7 +94,7 @@ $basePath = str_replace('\\', '/', $basePath);
                 line-height: 1
             }
 
-            @media (max-width:768px) {
+            @media (max-width:992px) {
                 .mobile-header {
                     display: flex
                 }
@@ -141,7 +141,7 @@ $basePath = str_replace('\\', '/', $basePath);
                 background-color: transparent !important
             }
 
-            @media (min-width:769px) {
+            @media (min-width:993px) {
 
                 .mobile-drawer,
                 .mobile-drawer-overlay {
@@ -725,7 +725,7 @@ $basePath = str_replace('\\', '/', $basePath);
             <script>
                 (function() {
                     function ensureResponsiveState() {
-                        var isMobile = window.matchMedia('(max-width: 768px)').matches;
+                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
                         var ql = document.getElementById('quickLinks');
                         var nav = document.getElementById('navMenu');
                         var logo = document.querySelector('.header .logo');
@@ -1880,7 +1880,7 @@ $basePath = str_replace('\\', '/', $basePath);
     <script>
         function ensureResponsiveState() {
             const userData = JSON.parse(localStorage.getItem('userData'));
-            const isMobile = window.innerWidth <= 768;
+            const isMobile = window.innerWidth <= 992;
 
             const authButtons = document.getElementById('authButtons');
             const userLoggedButtons = document.getElementById('userLoggedButtons');

@@ -93,7 +93,7 @@
                 line-height: 1
             }
 
-            @media (max-width:768px) {
+            @media (max-width:992px) {
                 .mobile-header {
                     display: flex
                 }
@@ -140,7 +140,7 @@
                 background-color: transparent !important
             }
 
-            @media (min-width:769px) {
+            @media (min-width:993px) {
 
                 .mobile-drawer,
                 .mobile-drawer-overlay {
@@ -733,7 +733,7 @@
             <script>
                 (function() {
                     function ensureResponsiveState() {
-                        var isMobile = window.matchMedia('(max-width: 768px)').matches;
+                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
                         var ql = document.getElementById('quickLinks');
                         var nav = document.getElementById('navMenu');
                         var logo = document.querySelector('.header .logo');
