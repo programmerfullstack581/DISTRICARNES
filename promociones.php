@@ -135,7 +135,6 @@ $ofertas = getActiveOffers($conexion);
         /* Promociones Section */
         .promociones-section {
             padding: 4rem 5%;
-            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -160,8 +159,58 @@ $ofertas = getActiveOffers($conexion);
 
         .promo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 2rem;
+        }
+
+        @media (min-width: 1600px) {
+            .promo-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2.5rem;
+            }
+            .promo-info {
+                padding: 1.25rem;
+            }
+            .promo-title {
+                font-size: 1.15rem;
+            }
+            .promo-desc {
+                font-size: 0.85rem;
+            }
+            .new-price {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (min-width: 1200px) and (max-width: 1599px) {
+            .promo-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .promo-title {
+                font-size: 1.3rem;
+            }
+            .new-price {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .promo-grid {
+                gap: 1.25rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .promo-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .promo-title {
+                font-size: 1.5rem;
+            }
+            .new-price {
+                font-size: 2rem;
+            }
         }
 
         /* Nueva Tarjeta de Promoción */
@@ -182,10 +231,43 @@ $ofertas = getActiveOffers($conexion);
             border-color: var(--palette-red);
         }
 
+        .promo-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--palette-red);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: 6;
+        }
+
+        .promo-card:hover::before {
+            transform: scaleX(1);
+        }
+
         .promo-img {
-            height: 220px;
+            aspect-ratio: 4 / 3;
+            height: auto;
             overflow: hidden;
             position: relative;
+        }
+
+        .promo-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .promo-card:hover .promo-img::after {
+            opacity: 1;
         }
 
         .promo-img img {

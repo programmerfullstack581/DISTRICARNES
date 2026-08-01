@@ -964,6 +964,24 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     border-color: #ff0000;
                 }
 
+                .product-card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: #ff0000;
+                    transform: scaleX(0);
+                    transform-origin: left;
+                    transition: transform 0.3s ease;
+                    z-index: 6;
+                }
+
+                .product-card:hover::before {
+                    transform: scaleX(1);
+                }
+
                 .product-image {
                     overflow: hidden;
                     position: relative;
@@ -972,6 +990,20 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
                     background: #ffffff;
+                }
+
+                .product-image::after {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 60%);
+                    opacity: 0;
+                    transition: opacity 0.3s ease;
+                    pointer-events: none;
+                }
+
+                .product-card:hover .product-image::after {
+                    opacity: 1;
                 }
 
                 .product-image img {
