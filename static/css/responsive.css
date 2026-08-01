@@ -59,38 +59,9 @@ img, video {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  /* Menú hamburguesa */
-  .mobile-toggle { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 0.4rem 0.6rem; 
-    border-radius: 8px;
-  }
-  /* Ocultar botones de auth al estar en quickLinks en móvil */
-  #quickLinks #authButtons { 
-    display: none !important; 
-  }
-  /* Mostrar y ordenar botones de auth cuando están dentro del menú */
-  .nav-menu #authButtons {
-    display: flex !important;
-    width: 100%;
-    justify-content: center;
-    gap: .5rem;
-    margin-top: .5rem;
-  }
-  /* Colapsar el nav por defecto en pantallas medianas/pequeñas */
-  #navMenu { 
-    display: none !important; 
-    width: 100%; 
-  }
-  #navMenu.active { 
-    display: flex !important; 
-    flex-direction: column; 
-    align-items: stretch; 
-    gap: .5rem; 
-    padding-top: .5rem; 
-  }
+  /* Menú móvil: lo gestiona el header compartido (header_en_general.css + drawer),
+     no estas reglas del menú antiguo. Se eliminan para evitar que peleen con el
+     ocultado de los botones de acceso en móvil. */
 }
 
 @media (max-width: 768px) {

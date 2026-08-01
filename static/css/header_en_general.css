@@ -206,6 +206,74 @@ body.logged-in #userLoggedButtons { display: flex; }
     cursor: pointer;
 }
 
+/* ===== Barra móvil (hamburguesa) — compartida por todas las páginas ===== */
+.mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    background: #000;
+    border-bottom: none;
+    padding: .4rem .5rem;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    min-height: 50px;
+}
+
+.mh-left,
+.mh-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mh-left { padding-left: .25rem; }
+.mh-right { padding-right: .25rem; }
+
+.mh-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: #111;
+    border: 1px solid #222;
+}
+
+.mh-icon i { font-size: 1.2rem; }
+.mh-cart { position: relative; }
+
+.mh-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #ff0000;
+    color: #fff;
+    border-radius: 999px;
+    font-size: .65rem;
+    padding: 2px 6px;
+    line-height: 1;
+}
+
+.mh-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+}
+
+.mh-center img {
+    height: 26px;
+    max-width: 120px;
+}
+
+@media (max-width: 768px) {
+    .mobile-header { display: flex; }
+}
+
 /* ===== Header estilo Mercado Libre con paleta negro/rojo del sitio ===== */
 .ml-actions {
     display: flex;
@@ -329,9 +397,19 @@ body.logged-in #userLoggedButtons { display: flex; }
     .header { padding: 12px 16px; padding-left: 8px; }
     .header .header-content { position: relative; min-height: 48px; }
     .ml-search { display: none !important; }
-    .header .header-content > #quickLinks { display: none !important; }
-    .nav-menu { order: 4; width: 100%; justify-content: space-between; }
-    .nav-menu a { padding: 0.5rem 0; }
+
+    /* ===== Ocultar SIEMPRE el header de escritorio en móvil =====
+       (incluye botones INICIAR SESIÓN / REGISTRARSE y carrito de escritorio;
+        aunque JS o styles inline los muestren, aquí ganan) */
+    #quickLinks,
+    #authButtons,
+    #cartButton,
+    #userLoggedButtons,
+    .nav-menu,
+    .mobile-toggle,
+    .header .logo {
+        display: none !important;
+    }
     .ml-actions { order: 5; width: auto; justify-content: flex-end; gap: .5rem; margin-left: auto; }
     .logo { 
         order: 1;
@@ -360,11 +438,10 @@ body.logged-in #userLoggedButtons { display: flex; }
     #userLoggedButtons {
         order: 6;
         width: 100%;
-        display: none;
+        display: none !important;
         justify-content: flex-end;
         margin-top: .25rem;
     }
-    body.logged-in #userLoggedButtons { display: flex !important; }
     .user-name { display: none; }
     /* Botones compactos y alineados */
     #cartButton, #userLoggedButtons .dropdown-toggle, #authButtons .btn {
@@ -410,8 +487,28 @@ body.logged-in #userLoggedButtons { display: flex; }
     .drawer-content {
         padding: 10px 8px 24px; overflow-y: auto; height: 100%;
     }
+
+    /* Botones de acceso/registro del drawer (las páginas traen su propio markup #drawerAuthButtons/#drawerUserLogged) */
+    .mobile-drawer #drawerAuthButtons {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 8px 12px;
+    }
+    .mobile-drawer #drawerUserLogged {
+        display: none !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 8px 12px;
+    }
+    body.logged-in .mobile-drawer #drawerAuthButtons { display: none !important; }
+    body.logged-in .mobile-drawer #drawerUserLogged { display: flex !important; }
+
+    /* Drawer creado por JS (páginas sin markup propio del menú) */
     .mobile-drawer .nav-menu {
-        display: flex; flex-direction: column; gap: 4px; padding: 6px 8px; margin: 0;
+        display: flex !important; flex-direction: column; gap: 4px; padding: 6px 8px; margin: 0;
     }
     .mobile-drawer .nav-menu a {
         color: #ffffff; padding: 12px 14px; border-radius: 10px; font-weight: 700;
@@ -428,6 +525,17 @@ body.logged-in #userLoggedButtons { display: flex; }
     body.logged-in .mobile-drawer #userLoggedButtons { display: flex !important; }
     body.drawer-open .mobile-drawer-overlay { opacity: 1; visibility: visible; }
     body.drawer-open .mobile-drawer { transform: translateX(0); }
+}
+
+/* Desktop: el drawer nunca se ve y la visibilidad de botones depende de la sesión
+   (clase .logged-in en <body>, ya no depende de que JS aplique estilos inline) */
+@media (min-width: 769px) {
+    .mobile-drawer,
+    .mobile-drawer-overlay { display: none !important; }
+    body:not(.logged-in) #authButtons { display: flex !important; }
+    body:not(.logged-in) #userLoggedButtons { display: none !important; }
+    body.logged-in #authButtons { display: none !important; }
+    body.logged-in #userLoggedButtons { display: flex !important; }
 }
 
 /* En pantallas extremadamente pequeñas, ocultar la etiqueta para evitar desbordes */

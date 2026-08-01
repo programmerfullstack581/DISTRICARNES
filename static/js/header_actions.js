@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (header && headerContent) {
       const logoEl = headerContent.querySelector('.logo');
       let burger = headerContent.querySelector('.mobile-toggle');
-      if (!burger) {
+      const hasMobileHeader = !!document.querySelector('.mobile-header');
+      if (!burger && !hasMobileHeader) {
         burger = document.createElement('button');
         burger.className = 'mobile-toggle';
         burger.setAttribute('aria-label', 'Menú');
@@ -92,8 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const userLoggedButtons = document.getElementById('userLoggedButtons');
       const quickLinks = document.getElementById('quickLinks');
 
+      const pageDrawer = document.getElementById('drawerAuthButtons');
       const moveToDrawer = () => {
-        if (!drawerContent) return;
+        // Si la página ya trae su propio drawer (con botones de acceso), NO mover el DOM
+        if (!drawerContent || pageDrawer) return;
         // QuickLinks (carrito) primero, para que sea visible inmediatamente
         if (quickLinks && quickLinks.parentElement !== drawerContent) {
           quickLinks.classList.add('drawer-quicklinks');
@@ -250,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (_) {}
     },
     checkUserSession() {
-      const quickLinks = document.getElementById('quickLinks');
       const authButtons = document.getElementById('authButtons');
       const userLoggedButtons = document.getElementById('userLoggedButtons');
 
@@ -259,9 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const logged = this.isLoggedIn(user);
       const blocked = this.isBlocked(user);
 
-      // Carrito y enlaces rápidos: visibles salvo usuarios bloqueados
-      if (quickLinks) quickLinks.style.display = 'flex';
-
+      // La visibilidad de botones la decide el CSS (clase .logged-in en <body>),
+      // no estilos inline: así en móvil los botones de acceso se ocultan de inmediato.
       if (logged) {
         document.body.classList.add('logged-in');
         if (authButtons) authButtons.style.display = 'none';

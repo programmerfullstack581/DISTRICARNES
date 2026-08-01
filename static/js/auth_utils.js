@@ -33,6 +33,9 @@
       if (raw && (raw.isLoggedIn || raw.user)) {
         const currentUser = raw.user ? raw.user : raw;
 
+        // Clase global para que el CSS (compartido en todas las páginas) controle la visibilidad
+        document.body.classList.add('logged-in');
+
         // Show logged-in elements, hide auth buttons
         if (authButtons) authButtons.style.display = 'none';
         if (userLoggedButtons) userLoggedButtons.style.display = 'flex';
@@ -151,6 +154,7 @@
     }
 
     // If not logged in, ensure auth buttons are visible and user elements are hidden
+    document.body.classList.remove('logged-in');
     if (authButtons) authButtons.style.display = 'flex'; // Use flex as it was originally
     if (userLoggedButtons) userLoggedButtons.style.display = 'none';
     if (heroButtons) heroButtons.style.display = 'none';
