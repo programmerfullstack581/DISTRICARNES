@@ -1,0 +1,183 @@
+-- ============================================
+-- TABLAS PARA FACTURAS - DISTRICARNES
+-- ============================================
+
+-- 1. Crear sequence para facturas
+CREATE SEQUENCE IF NOT EXISTS facturas_id_seq
+    AS integer START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
+
+-- 2. Tabla principal de facturas
+CREATE TABLE IF NOT EXISTS facturas (
+    id_factura integer NOT NULL DEFAULT nextval('facturas_id_seq'),
+    orden_id integer NOT NULL,
+    codigo_factura VARCHAR(64) NOT NULL,
+    cliente_nombre VARCHAR(255),
+    cliente_email VARCHAR(255),
+    cliente_telefono VARCHAR(50),
+    cliente_direccion TEXT,
+    subtotal numeric(12,2) DEFAULT 0,
+    iva numeric(12,2) DEFAULT 0,
+    descuento numeric(12,2) DEFAULT 0,
+    envio numeric(12,2) DEFAULT 0,
+    total numeric(12,2) DEFAULT 0,
+    metodo_pago VARCHAR(50),
+    metodo_entrega VARCHAR(50),
+    estado VARCHAR(32) DEFAULT 'pendiente',
+    fecha_emision timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    factus_invoice_id VARCHAR(128),
+    factus_number VARCHAR(128),
+    factus_status VARCHAR(32),
+    factus_pdf_url TEXT,
+    factura_data_json TEXT,
+    CONSTRAINT facturas_pkey PRIMARY KEY (id_factura)
+);
+
+-- 3. Sequence para detalles de factura
+CREATE SEQUENCE IF NOT EXISTS factura_detalles_id_seq
+    AS integer START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
+
+-- 4. Tabla de detalles de factura
+CREATE TABLE IF NOT EXISTS factura_detalles (
+    id_detalle integer NOT NULL DEFAULT nextval('factura_detalles_id_seq'),
+    factura_id integer NOT NULL,
+    producto_id integer,
+    producto_nombre VARCHAR(255) NOT NULL,
+    cantidad integer NOT NULL DEFAULT 1,
+    precio_unitario numeric(12,2) NOT NULL,
+    precio_total numeric(12,2) NOT NULL,
+    CONSTRAINT factura_detalles_pkey PRIMARY KEY (id_detalle),
+    CONSTRAINT fk_factura_detalle FOREIGN KEY (factura_id) REFERENCES facturas(id_factura) ON DELETE CASCADE
+);
+
+-- 5. Agregar columnas a orders si no existen
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS invoice_code VARCHAR(64);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS invoice_data_json TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS factus_invoice_id VARCHAR(128);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS factus_number VARCHAR(128);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS factus_status VARCHAR(32);
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS factus_pdf_url TEXT;
+
+-- 6. Tabla orders_pg
+CREATE TABLE IF NOT EXISTS orders_pg (
+    id SERIAL PRIMARY KEY,
+    paypal_id VARCHAR(64),
+    user_email VARCHAR(255),
+    user_name VARCHAR(255),
+    status VARCHAR(32) NOT NULL,
+    total DECIMAL(12,2) NOT NULL DEFAULT 0,
+    delivery_method VARCHAR(32) NOT NULL,
+    address_json TEXT,
+    schedule_json TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    invoice_code VARCHAR(64),
+    invoice_data_json TEXT,
+    factus_invoice_id VARCHAR(128),
+    factus_number VARCHAR(128),
+    factus_status VARCHAR(32),
+    factus_pdf_url TEXT
+);
+
+-- 7. Tabla order_items_pg
+CREATE TABLE IF NOT EXISTS order_items_pg (
+    id SERIAL PRIMARY KEY,
+    order_id INT NOT NULL,
+    title VARCHAR(255),
+    price DECIMAL(12,2) DEFAULT 0,
+    qty INT DEFAULT 1,
+    image TEXT,
+    FOREIGN KEY (order_id) REFERENCES orders_pg(id) ON DELETE CASCADE
+);
+
+-- 8. Copiar datos de orders a orders_pg
+DO $$
+BEGIN
+    IF (SELECT COUNT(*) FROM orders_pg) = 0 THEN
+        INSERT INTO orders_pg (paypal_id, user_email, user_name, status, total, delivery_method, address_json, schedule_json, created_at)
+        SELECT paypal_id, user_email, user_name, status, total, delivery_method, address_json, schedule_json, created_at
+        FROM orders;
+        
+        INSERT INTO order_items_pg (order_id, title, price, qty, image)
+        SELECT o.id, i.title, i.price, i.qty, i.image
+        FROM orders o
+        JOIN order_items i ON o.id = i.order_id;
+    END IF;
+END $$;
+
+-- 9. Crear índices
+CREATE INDEX IF NOT EXISTS idx_facturas_orden ON facturas(orden_id);
+CREATE INDEX IF NOT EXISTS idx_facturas_codigo ON facturas(codigo_factura);
+CREATE INDEX IF NOT EXISTS idx_facturas_estado ON facturas(estado);
+CREATE INDEX IF NOT EXISTS idx_facturas_fecha ON facturas(fecha_emision);
+
+-- 10. Migrar datos de pedidos existentes a facturas (CORREGIDO)
+DO $$
+DECLARE
+    orden RECORD;
+    factura_id INTEGER;
+    item RECORD;
+    suma_subtotal NUMERIC := 0;
+    existe INTEGER;
+BEGIN
+    FOR orden IN SELECT id, user_email, user_name, status, total, delivery_method, created_at FROM orders_pg LOOP
+        SELECT COUNT(*) INTO existe FROM facturas WHERE orden_id = orden.id;
+        
+        IF existe = 0 THEN
+            INSERT INTO facturas (
+                orden_id, 
+                codigo_factura, 
+                cliente_nombre, 
+                cliente_email, 
+                metodo_pago, 
+                metodo_entrega,
+                total, 
+                estado,
+                fecha_emision
+            ) VALUES (
+                orden.id,
+                'FAC-' || TO_CHAR(orden.created_at, 'YYYYMMDD') || '-' || UPPER(TO_CHAR(orden.id, 'FM0000')),
+                orden.user_name,
+                orden.user_email,
+                'PayPal',
+                orden.delivery_method,
+                orden.total,
+                CASE orden.status 
+                    WHEN 'COMPLETED' THEN 'completada' 
+                    WHEN 'PROCESSING' THEN 'procesando'
+                    WHEN 'PENDING' THEN 'pendiente'
+                    ELSE 'pendiente'
+                END,
+                orden.created_at
+            ) RETURNING id_factura INTO factura_id;
+            
+            suma_subtotal := 0;
+            FOR item IN SELECT title, price, qty FROM order_items_pg WHERE order_id = orden.id LOOP
+                suma_subtotal := suma_subtotal + (item.price * item.qty);
+                
+                INSERT INTO factura_detalles (factura_id, producto_nombre, cantidad, precio_unitario, precio_total)
+                VALUES (factura_id, item.title, item.qty, item.price, item.price * item.qty);
+            END LOOP;
+            
+            UPDATE facturas SET 
+                subtotal = suma_subtotal,
+                iva = suma_subtotal * 0.19,
+                total = suma_subtotal * 1.19
+            WHERE id_factura = factura_id;
+        END IF;
+    END LOOP;
+END $$;
+
+-- Verificar resultados
+SELECT 'facturas' as tabla, COUNT(*) as total FROM facturas
+UNION ALL
+SELECT 'factura_detalles', COUNT(*) FROM factura_detalles
+UNION ALL
+SELECT 'orders_pg', COUNT(*) FROM orders_pg
+UNION ALL
+SELECT 'order_items_pg', COUNT(*) FROM order_items_pg;
+
+-- Ver facturas creadas
+SELECT f.id_factura, f.codigo_factura, f.cliente_nombre, f.cliente_email, f.total, f.estado, f.fecha_emision
+FROM facturas f
+ORDER BY f.fecha_emision DESC
+LIMIT 10;

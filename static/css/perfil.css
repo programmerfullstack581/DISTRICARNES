@@ -1,0 +1,398 @@
+/* Variables de color basadas en la imagen */
+:root {
+    --color-primary: #e31b23;        /* Rojo DistriCarnes */
+    --color-primary-dark: #b9151b;
+    --color-bg-dark: #0a0a0a;        /* Negro fondo */
+    --color-bg-card: #141414;        /* Negro ligeramente más claro */
+    --color-bg-input: #1a1a1a;       /* Fondo inputs */
+    --color-text: #ffffff;           /* Blanco texto */
+    --color-text-muted: #888888;     /* Gris texto secundario */
+    --color-border: #2a2a2a;         /* Borde sutil */
+    --color-success: #22c55e;
+    --color-error: #ef4444;
+    --transition: all 0.3s ease;
+}
+
+/* Reset y base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* Contenedor principal */
+.page-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--color-border);
+    flex-wrap: wrap;
+}
+
+.tabs button {
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    padding: 1rem 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: var(--transition);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+}
+
+.tabs button:hover {
+    color: var(--color-text);
+}
+
+.tabs button.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+}
+
+/* Card contenedor */
+.card {
+    background-color: var(--color-bg-card);
+    border-radius: 12px;
+    padding: 2.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Contenido de tabs */
+.content {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Grid layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    background-color: var(--color-bg-input);
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(227, 27, 35, 0.1);
+}
+
+input::placeholder {
+    color: var(--color-text-muted);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    padding-right: 2.75rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle.active {
+    color: var(--color-primary);
+}
+
+/* Avatar preview */
+.avatar-preview {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    border: 3px solid var(--color-border);
+    overflow: hidden;
+}
+
+.avatar-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Photo actions */
+.photo-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 0.75rem;
+}
+
+#profilePhoto {
+    display: none;
+}
+
+/* Botones */
+.btn, .btn-inline {
+    padding: 0.9rem 1.75rem;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn {
+    width: 100%;
+}
+
+.btn-inline {
+    background-color: var(--color-bg-input);
+    color: var(--color-text);
+    border: 2px solid var(--color-border);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+}
+
+.btn-inline.primary {
+    background-color: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.btn-inline.primary:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn {
+    background-color: var(--color-primary);
+    color: white;
+    margin-top: 1rem;
+}
+
+.btn:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(227, 27, 35, 0.3);
+}
+
+.btn.secondary {
+    background-color: transparent;
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.btn.secondary:hover {
+    background-color: var(--color-bg-input);
+    border-color: var(--color-text-muted);
+}
+
+/* Actions container */
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.actions .btn {
+    flex: 1;
+    min-width: 200px;
+    margin-top: 0;
+}
+
+/* Notas y alertas */
+.note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Settings list */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background-color: var(--color-bg-input);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    transition: var(--transition);
+}
+
+.setting-item:hover {
+    border-color: var(--color-primary);
+    transform: translateX(5px);
+}
+
+.setting-item label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    margin-bottom: 0;
+    text-transform: none;
+    font-size: 1rem;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--color-primary);
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-wrap {
+        padding: 0 1rem 3rem;
+    }
+    
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .tabs button {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .actions .btn {
+        width: 100%;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+/* Utilidades adicionales */
+#editAlert, #passAlert, #settingsAlert {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: none;
+}
+
+#editAlert.show, #passAlert.show, #settingsAlert.show {
+    display: block;
+}
+
+#editAlert.success, #passAlert.success, #settingsAlert.success {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+#editAlert.error, #passAlert.error, #settingsAlert.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+}
+
+/* Focus visible para accesibilidad */
+button:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}

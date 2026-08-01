@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Ventas - DistriCarnes Admin</title>
+    <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+        .sidebar { position: fixed; left: 0; top: 0; width: 280px; height: 100vh; background: #000; padding: 20px; z-index: 1000; transition: transform 0.3s ease; overflow-y: auto; }
+        .sidebar.collapsed { transform: translateX(-100%); }
+        .logo { display: flex; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .logo img { width: 100%; height: 50%; margin-right: 15px; }
+        .nav-menu { list-style: none; }
+        .nav-item { margin-bottom: 10px; }
+        .nav-link { display: flex; align-items: center; padding: 12px 16px; color: rgba(255,255,255,0.8); text-decoration: none; border-radius: 6px; transition: all 0.2s ease; margin-bottom: 2px; }
+        .nav-link:hover, .nav-link.active { background: #ff0000; color: #fff; }
+        .nav-link i { margin-right: 15px; width: 20px; text-align: center; }
+        .main-content { margin-left: 280px; padding: 20px; min-height: 100vh; transition: margin-left 0.3s ease; }
+        .main-content.expanded { margin-left: 40px; }
+        .header { background: #1a1a1a; padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+        .menu-toggle { background: none; border: none; color: white; font-size: 1.4rem; margin-right: 16px; cursor: pointer; padding: 8px; border-radius: 6px; }
+        .header h1 { font-size: 2rem; font-weight: 700; background: linear-gradient(45deg, #ff0000, #ff0000); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn { background: #e61515; color: white; padding: 10px 16px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.2s ease; }
+        .btn:hover { background: #e6151560; }
+        .btn-secondary { background: #333; }
+        .btn-secondary:hover { background: #444; }
+        .filter-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; background: #1a1a1a; border: 1px solid #333; border-top: 3px solid #e61515; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .filter-select, .filter-input { background: #0f0f0f; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; }
+        .sales-table-container { background: #1a1a1a; border: 1px solid #333; border-top: 3px solid #e61515; border-radius: 8px; padding: 16px; }
+        .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .table-title { font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px; text-align: left; }
+        th { color: rgba(255,255,255,0.8); font-weight: 500; }
+        .export-buttons { display: flex; gap: 10px; }
+        .pagination { display: flex; gap: 6px; margin-top: 12px; }
+        .pagination button { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        .pagination button.active { background: #e61515; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content, .main-content.expanded { margin-left: 0; }
+            .header h1 { font-size: 1.5rem; }
+        }
+    </style>
+    <script>
+        (function(){
+            try {
+                var raw = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
+                var data = raw ? JSON.parse(raw) : null;
+                var user = data && data.user ? data.user : data;
+                if (!user || user.rol !== 'admin') { window.location.href = '../login/login.html'; }
+            } catch(e) { window.location.href = '../login/login.html'; }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">
+            <a href="../index.html">
+                <img src="../assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
+            </a>
+        </div>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="./admin_dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+            <li class="nav-item"><a href="./admin_users.html" class="nav-link"><i class="fas fa-users"></i><span>Usuarios</span></a></li>
+            <li class="nav-item"><a href="./admin_products.html" class="nav-link"><i class="fas fa-box"></i><span>Productos</span></a></li>
+            <li class="nav-item"><a href="./admin_categories.html" class="nav-link"><i class="fas fa-tags"></i><span>Categorias</span></a></li>
+            <li class="nav-item"><a href="./admin_orders.html" class="nav-link"><i class="fas fa-shopping-cart"></i><span>Pedidos</span></a></li>
+            <li class="nav-item"><a href="./admin_invoices.html" class="nav-link"><i class="fas fa-file-invoice"></i><span>Facturas</span></a></li>
+            <li class="nav-item"><a href="./admin_inventory.html" class="nav-link"><i class="fas fa-warehouse"></i><span>Inventario</span></a></li>
+            <li class="nav-item"><a href="./admin_sales.html" class="nav-link"><i class="fas fa-cash-register"></i><span>Ventas</span></a></li>
+            <li class="nav-item"><a href="./admin_reports.html" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reportes</span></a></li>
+            <li class="nav-item"><a href="./admin_promotions.html" class="nav-link"><i class="fas fa-percent"></i><span>Promociones</span></a></li>
+            <li class="nav-item"><a href="./admin_settings.html" class="nav-link"><i class="fas fa-cog"></i><span>Configuración</span></a></li>
+            <li class="nav-item"><a href="#" class="nav-link" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <header class="header">
+            <div style="display:flex; align-items:center;">
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <h1>Gestión de Ventas</h1>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn" onclick="exportSalesPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
+                <button class="btn" onclick="exportSalesExcel()"><i class="fas fa-file-excel"></i> Exportar Excel</button>
+                <button class="btn" onclick="exportSalesCSV()"><i class="fas fa-file-csv"></i> Exportar CSV</button>
+                <a href="admin_dashboard.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+        </header>
+
+        <div class="filter-bar">
+            <select class="filter-select" id="dateFilter">
+                <option value="today">Hoy</option>
+                <option value="week" selected>Esta Semana</option>
+                <option value="month">Este Mes</option>
+            </select>
+            <input class="filter-input" id="searchInput" placeholder="Buscar por cliente o pedido">
+            <select class="filter-select" id="statusFilter">
+                <option value="">Todos</option>
+                <option value="paid">Pagado</option>
+                <option value="pending">Pendiente</option>
+                <option value="canceled">Cancelado</option>
+            </select>
+        </div>
+
+        <div class="sales-table-container">
+            <div class="table-header">
+                <span class="table-title">Ventas Recientes</span>
+                <div class="export-buttons">
+                    <button class="btn" onclick="exportSalesExcel()"><i class="fas fa-file-excel"></i></button>
+                    <button class="btn" onclick="exportSalesCSV()"><i class="fas fa-file-csv"></i></button>
+                    <button class="btn" onclick="exportSalesPDF()"><i class="fas fa-file-pdf"></i></button>
+                </div>
+            </div>
+            <table id="salesTable">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Pedido</th>
+                        <th>Cliente</th>
+                        <th>Productos</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="salesBody">
+                    <tr><td>2026-03-08</td><td>#000124</td><td>Juan Pérez</td><td>4</td><td>$ 145,000</td><td>Pagado</td></tr>
+                    <tr><td>2026-03-08</td><td>#000125</td><td>María López</td><td>2</td><td>$ 68,000</td><td>Pendiente</td></tr>
+                    <tr><td>2026-03-09</td><td>#000126</td><td>Carlos Ruiz</td><td>6</td><td>$ 228,000</td><td>Pagado</td></tr>
+                </tbody>
+            </table>
+            <div class="pagination" id="salesPagination"></div>
+        </div>
+    </main>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('mainContent');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('expanded');
+            menuToggle.addEventListener('click', () => { sidebar.classList.toggle('active'); });
+        }
+
+        (function() {
+            var current = location.pathname.split('/').pop();
+            var links = document.querySelectorAll('.sidebar .nav-link');
+            links.forEach(function(a){
+                var href = a.getAttribute('href') || '';
+                var file = href.split('/').pop();
+                if (file === current) { a.classList.add('active'); } else { a.classList.remove('active'); }
+            });
+        })();
+
+        function exportSalesExcel(){
+            try {
+                const wb = XLSX.utils.table_to_book(document.getElementById('salesTable'), { sheet: "Ventas" });
+                XLSX.writeFile(wb, `ventas-${new Date().toISOString().split('T')[0]}.xlsx`);
+                Swal.fire({ icon:'success', title:'Exportado', text:'Excel generado', timer:2000, showConfirmButton:false });
+            } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a Excel','error'); }
+        }
+        function exportSalesCSV(){
+            try {
+                const ws = XLSX.utils.table_to_sheet(document.getElementById('salesTable'));
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Ventas");
+                XLSX.writeFile(wb, `ventas-${new Date().toISOString().split('T')[0]}.csv`);
+                Swal.fire({ icon:'success', title:'Exportado', text:'CSV generado', timer:2000, showConfirmButton:false });
+            } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a CSV','error'); }
+        }
+        function exportSalesPDF(){
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(18);
+                doc.text("Ventas - DistriCarnes", 14, 18);
+                doc.setFontSize(12);
+                doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 26);
+                doc.autoTable({ html: '#salesTable', startY: 32, theme: 'grid' });
+                doc.save(`ventas-${new Date().toISOString().split('T')[0]}.pdf`);
+            } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a PDF','error'); }
+        }
+        
+        // Carga dinámica de ventas desde la BD
+        const dateFilter = document.getElementById('dateFilter');
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const salesBody = document.getElementById('salesBody');
+        const salesPagination = document.getElementById('salesPagination');
+        let SalesCache = [];
+        let CurrentPage = 1;
+        const PAGE_SIZE = 10;
+
+        function pad(n){ return n.toString().padStart(2,'0'); }
+        function formatMoney(v){ return `$ ${Number(v||0).toLocaleString('es-CO')}`; }
+
+        function computeRange(value){
+            const now = new Date();
+            const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+            let from, to;
+            if (value === 'today') {
+                from = `${y}-${pad(m+1)}-${pad(d)} 00:00:00`;
+                to   = `${y}-${pad(m+1)}-${pad(d)} 23:59:59`;
+            } else if (value === 'week') {
+                const start = new Date(now); start.setDate(d - 7);
+                from = `${start.getFullYear()}-${pad(start.getMonth()+1)}-${pad(start.getDate())} 00:00:00`;
+                to   = `${y}-${pad(m+1)}-${pad(d)} 23:59:59`;
+            } else { // month
+                const start = new Date(y, m, 1);
+                const end   = new Date(y, m + 1, 0);
+                from = `${start.getFullYear()}-${pad(start.getMonth()+1)}-${pad(start.getDate())} 00:00:00`;
+                to   = `${end.getFullYear()}-${pad(end.getMonth()+1)}-${pad(end.getDate())} 23:59:59`;
+            }
+            return {from, to};
+        }
+
+        async function loadSales(){
+            try{
+                const {from, to} = computeRange(dateFilter.value);
+                // Map de estado visual a estado real
+                const statusMap = { 'paid': 'COMPLETED', 'pending': 'PENDING', 'canceled': 'CANCELLED', '': '' };
+                const status = statusMap[statusFilter.value] || '';
+                let url = `../backend/php/orders_list.php`;
+                const qs = [];
+                if (status) qs.push(`status=${encodeURIComponent(status)}`);
+                if (from)   qs.push(`from=${encodeURIComponent(from)}`);
+                if (to)     qs.push(`to=${encodeURIComponent(to)}`);
+                if (qs.length) url += `?${qs.join('&')}`;
+                
+                const res = await fetch(url, { cache: 'no-store' });
+                const data = await res.json();
+                SalesCache = (data && data.ok && Array.isArray(data.orders)) ? data.orders : [];
+                CurrentPage = 1;
+                renderSales();
+            }catch(e){
+                console.error('Error cargando ventas', e);
+                salesBody.innerHTML = '<tr><td colspan="6">No se pudieron cargar las ventas</td></tr>';
+            }
+        }
+
+        function renderSales(){
+            const term = (searchInput.value || '').toLowerCase().trim();
+            const filtered = SalesCache.filter(s => {
+                const idStr = (`#${s.id||''}`).toLowerCase();
+                const name  = (s.customer_name || '').toLowerCase();
+                const email = (s.customer_email || '').toLowerCase();
+                return !term || idStr.includes(term) || name.includes(term) || email.includes(term);
+            });
+            const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+            if (CurrentPage > totalPages) CurrentPage = totalPages;
+            const start = (CurrentPage - 1) * PAGE_SIZE;
+            const slice = filtered.slice(start, start + PAGE_SIZE);
+            salesBody.innerHTML = slice.map(s => `
+                <tr>
+                    <td>${new Date(s.created_at).toLocaleDateString('es-CO')}</td>
+                    <td>#${s.id}</td>
+                    <td>${s.customer_name || '-'}</td>
+                    <td>${Number(s.items_count||0)}</td>
+                    <td>${formatMoney(s.total)}</td>
+                    <td>${(s.status||'').toUpperCase()}</td>
+                </tr>
+            `).join('') || '<tr><td colspan="6">Sin resultados</td></tr>';
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages){
+            salesPagination.innerHTML = '';
+            const makeBtn = (label, onClick, active=false, disabled=false) => {
+                const b = document.createElement('button');
+                b.textContent = label;
+                if (active) b.classList.add('active');
+                if (disabled) b.disabled = true;
+                b.addEventListener('click', onClick);
+                return b;
+            };
+            salesPagination.appendChild(makeBtn('<', () => { if(CurrentPage>1){ CurrentPage--; renderSales(); } }, false, CurrentPage<=1));
+            const maxButtons = 5;
+            let start = Math.max(1, CurrentPage - Math.floor(maxButtons/2));
+            let end   = Math.min(totalPages, start + maxButtons - 1);
+            start = Math.max(1, end - maxButtons + 1);
+            for(let p=start; p<=end; p++){
+                salesPagination.appendChild(makeBtn(String(p), () => { CurrentPage = p; renderSales(); }, p===CurrentPage));
+            }
+            salesPagination.appendChild(makeBtn('>', () => { if(CurrentPage<totalPages){ CurrentPage++; renderSales(); } }, false, CurrentPage>=totalPages));
+        }
+
+        searchInput.addEventListener('input', renderSales);
+        statusFilter.addEventListener('change', loadSales);
+        dateFilter.addEventListener('change', loadSales);
+        // Inicial
+        loadSales();
+    </script>
+    <script src="../js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</body>
+<script src="../static/js/session_guard.js" defer></script>
+<script src="../static/js/network_guard.js" defer></script>
+</html>
