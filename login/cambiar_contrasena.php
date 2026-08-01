@@ -216,6 +216,20 @@ else: ?>
 endif; ?>
   </div>
 
+  <?php if ($valid): ?>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      (function tryOpen() {
+        if (typeof window.openChangeModal === 'function') {
+          window.openChangeModal(<?php echo json_encode($token); ?>);
+        } else {
+          setTimeout(tryOpen, 100);
+        }
+      })();
+    });
+  </script>
+  <?php endif; ?>
+
   <script>
     const form = document.getElementById('changeForm');
     if (form) {

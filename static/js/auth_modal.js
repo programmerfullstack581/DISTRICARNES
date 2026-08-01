@@ -11,6 +11,7 @@
   var ENDPOINT_LOGIN = BASE + 'backend/php/login_verify.php';
   var ENDPOINT_REGISTER = BASE + 'backend/php/guardar_usuario.php';
   var ENDPOINT_FORGOT = BASE + 'backend/php/request_password_reset.php';
+  var ENDPOINT_CHANGE = BASE + 'backend/php/perform_password_reset.php';
   var URL_PROFILE = BASE + 'perfil.php';
   var URL_ADMIN = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
   var LOGO_URL = '/assets/icon/LOGO-DISTRICARNES.png';
@@ -98,6 +99,27 @@
           '<button type="submit" class="dcAmSubmit" data-dcAmSubmit="forgot"><i class="bi bi-envelope"></i> ENVIAR ENLACE</button>' +
           '<p class="dcAmSwitch"><a href="#" data-dcAmGoto="login">Volver al inicio de sesión</a></p>' +
         '</form>' +
+        '<form id="dcAmChange" class="dcAmPanel" novalidate>' +
+          '<input type="hidden" id="dcAmChangeToken" name="token">' +
+          '<div class="dcAmField">' +
+            '<label for="dcAmChangePass">Nueva contraseña</label>' +
+            '<div class="dcAmPass">' +
+              '<input id="dcAmChangePass" name="password" type="password" autocomplete="new-password" placeholder="Tu nueva contraseña" required>' +
+              '<button type="button" class="dcAmEye" data-dcAmEye="dcAmChangePass" aria-label="Mostrar u ocultar contraseña"><i class="bi bi-eye"></i></button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="dcAmField">' +
+            '<label for="dcAmChangeConfirm">Confirmar contraseña</label>' +
+            '<div class="dcAmPass">' +
+              '<input id="dcAmChangeConfirm" name="confirm" type="password" autocomplete="new-password" placeholder="Repite la contraseña" required>' +
+              '<button type="button" class="dcAmEye" data-dcAmEye="dcAmChangeConfirm" aria-label="Mostrar u ocultar contraseña"><i class="bi bi-eye"></i></button>' +
+            '</div>' +
+          '</div>' +
+          '<p class="dcAmHint">La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial (ej: !#$%&amp;).</p>' +
+          '<p class="dcAmError" data-dcAmError="change"></p>' +
+          '<button type="submit" class="dcAmSubmit" data-dcAmSubmit="change"><i class="bi bi-key-fill"></i> CAMBIAR CONTRASEÑA</button>' +
+          '<p class="dcAmSwitch"><a href="#" data-dcAmGoto="login">Volver al inicio de sesión</a></p>' +
+        '</form>' +
         '<form id="dcAmRegister" class="dcAmPanel" novalidate>' +
           '<div class="dcAmRow">' +
             '<div class="dcAmField">' +
@@ -138,7 +160,7 @@
       '</div>' +
     '</div>';
 
-  var overlay, dialog, loginPanel, registerPanel, forgotPanel;
+  var overlay, dialog, loginPanel, registerPanel, forgotPanel, changePanel;
 
   function $(id) { return document.getElementById(id); }
 
@@ -179,8 +201,8 @@
     overlay.style.display = 'flex';
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    switchTab(tab === 'register' || tab === 'forgot' ? tab : 'login');
-    var focus = tab === 'register' ? $('dcAmNombre') : (tab === 'forgot' ? $('dcAmForgotEmail') : $('dcAmEmail'));
+    switchTab(tab === 'register' || tab === 'forgot' || tab === 'change' ? tab : 'login');
+    var focus = tab === 'register' ? $('dcAmNombre') : (tab === 'forgot' ? $('dcAmForgotEmail') : (tab === 'change' ? $('dcAmChangePass') : $('dcAmEmail')));
     if (focus) setTimeout(function () { focus.focus(); }, 60);
   }
 
@@ -199,12 +221,13 @@
       tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
     }
     var tabsBar = $('dcAmTabs');
-    if (tabsBar) tabsBar.classList.toggle('dcAm-hidden', tab === 'forgot');
+    if (tabsBar) tabsBar.classList.toggle('dcAm-hidden', tab === 'forgot' || tab === 'change');
     var loginOn = tab === 'login';
     var regOn = tab === 'register';
     loginPanel.classList.toggle('is-active', loginOn);
     registerPanel.classList.toggle('is-active', regOn);
     forgotPanel.classList.toggle('is-active', tab === 'forgot');
+    changePanel.classList.toggle('is-active', tab === 'change');
     clearErrors();
   }
 
@@ -232,7 +255,9 @@
       ? '<i class="bi bi-box-arrow-in-right"></i> INGRESAR'
       : name === 'forgot'
         ? '<i class="bi bi-envelope"></i> ENVIAR ENLACE'
-        : '<i class="bi bi-person-plus-fill"></i> REGISTRARSE');
+        : name === 'change'
+          ? '<i class="bi bi-key-fill"></i> CAMBIAR CONTRASEÑA'
+          : '<i class="bi bi-person-plus-fill"></i> REGISTRARSE');
   }
 
   function persistSession(user) {
@@ -373,6 +398,48 @@
     }
   }
 
+  async function handleChange(e) {
+    e.preventDefault();
+    var token = ($('dcAmChangeToken').value || '').trim();
+    var pass = ($('dcAmChangePass').value || '');
+    var confirm = ($('dcAmChangeConfirm').value || '');
+    if (!token) { showError('change', 'Falta el token de recuperación. Solicita un nuevo enlace.'); return; }
+    if (pass.length < 8 || !PWD_REGEX.test(pass)) {
+      showError('change', 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial (ej: !#$%&).');
+      return;
+    }
+    if (pass !== confirm) {
+      showError('change', 'Las contraseñas no coinciden.');
+      return;
+    }
+    setBusy('change', true, 'Guardando…');
+    try {
+      var res = await fetch(ENDPOINT_CHANGE, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ token: token, password: pass })
+      });
+      var data = await res.json();
+      var msgEl = overlay.querySelector('[data-dcAmError="change"]');
+      if (!msgEl) return;
+      if (data.success) {
+        msgEl.innerHTML = escHtml(data.message || 'Contraseña actualizada correctamente.');
+        msgEl.classList.toggle('dcAm-show', true);
+        msgEl.classList.toggle('dcAm-ok', true);
+        setBusy('change', false);
+        setTimeout(function () {
+          window.location.href = data.redirect_url || (BASE + 'login/login.php');
+        }, 2000);
+      } else {
+        showError('change', data.message || 'No se pudo actualizar la contraseña.');
+        setBusy('change', false);
+      }
+    } catch (err) {
+      showError('change', 'Error de conexión. Verifica tu internet e intenta de nuevo.');
+      setBusy('change', false);
+    }
+  }
+
   // ---------- Reemplazo de botones del header y del drawer ----------
   function replaceAuthButtons() {
     var desktop = $('authButtons');
@@ -428,6 +495,7 @@
     $('dcAmLogin').addEventListener('submit', handleLogin);
     $('dcAmRegister').addEventListener('submit', handleRegister);
     $('dcAmForgot').addEventListener('submit', handleForgot);
+    $('dcAmChange').addEventListener('submit', handleChange);
 
     document.addEventListener('click', function (e) {
       var link = e.target && e.target.closest ? e.target.closest('#mhUserLink') : null;
@@ -456,6 +524,7 @@
     loginPanel = $('dcAmLogin');
     registerPanel = $('dcAmRegister');
     forgotPanel = $('dcAmForgot');
+    changePanel = $('dcAmChange');
     replaceAuthButtons();
     bindEvents();
     try { if (window.AuthSystem) AuthSystem.checkUserSession(); } catch (e) {}
@@ -469,6 +538,15 @@
 
   window.openAuthModal = openModal;
   window.closeAuthModal = closeModal;
+  window.openChangeModal = function (token) {
+    var t = $('dcAmChangeToken');
+    if (t) t.value = token || '';
+    var pass = $('dcAmChangePass');
+    var confirm = $('dcAmChangeConfirm');
+    if (pass) pass.value = '';
+    if (confirm) confirm.value = '';
+    openModal('change');
+  };
   window.goAuth = function (tab, fallbackUrl) {
     if (typeof window.openAuthModal === 'function') { window.openAuthModal(tab); return; }
     if (fallbackUrl) window.location.href = fallbackUrl;
