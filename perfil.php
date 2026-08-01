@@ -615,7 +615,7 @@ $basePath = str_replace('\\', '/', $basePath);
 
     <!-- perfl del usuario-->
     <div style="text-align: center; margin-top: 3rem; margin-bottom: 2rem;">
-        <h1 style="color: white; font-size: 2.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif;">Mi perfil
+        <h1 style="font-size: 2.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif;">Mi perfil
         </h1>
     </div>
 

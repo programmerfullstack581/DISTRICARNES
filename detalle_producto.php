@@ -1651,7 +1651,7 @@ endif; ?>
                     }
                     ?>
                 </div>
-                <span style="color: #888; font-size: 0.9rem;">(<?php echo $promedio_calificacion > 0 ? $promedio_calificacion : '0'; ?> de 5) • <?php echo $total_reseñas; ?> reseñas</span>
+                <span style="color: var(--light-text-color); font-size: 0.9rem;">(<?php echo $promedio_calificacion > 0 ? $promedio_calificacion : '0'; ?> de 5) • <?php echo $total_reseñas; ?> reseñas</span>
             </div>
 
             <div class="product-price-large product-price-detail">
@@ -1777,7 +1777,7 @@ endif; ?>
             <?php else: ?>
                 <div class="no-reviews">
                     <i class="fas fa-comments"></i>
-                    <h3 style="color: #fff; margin-bottom: 0.5rem;">Aún no hay reseñas</h3>
+                    <h3 style="margin-bottom: 0.5rem;">Aún no hay reseñas</h3>
                     <p>Sé el primero en dejar tu opinión sobre este producto</p>
                 </div>
             <?php endif; ?>

@@ -810,8 +810,8 @@ require_once __DIR__ . '/backend/php/conexion.php';
             <span class="text-red-600 italic " style="color: red;">PRODUCTOS</span>
         </h1>
         <div class="breadcrumb">
-            <a href="#" style="color: rgb(255, 0, 0);">Inicio</a> <span style="color: white;">›</span>
-            <span style="color: white;">Todos los productos</span>
+            <a href="#" style="color: rgb(255, 0, 0);">Inicio</a> <span>›</span>
+            <span>Todos los productos</span>
         </div>
     </section>
 
@@ -1262,7 +1262,7 @@ require_once __DIR__ . '/backend/php/conexion.php';
                 <!-- Secciones de Res, Cerdo y Pollo se renderizan vía JS -->
             </section>
 
-            <div class="pagination" style="color: white;">
+            <div class="pagination">
                 <?php
                 // Construcción de paginación
                 $baseParams = [];

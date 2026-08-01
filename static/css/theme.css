@@ -281,7 +281,36 @@ html[data-theme="light"] .team-description-carousel { color: #4b5563 !important;
 html[data-theme="light"] .carousel-arrow { border-color: #d1d5db !important; background: #ffffff !important; color: #111827 !important; }
 html[data-theme="light"] .carousel-arrow:hover { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
 
-/* ---------- Botón toggle de tema ---------- */
+/* ---------- Reseñas vacías (detalle_producto.php) ---------- */
+html[data-theme="light"] .no-reviews { color: #4b5563 !important; }
+html[data-theme="dark"] .no-reviews { color: #9ca3af !important; }
+html[data-theme="light"] .no-reviews h3 { color: #111827 !important; }
+html[data-theme="dark"] .no-reviews h3 { color: #ffffff !important; }
+html[data-theme="dark"] .no-reviews i { color: #555555 !important; }
+
+/* ---------- Números de estadísticas (sobre_nosotros.php) ---------- */
+html[data-theme="light"] .stat-number,
+html[data-theme="light"] .stat-number-animated { color: #111827 !important; }
+
+/* ---------- Secciones de "Sobre nosotros" que permanecen OSCURAS en ambos temas ---------- */
+html[data-theme="light"] .innovation-section-pro,
+html[data-theme="light"] .team-section-pro {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+}
+html[data-theme="light"] .innovation-section-pro .section-header,
+html[data-theme="light"] .innovation-section-pro .section-title,
+html[data-theme="light"] .innovation-section-pro .section-description,
+html[data-theme="light"] .team-section-pro .section-header,
+html[data-theme="light"] .team-section-pro .section-title { color: #ffffff !important; }
+
+/* ---------- Botón toggle de tema + menú de opciones ---------- */
+.dc-theme-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
 .dc-theme-toggle {
     width: 38px;
     height: 38px;
@@ -299,6 +328,60 @@ html[data-theme="light"] .carousel-arrow:hover { border-color: #ef4444 !importan
 .dc-theme-toggle:hover { border-color: #ff0000; color: #ff0000; transform: rotate(15deg); }
 .dc-theme-toggle i { font-size: 1.05rem; line-height: 1; }
 html[data-theme="dark"] .dc-theme-toggle { background: #1a1a1a; border-color: #333333; color: #ffffff; }
+.dc-theme-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 6000;
+    min-width: 200px;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+    display: none;
+    text-align: left;
+}
+.dc-theme-menu.open { display: block; animation: dcMenuIn .15s ease; }
+@keyframes dcMenuIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.dc-theme-menu-label {
+    font-size: .68rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    padding: 6px 10px 8px;
+}
+.dc-theme-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #e5e7eb;
+    font-size: .85rem;
+    font-weight: 600;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+}
+.dc-theme-option i { width: 16px; text-align: center; color: #9ca3af; }
+.dc-theme-option:hover { background: #1f1f1f; color: #ffffff; }
+.dc-theme-option.active { color: #ffffff; background: #1a1a1a; }
+.dc-theme-option.active i { color: #ff0000; }
+.dc-theme-option.active::after {
+    content: "\f00c";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-left: auto;
+    color: #ff0000;
+    font-size: .78rem;
+}
 @media (max-width: 992px) {
     .dc-theme-toggle { width: 36px; height: 36px; }
+    .dc-theme-menu { min-width: 190px; }
 }
