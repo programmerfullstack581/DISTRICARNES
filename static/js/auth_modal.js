@@ -281,12 +281,14 @@
   function redirectAfterLogin(user) {
     var pending = null;
     try { pending = sessionStorage.getItem('postLoginRedirect'); sessionStorage.removeItem('postLoginRedirect'); } catch (e) {}
-    if (pending) { window.location.href = pending; return; }
-    if (user && String(user.rol || '').toLowerCase() === 'admin') {
+    var isAdmin = user && String(user.rol || '').toLowerCase() === 'admin';
+    if (isAdmin) {
+      if (pending && pending.indexOf('/admin/') !== -1) { window.location.href = pending; return; }
       window.location.href = URL_ADMIN;
-    } else {
-      window.location.href = URL_PROFILE;
+      return;
     }
+    if (pending) { window.location.href = pending; return; }
+    window.location.href = URL_PROFILE;
   }
 
   // ---------- Acciones ----------
