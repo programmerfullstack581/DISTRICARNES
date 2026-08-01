@@ -884,9 +884,34 @@ require_once __DIR__ . '/backend/php/conexion.php';
             <style>
                 .products-grid-container {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    grid-template-columns: repeat(2, 1fr);
                     gap: 2rem;
                     padding: 20px 0;
+                }
+
+                @media (min-width: 1400px) {
+                    .products-grid-container {
+                        grid-template-columns: repeat(4, 1fr);
+                    }
+                }
+
+                @media (min-width: 1200px) and (max-width: 1399px) {
+                    .products-grid-container {
+                        grid-template-columns: repeat(3, 1fr);
+                    }
+                }
+
+                @media (min-width: 992px) and (max-width: 1199px) {
+                    .products-grid-container {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .products-grid-container {
+                        grid-template-columns: 1fr;
+                        gap: 1.25rem;
+                    }
                 }
 
                 .product-card {
