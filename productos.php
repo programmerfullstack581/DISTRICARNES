@@ -893,11 +893,37 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     .products-grid-container {
                         grid-template-columns: repeat(4, 1fr);
                     }
+                    .products-grid-container .product-info {
+                        padding: 1rem;
+                    }
+                    .products-grid-container .product-name {
+                        font-size: 1.05rem;
+                    }
+                    .products-grid-container .product-price {
+                        font-size: 1.25rem;
+                    }
+                    .products-grid-container .product-actions {
+                        flex-direction: column;
+                        margin-top: 12px;
+                    }
+                    .products-grid-container .btn {
+                        font-size: 0.8rem;
+                        padding: 0.6rem;
+                    }
                 }
 
                 @media (min-width: 1200px) and (max-width: 1399px) {
                     .products-grid-container {
                         grid-template-columns: repeat(3, 1fr);
+                    }
+                    .products-grid-container .product-info {
+                        padding: 1.25rem;
+                    }
+                    .products-grid-container .product-name {
+                        font-size: 1.15rem;
+                    }
+                    .products-grid-container .product-price {
+                        font-size: 1.35rem;
                     }
                 }
 
@@ -911,6 +937,12 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     .products-grid-container {
                         grid-template-columns: 1fr;
                         gap: 1.25rem;
+                    }
+                    .products-grid-container .product-name {
+                        font-size: 1.4rem;
+                    }
+                    .products-grid-container .product-price {
+                        font-size: 1.7rem;
                     }
                 }
 
@@ -951,12 +983,12 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     border-top-left-radius: 4px;
                     border-top-right-radius: 4px;
                     background: transparent;
-                    transform: scale(1.12);
+                    transform: scale(1);
                     transition: transform 0.5s ease;
                 }
 
                 .product-card:hover .product-image img {
-                    transform: scale(1.12);
+                    transform: scale(1.08);
                 }
 
                 .favorite-btn {
@@ -1036,6 +1068,7 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     color: #ff0000;
                     font-weight: 800;
                     margin-top: auto;
+                    white-space: nowrap;
                     /* Empuja el precio hacia abajo si hay espacio */
                 }
 
@@ -1055,6 +1088,7 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     border: none;
                     font-size: 0.9rem;
                     flex: 1;
+                    white-space: nowrap;
                 }
 
                 .btn-add {
