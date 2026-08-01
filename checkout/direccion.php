@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Checkout – Dirección y Pago | DISTRICARNES</title>
+    <link rel="stylesheet" href="../static/css/nav_pills.css" />
     <link rel="icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
     <link rel="stylesheet" href="../static/css/header_en_general.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
