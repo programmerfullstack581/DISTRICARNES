@@ -339,7 +339,7 @@
         } catch (e) { /* noop */ }
 
         // Redirigir siempre a la página principal
-        window.location.href = 'https://districarnes.online/index.php';
+        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
     },
 
     /**

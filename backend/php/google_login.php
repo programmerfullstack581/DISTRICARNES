@@ -81,7 +81,7 @@ try {
         $_SESSION['user_id'] = $user['id_usuario'];
         $_SESSION['user_rol'] = $user['rol'];
         $_SESSION['logged_in'] = true;
-        $redirect_url = ($user['rol'] === 'admin') ? 'https://districarnes.online/admin/admin_dashboard.html' : 'https://districarnes.online/index.php';
+        $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
         $response = [
             'success' => true,
             'message' => 'Login successful',
@@ -107,7 +107,7 @@ try {
             $_SESSION['user_id'] = $new_user_id;
             $_SESSION['user_rol'] = $rol;
             $_SESSION['logged_in'] = true;
-            $redirect_url = 'https://districarnes.online/index.php';
+            $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
             $response = [
                 'success' => true,
                 'message' => 'Registration and login successful',

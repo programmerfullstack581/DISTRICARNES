@@ -52,9 +52,9 @@ window.handleCredentialResponse = async function(response) {
             window.dispatchEvent(new CustomEvent('auth:loggedIn'));
             const redirect = (() => {
                 if (result.redirect_url) {
-                    return result.redirect_url.startsWith('/') ? 'https://districarnes.online' + result.redirect_url : result.redirect_url;
+                    return result.redirect_url.startsWith('/') ? 'https://districarnes-83qm.onrender.com' + result.redirect_url : result.redirect_url;
                 }
-                return result.user.rol === 'admin' ? 'https://districarnes.online/admin/admin_dashboard.html' : 'https://districarnes.online/index.php';
+                return 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
             })();
             const displayName = result.user.nombre || result.user.nombres_completos || result.user.email || 'Usuario';
             const displayEmail = result.user.email || result.user.correo_electronico || '';
@@ -251,21 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.location.href = result.redirect_url;
                         }
                     } else {
-                        // Fallback a la lógica anterior
-                        if (result.user.rol === 'trabajo') {
-                            window.location.href = 'https://districarnes.online/index.php';
-                        } else if (result.user.rol === 'admin') {
-                            window.location.href = 'https://districarnes.online/admin/admin_dashboard.html';
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de redirección',
-                                text: 'No se pudo determinar la página de destino.',
-                                confirmButtonColor: '#dc3545',
-                                background: '#ffffff',
-                                color: '#000000'
-                            });
-                        }
+                        // Fallback: redirigir siempre al panel de administración
+                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
                     }
                 }, 2000);
             } else {
@@ -401,13 +388,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                 setTimeout(() => {
                     if (result.redirect_url) {
-                        window.location.href = 'https://districarnes.online' + result.redirect_url;
+                        window.location.href = 'https://districarnes-83qm.onrender.com' + result.redirect_url;
                     } else {
-                        if (result.user.rol === 'trabajo') {
-                            window.location.href = 'https://districarnes.online/index.php';
-                        } else if (result.user.rol === 'admin') {
-                            window.location.href = 'https://districarnes.online/admin/admin_dashboard.html';
-                        }
+                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
                     }
                 }, 2000);
 
@@ -565,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     setTimeout(() => {
-                        window.location.href = 'https://districarnes.online/index.php';
+                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
                     }, 3000);
                 }
             });

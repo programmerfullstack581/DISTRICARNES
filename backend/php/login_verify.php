@@ -139,15 +139,8 @@ try {
         $_SESSION['rol'] = $user['rol'];
         $_SESSION['logged_in'] = true;
 
-        // Determinar URL de redirección según el rol
-        $redirect_url = '';
-        if ($user['rol'] === 'admin') {
-            $redirect_url = 'https://districarnes.online/admin/admin_dashboard.html';
-        } elseif ($user['rol'] === 'trabajo') {
-            $redirect_url = 'https://districarnes.online/index.php';
-        } elseif ($user['rol'] === 'empleado') {
-            $redirect_url = 'https://districarnes.online/VENTAS/';
-        }
+        // Redirigir siempre al panel de administración
+        $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
 
         // Respuesta exitosa con información del usuario
         echo json_encode([

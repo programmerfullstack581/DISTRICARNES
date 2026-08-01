@@ -17,10 +17,10 @@
   }
 
   function getHomeUrl() {
-    return 'https://districarnes.online';
+    return 'https://districarnes-83qm.onrender.com';
   }
   function getLoginUrl() {
-    return 'https://districarnes.online/login/login.php';
+    return 'https://districarnes-83qm.onrender.com/login/login.php';
   }
   function isProtectedPage() {
     const p = location.pathname.toLowerCase();

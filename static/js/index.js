@@ -71,7 +71,7 @@ to { transform: translateX(0); }
 
     // Redirect after delay
     setTimeout(() => {
-        window.location.href = 'https://districarnes.online/index.php';
+        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
     }, 1500);
 }
 //-----------------------------CARRUSERL DE EQUIPO FUNIONALIDAD-----------------------------

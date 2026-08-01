@@ -1575,7 +1575,7 @@
                                         allowOutsideClick: false
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = 'https://districarnes.online/index.php';
+                                            window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
                                         }
                                     });
                                     return;

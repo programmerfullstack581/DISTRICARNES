@@ -20,10 +20,10 @@ function logout() {
             sessionStorage.clear();
             
             // Reemplazar estado del historial para que no puedan volver atrás
-            window.history.replaceState(null, null, 'https://districarnes.online/index.php');
+            window.history.replaceState(null, null, 'https://districarnes-83qm.onrender.com/index.php');
             
             // Redireccionar usando replace para no dejar rastro en el historial
-            window.location.replace('https://districarnes.online/index.php');
+            window.location.replace('https://districarnes-83qm.onrender.com/index.php');
         }
     });
 }

@@ -182,7 +182,7 @@
     window.dispatchEvent(new CustomEvent('auth:loggedOut'));
 
     // Redirect to main site after logout
-    window.location.href = 'https://districarnes.online/index.php';
+    window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
   }
 
   // Listen for custom events to update UI
