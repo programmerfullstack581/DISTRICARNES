@@ -884,15 +884,12 @@ require_once __DIR__ . '/backend/php/conexion.php';
             <style>
                 .products-grid-container {
                     display: grid;
-                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
                     gap: 2rem;
                     padding: 20px 0;
                 }
 
-                @media (min-width: 1400px) {
-                    .products-grid-container {
-                        grid-template-columns: repeat(4, 1fr);
-                    }
+                @media (min-width: 1700px) {
                     .products-grid-container .product-info {
                         padding: 1rem;
                     }
@@ -900,7 +897,7 @@ require_once __DIR__ . '/backend/php/conexion.php';
                         font-size: 1.05rem;
                     }
                     .products-grid-container .product-price {
-                        font-size: 1.25rem;
+                        font-size: 1.2rem;
                     }
                     .products-grid-container .product-actions {
                         flex-direction: column;
@@ -912,10 +909,19 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     }
                 }
 
-                @media (min-width: 1200px) and (max-width: 1399px) {
-                    .products-grid-container {
-                        grid-template-columns: repeat(3, 1fr);
+                @media (min-width: 1400px) and (max-width: 1699px) {
+                    .products-grid-container .product-info {
+                        padding: 1.15rem;
                     }
+                    .products-grid-container .product-name {
+                        font-size: 1.1rem;
+                    }
+                    .products-grid-container .product-price {
+                        font-size: 1.3rem;
+                    }
+                }
+
+                @media (min-width: 1200px) and (max-width: 1399px) {
                     .products-grid-container .product-info {
                         padding: 1.25rem;
                     }
@@ -927,9 +933,10 @@ require_once __DIR__ . '/backend/php/conexion.php';
                     }
                 }
 
-                @media (min-width: 992px) and (max-width: 1199px) {
+                @media (max-width: 991px) {
                     .products-grid-container {
                         grid-template-columns: repeat(2, 1fr);
+                        gap: 1.25rem;
                     }
                 }
 
