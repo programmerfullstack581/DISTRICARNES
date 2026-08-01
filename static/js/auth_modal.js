@@ -10,7 +10,7 @@
   var BASE = (src.replace(/static\/js\/auth_modal\.js[^/]*$/, '') || './');
   var ENDPOINT_LOGIN = BASE + 'backend/php/login_verify.php';
   var ENDPOINT_REGISTER = BASE + 'backend/php/guardar_usuario.php';
-  var URL_FORGOT = BASE + 'login/restablecer_contrasena.php';
+  var ENDPOINT_FORGOT = BASE + 'backend/php/request_password_reset.php';
   var URL_PROFILE = BASE + 'perfil.php';
   var URL_ADMIN = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
   var LOGO_URL = '/assets/icon/LOGO-DISTRICARNES.png';
@@ -28,6 +28,7 @@
     '#dcAmLogo{text-align:center;margin:0 0 6px}' +
     '#dcAmLogo img{max-width:150px;height:auto;max-height:64px;object-fit:contain}' +
     '#dcAmTabs{display:flex;background:#161616;border:1px solid #242424;border-radius:50px;padding:4px;margin:12px 0 18px}' +
+    '#dcAmTabs.dcAm-hidden{display:none}' +
     '#dcAmTabs .dcAmTab{flex:1;background:none;border:none;color:#aaa;font-weight:700;font-size:14px;padding:9px 8px;border-radius:50px;cursor:pointer;transition:all .15s}' +
     '#dcAmTabs .dcAmTab.is-active{background:#ff0000;color:#fff;box-shadow:0 4px 14px rgba(255,0,0,.35)}' +
     '.dcAmPanel{display:none}' +
@@ -84,8 +85,18 @@
           '</div>' +
           '<p class="dcAmError" data-dcAmError="login"></p>' +
           '<button type="submit" class="dcAmSubmit" data-dcAmSubmit="login"><i class="bi bi-box-arrow-in-right"></i> INGRESAR</button>' +
-          '<div class="dcAmFoot"><a href="' + URL_FORGOT + '" class="dcAmLink">¿Olvidaste tu contraseña?</a></div>' +
+          '<div class="dcAmFoot"><a href="#" data-dcAmGoto="forgot" class="dcAmLink">¿Olvidaste tu contraseña?</a></div>' +
           '<p class="dcAmSwitch">¿No tienes cuenta? <a href="#" data-dcAmGoto="register">Regístrate aquí</a></p>' +
+        '</form>' +
+        '<form id="dcAmForgot" class="dcAmPanel" novalidate>' +
+          '<div class="dcAmField">' +
+            '<label for="dcAmForgotEmail">Correo electrónico</label>' +
+            '<input id="dcAmForgotEmail" name="email" type="email" autocomplete="email" placeholder="tu.correo@example.com" required>' +
+          '</div>' +
+          '<p class="dcAmHint">Te enviaremos un enlace para restablecer tu contraseña. Revisa también tu bandeja de spam.</p>' +
+          '<p class="dcAmError" data-dcAmError="forgot"></p>' +
+          '<button type="submit" class="dcAmSubmit" data-dcAmSubmit="forgot"><i class="bi bi-envelope"></i> ENVIAR ENLACE</button>' +
+          '<p class="dcAmSwitch"><a href="#" data-dcAmGoto="login">Volver al inicio de sesión</a></p>' +
         '</form>' +
         '<form id="dcAmRegister" class="dcAmPanel" novalidate>' +
           '<div class="dcAmRow">' +
@@ -127,9 +138,25 @@
       '</div>' +
     '</div>';
 
-  var overlay, dialog, loginPanel, registerPanel;
+  var overlay, dialog, loginPanel, registerPanel, forgotPanel;
 
   function $(id) { return document.getElementById(id); }
+
+  function escHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function hasSession() {
+    try {
+      if (window.AuthSystem && typeof AuthSystem.isLoggedIn === 'function') return AuthSystem.isLoggedIn();
+      var raw = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
+      if (!raw) return false;
+      var d = JSON.parse(raw);
+      return !!(d && (d.isLoggedIn === true || d.isLoggedIn === 'true' || d.user));
+    } catch (e) { return false; }
+  }
 
   function injectCss() {
     if (document.getElementById('dcAmCss')) return;
@@ -152,8 +179,8 @@
     overlay.style.display = 'flex';
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    if (tab === 'register') switchTab('register');
-    var focus = tab === 'register' ? $('dcAmNombre') : $('dcAmEmail');
+    switchTab(tab === 'register' || tab === 'forgot' ? tab : 'login');
+    var focus = tab === 'register' ? $('dcAmNombre') : (tab === 'forgot' ? $('dcAmForgotEmail') : $('dcAmEmail'));
     if (focus) setTimeout(function () { focus.focus(); }, 60);
   }
 
@@ -171,9 +198,13 @@
       tabs[i].classList.toggle('is-active', on);
       tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
     }
+    var tabsBar = $('dcAmTabs');
+    if (tabsBar) tabsBar.classList.toggle('dcAm-hidden', tab === 'forgot');
     var loginOn = tab === 'login';
+    var regOn = tab === 'register';
     loginPanel.classList.toggle('is-active', loginOn);
-    registerPanel.classList.toggle('is-active', !loginOn);
+    registerPanel.classList.toggle('is-active', regOn);
+    forgotPanel.classList.toggle('is-active', tab === 'forgot');
     clearErrors();
   }
 
@@ -199,7 +230,9 @@
     btn.disabled = busy;
     btn.innerHTML = busy ? text : (name === 'login'
       ? '<i class="bi bi-box-arrow-in-right"></i> INGRESAR'
-      : '<i class="bi bi-person-plus-fill"></i> REGISTRARSE');
+      : name === 'forgot'
+        ? '<i class="bi bi-envelope"></i> ENVIAR ENLACE'
+        : '<i class="bi bi-person-plus-fill"></i> REGISTRARSE');
   }
 
   function persistSession(user) {
@@ -308,6 +341,38 @@
     }
   }
 
+  async function handleForgot(e) {
+    e.preventDefault();
+    var email = ($('dcAmForgotEmail').value || '').trim();
+    if (!email) { showError('forgot', 'Ingresa tu correo electrónico.'); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      showError('forgot', 'Ingresa un correo electrónico válido.');
+      return;
+    }
+    setBusy('forgot', true, 'Enviando…');
+    try {
+      var res = await fetch(ENDPOINT_FORGOT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ email: email })
+      });
+      var data = await res.json();
+      var msgEl = overlay.querySelector('[data-dcAmError="forgot"]');
+      if (!msgEl) return;
+      var html = escHtml(data.message || (data.success ? 'Te enviamos el enlace para restablecer la contraseña.' : 'No se pudo enviar el enlace.'));
+      if (data.reset_url) {
+        html += ' <a href="' + escHtml(data.reset_url) + '" target="_blank" rel="noopener noreferrer" style="color:#7ee2a0;text-decoration:underline;font-weight:700">Abrir enlace de restablecimiento</a>';
+      }
+      msgEl.innerHTML = html;
+      msgEl.classList.toggle('dcAm-show', true);
+      msgEl.classList.toggle('dcAm-ok', !!data.success);
+    } catch (err) {
+      showError('forgot', 'Error de conexión. Verifica tu internet e intenta de nuevo.');
+    } finally {
+      setBusy('forgot', false);
+    }
+  }
+
   // ---------- Reemplazo de botones del header y del drawer ----------
   function replaceAuthButtons() {
     var desktop = $('authButtons');
@@ -362,6 +427,14 @@
 
     $('dcAmLogin').addEventListener('submit', handleLogin);
     $('dcAmRegister').addEventListener('submit', handleRegister);
+    $('dcAmForgot').addEventListener('submit', handleForgot);
+
+    document.addEventListener('click', function (e) {
+      var link = e.target && e.target.closest ? e.target.closest('#mhUserLink') : null;
+      if (!link || hasSession()) return;
+      e.preventDefault();
+      openModal('login');
+    });
 
     document.addEventListener('click', function (e) {
       var btn = e.target && e.target.closest ? e.target.closest('[data-dcAmOpen]') : null;
@@ -382,6 +455,7 @@
     dialog = $('dcAmDialog');
     loginPanel = $('dcAmLogin');
     registerPanel = $('dcAmRegister');
+    forgotPanel = $('dcAmForgot');
     replaceAuthButtons();
     bindEvents();
     try { if (window.AuthSystem) AuthSystem.checkUserSession(); } catch (e) {}
@@ -395,4 +469,8 @@
 
   window.openAuthModal = openModal;
   window.closeAuthModal = closeModal;
+  window.goAuth = function (tab, fallbackUrl) {
+    if (typeof window.openAuthModal === 'function') { window.openAuthModal(tab); return; }
+    if (fallbackUrl) window.location.href = fallbackUrl;
+  };
 })();

@@ -202,7 +202,7 @@
       <div id="alert" class="alert" role="alert"></div>
     </form>
 
-    <a class="link-back" href="./login.php">Volver al inicio de sesión</a>
+    <a class="link-back" href="./login.php" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">Volver al inicio de sesión</a>
   </div>
 
   <script>

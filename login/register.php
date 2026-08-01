@@ -140,7 +140,7 @@
                             class="bi bi-check-circle-fill"></i>
                         Registrarse
                     </button>
-                    <a href="./login.php" class="btn btn-login-link-custom"><i class="bi bi-box-arrow-in-right"></i> Ya
+                    <a href="./login.php" class="btn btn-login-link-custom" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}"><i class="bi bi-box-arrow-in-right"></i> Ya
                         Tengo Una Cuenta</a>
                 </form>
             </div>

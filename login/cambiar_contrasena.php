@@ -193,7 +193,7 @@ else {
     <h1 class="title"><span style="color:white">Crear nueva</span> Contraseña</h1>
     <?php if (!$valid): ?>
       <div class="alert error" role="alert"><?php echo htmlspecialchars($errorMessage); ?></div>
-      <a class="link-back" href="./restablecer_contrasena.php">Solicitar nuevo enlace</a>
+      <a class="link-back" href="./restablecer_contrasena.php" onclick="if(window.openAuthModal){window.openAuthModal('forgot');return false;}">Solicitar nuevo enlace</a>
     <?php
 else: ?>
       <form id="changeForm">
@@ -211,7 +211,7 @@ else: ?>
         <button style="background-color: red" class="btn" type="submit">Cambiar contraseña</button>
         <div id="alert" class="alert" role="alert"></div>
       </form>
-      <a class="link-back" href="./login.php">Volver al inicio de sesión</a>
+      <a class="link-back" href="./login.php" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">Volver al inicio de sesión</a>
     <?php
 endif; ?>
   </div>
@@ -283,6 +283,7 @@ endif; ?>
       bind(t2, i2);
     })();
   </script>
+  <script src="../static/js/auth_modal.js"></script>
 </body>
 
 </html>

@@ -94,10 +94,10 @@
 
 
                     <div class="login-links">
-                        <p>¿No tienes una cuenta? <a href="../login/register.php">Regístrate aquí</a></p>
+                        <p>¿No tienes una cuenta? <a href="../login/register.php" onclick="if(window.openAuthModal){window.openAuthModal('register');return false;}">Regístrate aquí</a></p>
                     </div>
                     <div class="login-links">
-                        <p>¿Olvidaste tu contraseña? <a href="../login/restablecer_contrasena.php">Recupérala aquí</a></p>
+                        <p>¿Olvidaste tu contraseña? <a href="../login/restablecer_contrasena.php" onclick="if(window.openAuthModal){window.openAuthModal('forgot');return false;}">Recupérala aquí</a></p>
                     </div>
                     <div class="login-links">
                         <p>¿Quieres volver a la página principal? <a href="../index.php">Ir al inicio</a></p>
@@ -121,6 +121,7 @@
 
 </body>
 <script src="../login/js/login.js"></script>
+<script src="../static/js/auth_modal.js"></script>
 <script src="../static/js/loader.js" defer></script>
 <script src="../static/js/network_guard.js" defer></script>
 

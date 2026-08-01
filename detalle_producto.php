@@ -1833,11 +1833,11 @@ endif; ?>
             <div class="login-prompt" id="loginPromptDiv">
                 <i class="fas fa-user-lock" style="font-size: 2rem; color: #ff0000; margin-bottom: 1rem;"></i>
                 <p>Debes iniciar sesión para dejar una reseña</p>
-                <a href="./login/login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>">
+                <a href="./login/login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">
                     <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                 </a>
                 <span style="color: #666;"> | </span>
-                <a href="./login/register.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>">
+                <a href="./login/register.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('register');return false;}">
                     Registrarse
                 </a>
             </div>
@@ -2052,7 +2052,8 @@ endif; ?>
                         showCancelButton: true
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            window.location.href = './login/login.php';
+                            if (typeof window.openAuthModal === 'function') window.openAuthModal('login');
+                            else window.location.href = './login/login.php';
                         }
                     });
                     return;
