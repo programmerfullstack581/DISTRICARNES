@@ -263,7 +263,6 @@ if (count($relatedProducts) < 4) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($producto['nombre']); ?> - Detalles</title>
-    <script src="<?php echo $basePath; ?>/static/js/tailwind.browser.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/header_en_general.css" />
@@ -272,6 +271,7 @@ if (count($relatedProducts) < 4) {
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/chatbot.css" />
     <link rel="shortcut icon" href="<?php echo $basePath; ?>/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/tailwind.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
