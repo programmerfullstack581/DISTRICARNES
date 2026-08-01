@@ -23,6 +23,8 @@ $basePath = str_replace('\\', '/', $basePath);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/responsive.css" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/tailwind.css" />
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
+    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
 </head>
 
 <body class=" bg-black text-white ">

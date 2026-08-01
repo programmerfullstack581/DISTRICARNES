@@ -9,15 +9,16 @@
     />
     <title>Carrito de Compras - DISTRICARNES</title>
     <link rel="stylesheet" href="../static/css/nav_pills.css" />
-    <link rel="stylesheet" href="estilo.css">
     <link rel="stylesheet" href="../static/css/cart.css">
     <!-- Estilos globales del sitio para header unificado -->
     <link rel="stylesheet" href="../static/css/header_en_general.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/theme.css" />
     <link rel="stylesheet" href="../static/css/chatbot.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../static/css/responsive.css" />
     <script src="../static/js/auth_utils.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <!-- app.js antiguo deshabilitado en la nueva vista CRUD -->
     <link rel="stylesheet" href="../static/css/responsive.css" />
@@ -620,33 +621,67 @@
     </header>
     
     <main class="cart-page">
-        <section class="cart-list">
-            <h2 style="color:#fff; margin:0 0 8px 0; display:flex; align-items:center; gap:10px;">
-                <i class="bi bi-cart-fill" style="color:#e50914; font-size:1.4em;"></i>
-                <span>Carrito de Compras – DISTRICARNES</span>
+        <div class="cart-head">
+            <h2 class="cart-head-title">
+                <i class="bi bi-cart-fill"></i>
+                <span>Tu Carrito</span>
+                <span class="cart-head-count" id="cartCount">0</span>
             </h2>
-            <div id="cartRows"></div>
-            <div class="empty-cart" id="emptyCart" style="display:none;">
-                Tu carrito está vacío. <a href="../productos.php" style="color:#e50914;">Ver productos</a>
-            </div>
-        </section>
-        <aside class="cart-summary">
-            <div class="summary-title">Resumen del pedido</div>
-            <!--<div class="promo-box">
-                <input id="promoInput" type="text" placeholder="Ingresa un código de descuento" />
-                <button id="applyPromo">Aplicar</button>
-            </div>-->
-            <div class="session-info hidden" id="sessionInfo">No has iniciado sesión.</div>
-            <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0</span></div>
-            <div class="summary-row"><span>IVA (incluido)</span><span id="tax">$0</span></div>
-            <div class="summary-row"><span>Envío estimado</span><span id="shipping">$0</span></div>
-            <div id="freeShippingMsg" style="font-size:0.75rem; color:#00c853; text-align:right; margin-top:-6px; margin-bottom:8px; display:none;">¡Envío gratis por compras superiores a $10!</div>
-            <div class="summary-row" id="discountRow" style="display:none;"><span>Descuento</span><span id="discount">-$0</span></div>
-            <div class="summary-row summary-total"><span>Total</span><span id="total">$0</span></div>
-            <button id="btnCheckout" class="btn-primary">Continuar compra</button>
-            
-            <button id="btnClear" class="btn-secondary" style="margin-top:8px;">Vaciar carrito</button>
-        </aside>
+            <button id="btnClearHead" class="cart-clear-link" type="button">
+                <i class="fas fa-trash-alt"></i> Vaciar carrito
+            </button>
+        </div>
+
+        <div class="cart-layout">
+            <section class="cart-list">
+                <!-- Progreso hacia envío gratis -->
+                <div class="shipping-progress" id="shippingBarWrap">
+                    <div class="shipping-progress-label" id="shippingGoalMsg"></div>
+                    <div class="shipping-progress-track">
+                        <div class="shipping-progress-fill" id="shippingBarFill"></div>
+                    </div>
+                </div>
+
+                <div id="cartRows"></div>
+
+                <div class="empty-cart" id="emptyCart" style="display:none;">
+                    <i class="bi bi-cart-x"></i>
+                    <h3>Tu carrito está vacío</h3>
+                    <p>Explora nuestros cortes premium y ofertas exclusivas de la semana.</p>
+                    <a class="btn-primary" href="../productos.php">Ver productos</a>
+                </div>
+
+                <!-- Guardados para después -->
+                <div class="saved-section" id="savedSection" style="display:none;">
+                    <h3 class="saved-title"><i class="bi bi-bookmark-heart"></i> Guardados para después</h3>
+                    <div id="savedRows"></div>
+                </div>
+            </section>
+
+            <aside class="cart-summary">
+                <div class="summary-title"><i class="bi bi-receipt"></i> Resumen del pedido</div>
+                <div class="session-info hidden" id="sessionInfo">No has iniciado sesión.</div>
+                <div class="promo-box">
+                    <input id="promoInput" type="text" placeholder="Código de descuento" autocomplete="off" />
+                    <button id="applyPromo" type="button">Aplicar</button>
+                </div>
+                <div class="promo-status" id="promoStatus"></div>
+                <div class="summary-row"><span>Subtotal</span><span id="subtotal">$0</span></div>
+                <div class="summary-row"><span>IVA (incluido)</span><span id="tax">$0</span></div>
+                <div class="summary-row"><span>Envío estimado</span><span id="shipping">$0</span></div>
+                <div id="freeShippingMsg" class="free-ship-msg" style="display:none;">¡Envío gratis aplicado!</div>
+                <div class="summary-row" id="discountRow" style="display:none;"><span>Descuento</span><span id="discount">-$0</span></div>
+                <div class="summary-row summary-total"><span>Total</span><span id="total">$0</span></div>
+                <button id="btnCheckout" class="btn-primary" type="button">Continuar compra</button>
+                <button id="btnPayPalQuick" class="btn-paypal" type="button"><i class="fab fa-paypal"></i> Pagar con PayPal</button>
+                <button id="btnClear" class="btn-secondary" type="button"><i class="fas fa-trash-alt"></i> Vaciar carrito</button>
+                <div class="summary-trust">
+                    <span><i class="fas fa-lock"></i> Pago seguro</span>
+                    <span><i class="fas fa-truck"></i> Envío a domicilio</span>
+                    <span><i class="fas fa-headset"></i> Soporte 24/7</span>
+                </div>
+            </aside>
+        </div>
     </main>
 
     <!-- Footer -->

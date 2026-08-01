@@ -21,6 +21,8 @@ $basePath = str_replace('\\', '/', $basePath);
     <link rel="shortcut icon" href="<?php echo $basePath; ?>/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/responsive.css" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/perfil.css"/>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
+    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
     <script src="<?php echo $basePath; ?>/static/js/auth_utils.js"></script>
     <script src="<?php echo $basePath; ?>/static/js/header_actions.js"></script>
     <script src="<?php echo $basePath; ?>/static/js/auth_modal.js"></script>

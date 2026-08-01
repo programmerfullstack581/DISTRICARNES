@@ -984,6 +984,8 @@ if (count($relatedProducts) < 4) {
             }
         }
     </style>
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
+    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
 </head>
 <body class=" bg-black text-white ">
     <!-- Header -->

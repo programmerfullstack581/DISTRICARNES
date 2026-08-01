@@ -9,6 +9,7 @@
     <link rel="icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
     <link rel="stylesheet" href="../static/css/header_en_general.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/theme.css" />
     <link rel="stylesheet" href="../static/css/cart.css" />
     <link rel="stylesheet" href="../static/css/Estilo_direccion_compra.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -22,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Carga dinámica del SDK de PayPal (se inyecta al elegir PayPal) -->
     <script src="../static/js/paypal_loader.js"></script>
+    <script src="../static/js/theme.js"></script>
 </head>
 
 <body class=" bg-black text-white ">

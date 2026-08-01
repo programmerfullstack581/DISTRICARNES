@@ -1,0 +1,304 @@
+/* ============================================================
+   TEMA CLARO (predeterminado) + TEMA OSCURO — DISTRICARNES
+   Se carga AL FINAL del <head> en todas las páginas de la tienda.
+   - Por defecto la página es CLARA (blanco como color principal).
+   - [data-theme="dark"] (aplicado por static/js/theme.js) usa oscuro.
+   - El HEADER y el drawer móvil se mantienen NEGROS en ambos temas.
+   - El footer pasa a claro en modo claro y a negro en modo oscuro.
+   ============================================================ */
+
+/* ---------- Variables: CLARO (por defecto) ---------- */
+:root {
+    --primary-color: #ff0000;
+    --secondary-color: #ff0000;
+    --text-color: #111827;
+    --light-text-color: #6b7280;
+    --background-color: #f5f6f8;
+    --card-background: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow-color: rgba(0, 0, 0, 0.08);
+    --gradient-primary: linear-gradient(135deg, #ff0000, #e60000);
+    --gradient-card: linear-gradient(145deg, #ffffff, #fafafa);
+}
+
+/* ---------- Variables: OSCURO ---------- */
+html[data-theme="dark"] {
+    --primary-color: #ff0000;
+    --secondary-color: #ff0000;
+    --text-color: #ffffff;
+    --light-text-color: #cccccc;
+    --background-color: #000000;
+    --card-background: #000000;
+    --border-color: #000000;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --gradient-primary: linear-gradient(135deg, #ff0000, #ff0303);
+    --gradient-card: linear-gradient(145deg, #000000, #000000);
+}
+
+/* ---------- Cuerpo ---------- */
+body {
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: background-color .3s ease, color .3s ease;
+}
+html[data-theme="light"] body.bg-black { background: #f5f6f8 !important; }
+html[data-theme="light"] body.text-white { color: #111827 !important; }
+html[data-theme="dark"] body.bg-black { background: #000000 !important; }
+html[data-theme="dark"] body.text-white { color: #ffffff !important; }
+
+/* ============================================================
+   HEADER Y DRAWER MÓVIL SIEMPRE NEGROS (marca de la casa)
+   ============================================================ */
+html[data-theme="light"] .header,
+html[data-theme="light"] .mobile-header,
+html[data-theme="light"] .mobile-drawer,
+html[data-theme="light"] .mobile-drawer .drawer-header,
+html[data-theme="light"] .search-modal,
+html[data-theme="light"] .ml-promo-pill {
+    background-color: #000000 !important;
+    color: #ffffff;
+}
+html[data-theme="light"] .header .nav-menu a,
+html[data-theme="light"] .ml-icon-btn,
+html[data-theme="light"] .ml-action-link,
+html[data-theme="light"] #cartButton .ml-label,
+html[data-theme="light"] .menu-button,
+html[data-theme="light"] .menu-button .user-name,
+html[data-theme="light"] .menu-button .dropdown-arrow,
+html[data-theme="light"] .mh-icon,
+html[data-theme="light"] .mobile-toggle,
+html[data-theme="light"] .search-toggle,
+html[data-theme="light"] .mobile-drawer a {
+    color: #ffffff !important;
+}
+html[data-theme="light"] .ml-search form { background: #111111 !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .ml-search input,
+html[data-theme="light"] .ml-search input::placeholder { color: #ffffff !important; }
+html[data-theme="light"] .search-modal input[type="search"] { background: #0f0f0f; border-color: #333333; color: #ffffff; }
+html[data-theme="dark"] .header .nav-menu a,
+html[data-theme="dark"] .ml-icon-btn { color: #ffffff !important; }
+
+/* ============================================================
+   FOOTER: claro en modo claro, negro en modo oscuro
+   ============================================================ */
+html[data-theme="light"] .footer,
+html[data-theme="light"] .footer::before,
+html[data-theme="light"] .footer-column,
+html[data-theme="light"] .footer-column:hover {
+    background: #ffffff !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .footer-column,
+html[data-theme="light"] .footer-column:hover {
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+}
+html[data-theme="light"] .footer-column p,
+html[data-theme="light"] .footer-column li { color: #4b5563 !important; }
+html[data-theme="light"] .footer-column li:hover,
+html[data-theme="light"] .footer-column p:hover { color: #ff0000 !important; }
+html[data-theme="light"] .footer-bottom { color: #6b7280 !important; }
+html[data-theme="light"] .newsletter-form input {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .newsletter-form input:focus { border-color: #ff0000 !important; }
+html[data-theme="light"] .social-icons a {
+    background: #111827 !important;
+    border-color: #111827 !important;
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   CONVERSIÓN DE UTILIDADES OSCURAS DENTRO DEL CONTENIDO
+   (Tailwind / clases hardcodeadas que usaban negro)
+   ============================================================ */
+html[data-theme="light"] .bg-black,
+html[data-theme="light"] .bg-gray-900,
+html[data-theme="light"] .bg-gray-950,
+html[data-theme="light"] .bg-neutral-900,
+html[data-theme="light"] .bg-neutral-950,
+html[data-theme="light"] .bg-zinc-900,
+html[data-theme="light"] .bg-slate-900,
+html[data-theme="light"] .bg-\[\#0a0a0a\],
+html[data-theme="light"] .bg-\[\#0b0b0b\],
+html[data-theme="light"] .bg-\[\#0d0d0d\],
+html[data-theme="light"] .bg-\[\#111\],
+html[data-theme="light"] .bg-\[\#141414\],
+html[data-theme="light"] .bg-\[\#1a1a1a\],
+html[data-theme="light"] .bg-\[\#1f1f1f\] {
+    background-color: #ffffff !important;
+}
+html[data-theme="light"] .text-white { color: #111827 !important; }
+html[data-theme="light"] .typed-caret { background: #111827 !important; }
+/* Textos del hero de inicio (imagen + overlay oscuro): se mantienen blancos */
+html[data-theme="light"] .hero1section,
+html[data-theme="light"] .hero1section h1,
+html[data-theme="light"] .hero1section p,
+html[data-theme="light"] .hero1section .text-white,
+html[data-theme="light"] .hero1section .text-gray-300 { color: #ffffff !important; }
+html[data-theme="light"] .hero1section .typed-caret { background: #ffffff !important; }
+html[data-theme="light"] .text-gray-200,
+html[data-theme="light"] .text-gray-300,
+html[data-theme="light"] .text-gray-400,
+html[data-theme="light"] .text-gray-500,
+html[data-theme="light"] .text-neutral-300,
+html[data-theme="light"] .text-neutral-400,
+html[data-theme="light"] .text-zinc-400 { color: #6b7280 !important; }
+html[data-theme="light"] .border-gray-700,
+html[data-theme="light"] .border-gray-800,
+html[data-theme="light"] .border-gray-900,
+html[data-theme="light"] .border-neutral-800 { border-color: #e5e7eb !important; }
+
+/* ---------- Tarjetas / secciones compartidas ---------- */
+html[data-theme="light"] .product-card,
+html[data-theme="light"] .promo-card,
+html[data-theme="light"] .related-card,
+html[data-theme="light"] .card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+    color: #111827;
+}
+html[data-theme="light"] .product-card:hover,
+html[data-theme="light"] .promo-card:hover { box-shadow: 0 16px 36px rgba(0, 0, 0, 0.10) !important; }
+html[data-theme="light"] .product-name,
+html[data-theme="light"] .product-title,
+html[data-theme="light"] .promo-title,
+html[data-theme="light"] .related-title,
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .card-header h2,
+html[data-theme="light"] .card-header h3,
+html[data-theme="light"] .card-title a { color: #111827 !important; }
+html[data-theme="light"] .product-description,
+html[data-theme="light"] .promo-desc,
+html[data-theme="light"] .card-body,
+html[data-theme="light"] .card-text,
+html[data-theme="light"] .card-footer,
+html[data-theme="light"] .product-meta,
+html[data-theme="light"] .product-rating { color: #4b5563 !important; }
+html[data-theme="light"] .products-count,
+html[data-theme="light"] .products-header { color: #111827 !important; }
+html[data-theme="light"] .products-grid { color: #111827 !important; }
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .section-title-promo,
+html[data-theme="light"] .page-title { color: #111827 !important; }
+html[data-theme="light"] .promo-tag,
+html[data-theme="light"] .product-badge { background: #ff0000 !important; color: #ffffff !important; }
+
+/* ---------- Promociones ---------- */
+html[data-theme="light"] .hero-promo,
+html[data-theme="light"] .promociones-section,
+html[data-theme="light"] .cta-section { color: #111827 !important; }
+html[data-theme="light"] .hero-title,
+html[data-theme="light"] .hero-content h1 { color: #111827 !important; }
+
+/* ---------- Formularios ---------- */
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select,
+html[data-theme="light"] .form-control {
+    background-color: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder { color: #9ca3af !important; }
+html[data-theme="light"] .contact-info h1 { color: #111827 !important; }
+html[data-theme="light"] .contact-info p { color: #4b5563 !important; }
+
+/* ---------- Páginas de cuenta: perfil / historial / favoritos ---------- */
+html[data-theme="light"] main .card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] .overview-card,
+html[data-theme="light"] .profile-card,
+html[data-theme="light"] .fav-card,
+html[data-theme="light"] .hist-card,
+html[data-theme="light"] .order-card { background: #ffffff !important; border-color: #e5e7eb !important; color: #111827 !important; }
+html[data-theme="light"] .empty-state h3,
+html[data-theme="light"] .empty-state p { color: #4b5563 !important; }
+
+/* ---------- Detalle de producto ---------- */
+html[data-theme="light"] .product-detail-container,
+html[data-theme="light"] .product-info-detail { color: #111827 !important; }
+html[data-theme="light"] .product-title-large,
+html[data-theme="light"] .product-description-full,
+html[data-theme="light"] .product-model { color: #111827 !important; }
+html[data-theme="light"] .reviews-section h2,
+html[data-theme="light"] .review-card { color: #111827 !important; }
+html[data-theme="light"] .related-products h2 { color: #111827 !important; }
+html[data-theme="light"] .detail-image-wrapper {
+    background: #f3f4f6 !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .viewer-tab { background: #ffffff !important; border-color: #e5e7eb !important; color: #4b5563 !important; }
+html[data-theme="light"] .review-card,
+html[data-theme="light"] .related-card { background: #ffffff !important; border-color: #e5e7eb !important; }
+html[data-theme="light"] .related-title,
+html[data-theme="light"] .related-name,
+html[data-theme="light"] .review-user-name,
+html[data-theme="light"] .review-content,
+html[data-theme="light"] .review-date { color: #111827 !important; }
+html[data-theme="light"] .related-price { color: #ff0000 !important; }
+
+/* ---------- Sobre nosotros ---------- */
+html[data-theme="light"] main.main-content,
+html[data-theme="light"] .values-section-pro,
+html[data-theme="light"] .history-section-pro,
+html[data-theme="light"] .advantages-section-pro,
+html[data-theme="light"] .team-section,
+html[data-theme="light"] .experience-section-ultra {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .section-description,
+html[data-theme="light"] .section-header { color: #111827 !important; }
+html[data-theme="light"] .mv-card-pro,
+html[data-theme="light"] .value-card-pro,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .stat-card-ultra {
+    background: #f9fafb !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .mv-card-pro h2,
+html[data-theme="light"] .mv-card-pro h3,
+html[data-theme="light"] .value-card-pro h3,
+html[data-theme="light"] .stat-card h3,
+html[data-theme="light"] .stat-card-ultra h3 { color: #111827 !important; }
+html[data-theme="light"] .mv-card-pro p,
+html[data-theme="light"] .value-card-pro p,
+html[data-theme="light"] .stat-card p,
+html[data-theme="light"] .stat-card-ultra p { color: #4b5563 !important; }
+html[data-theme="light"] .team-card-carousel { background: #ffffff !important; }
+html[data-theme="light"] .team-name-carousel { color: #111827 !important; }
+html[data-theme="light"] .team-description-carousel { color: #4b5563 !important; }
+html[data-theme="light"] .carousel-arrow { border-color: #d1d5db !important; background: #ffffff !important; color: #111827 !important; }
+html[data-theme="light"] .carousel-arrow:hover { border-color: #ef4444 !important; background: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
+
+/* ---------- Botón toggle de tema ---------- */
+.dc-theme-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform .2s ease, color .2s ease, border-color .2s ease, background-color .2s ease;
+}
+.dc-theme-toggle:hover { border-color: #ff0000; color: #ff0000; transform: rotate(15deg); }
+.dc-theme-toggle i { font-size: 1.05rem; line-height: 1; }
+html[data-theme="dark"] .dc-theme-toggle { background: #1a1a1a; border-color: #333333; color: #ffffff; }
+@media (max-width: 992px) {
+    .dc-theme-toggle { width: 36px; height: 36px; }
+}

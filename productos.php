@@ -26,6 +26,8 @@ require_once __DIR__ . '/backend/php/conexion.php';
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/responsive.css" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/tailwind.css" />
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
+    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
 
 </head>
 

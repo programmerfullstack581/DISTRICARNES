@@ -19,6 +19,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="./static/css/responsive.css" />
     <link rel="stylesheet" href="./static/css/tailwind.css" />
+    <link rel="stylesheet" href="./static/css/theme.css" />
+    <script src="./static/js/theme.js"></script>
     <script src="./static/js/auth_utils.js"></script>
 
 </head>
