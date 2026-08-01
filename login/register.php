@@ -190,7 +190,11 @@
                             text: data.message || 'Tu cuenta ha sido creada correctamente.',
                             confirmButtonText: 'Continuar'
                         });
-                        window.location.href = '../login/login.php';
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal('login');
+                        } else {
+                            window.location.href = '../login/login.php';
+                        }
                     } else {
                         Swal.fire({
                             icon: 'error',

@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
             background: '#1a1a1a',
             color: '#fff'
           }).then(r => {
-            if (r.isConfirmed) window.location.href = './login/login.php';
+            if (r.isConfirmed) { if (typeof window.openAuthModal === 'function') { window.openAuthModal('login'); } else { window.location.href = './login/login.php'; } }
           });
         }
       }

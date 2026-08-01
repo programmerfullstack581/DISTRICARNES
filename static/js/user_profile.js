@@ -64,7 +64,7 @@
   }
   function loadProfile() {
     var u = getSessionUser();
-    if (!u) { try { location.assign('./login/login.php'); } catch (e) { } return; }
+    if (!u) { try { if (typeof window.openAuthModal === 'function') { try { sessionStorage.setItem('postLoginRedirect', location.pathname + location.search); } catch (e) {} window.openAuthModal('login'); } else { location.assign('./login/login.php'); } } catch (e) { } return; }
     var nameRaw = u.nombres_completos || u.nombre || 'Usuario';
     el('ovName').textContent = toTitleCase(nameRaw);
     el('ovEmail').textContent = u.correo_electronico || u.email || '';

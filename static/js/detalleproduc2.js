@@ -119,7 +119,7 @@ document.querySelector('.btn-add-cart').addEventListener('click', function () {
                 showCancelButton: true,
                 confirmButtonText: 'Iniciar sesión',
                 cancelButtonText: 'Cerrar'
-            }).then((r) => { if (r.isConfirmed) { window.location.href = './login/login.php'; } });
+            }).then((r) => { if (r.isConfirmed) { if (typeof window.openAuthModal === 'function') { window.openAuthModal('login'); } else { window.location.href = './login/login.php'; } } });
         } else {
             showToast('Debes iniciar sesión para continuar');
         }

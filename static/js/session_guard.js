@@ -97,8 +97,14 @@
     }
     if (!logged && isProtectedPage() && !isLoginPage()) {
       try {
-        const target = getLoginUrl() + '?returnUrl=' + encodeURIComponent(location.pathname + location.search);
-        location.replace(target);
+        if (typeof window.openAuthModal === 'function') {
+          // Mostrar el modal de acceso en la misma página en vez de ir al login
+          try { sessionStorage.setItem('postLoginRedirect', location.pathname + location.search); } catch (e) {}
+          window.openAuthModal('login');
+        } else {
+          const target = getLoginUrl() + '?returnUrl=' + encodeURIComponent(location.pathname + location.search);
+          location.replace(target);
+        }
         return;
       } catch (e) {
         redirectToLogin();

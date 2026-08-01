@@ -113,7 +113,7 @@
             confirmButtonColor: '#ff0000',
             background: '#1a1a1a',
             color: '#fff'
-          }).then((r) => { if (r && r.isConfirmed) { window.location.href = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/login/')) ? '../login/login.php' : './login/login.php'; } });
+          }).then((r) => { if (r && r.isConfirmed) { if (typeof window.openAuthModal === 'function') { try { sessionStorage.setItem('postLoginRedirect', window.location.pathname); } catch (e) {} window.openAuthModal('login'); } else { window.location.href = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/login/')) ? '../login/login.php' : './login/login.php'; } } });
           return;
         }
 

@@ -428,7 +428,7 @@
         msgEl.classList.toggle('dcAm-ok', true);
         setBusy('change', false);
         setTimeout(function () {
-          window.location.href = data.redirect_url || (BASE + 'login/login.php');
+          window.location.href = BASE + 'index.php';
         }, 2000);
       } else {
         showError('change', data.message || 'No se pudo actualizar la contraseña.');
