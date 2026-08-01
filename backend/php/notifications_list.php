@@ -58,11 +58,13 @@ function format_user_event(array $row): array {
 }
 
 function table_exists(PDO $db, string $name): bool {
+    static $cache = [];
+    if (array_key_exists($name, $cache)) return $cache[$name];
     $stmt = $db->prepare("SELECT 1 FROM information_schema.tables WHERE table_name = ? LIMIT 1");
     $stmt->execute([$name]);
-    $exists = (bool)$stmt->fetch();
+    $cache[$name] = (bool)$stmt->fetch();
     $stmt->closeCursor();
-    return $exists;
+    return $cache[$name];
 }
 
 $notifications = [];

@@ -4,11 +4,13 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/conexion.php';
 
 function table_exists(PDO $db, string $name): bool {
+  static $cache = [];
+  if (array_key_exists($name, $cache)) return $cache[$name];
   $stmt = $db->prepare("SELECT 1 FROM information_schema.tables WHERE table_name = ? LIMIT 1");
   $stmt->execute([$name]);
-  $exists = (bool)$stmt->fetch();
+  $cache[$name] = (bool)$stmt->fetch();
   $stmt->closeCursor();
-  return $exists;
+  return $cache[$name];
 }
 
 function safe_sum_today_sales(PDO $db): float {
@@ -39,15 +41,19 @@ function safe_orders_in_route(PDO $db): int {
 }
 
 function detect_stock_column(PDO $db, string $table = 'producto'): ?string {
-  if (!table_exists($db, $table)) return null;
+  static $cache = [];
+  if (array_key_exists($table, $cache)) return $cache[$table];
+  if (!table_exists($db, $table)) { $cache[$table] = null; return null; }
   $stmt = $db->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = ?");
   $stmt->execute([$table]);
   $cols = [];
   while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) { $cols[] = $r['column_name']; }
   $stmt->closeCursor();
   
-  foreach (['stock','existencias','cantidad','qty'] as $c) { if (in_array($c, $cols, true)) return $c; }
-  return null;
+  $found = null;
+  foreach (['stock','existencias','cantidad','qty'] as $c) { if (in_array($c, $cols, true)) { $found = $c; break; } }
+  $cache[$table] = $found;
+  return $found;
 }
 
 function safe_low_stock_count(PDO $db): int {

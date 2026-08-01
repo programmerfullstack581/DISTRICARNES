@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../static/js/loading_overlay.js"></script>
     <title>Gestión de Pedidos - DistriCarnes Admin</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -1400,11 +1401,12 @@
             }catch(e){ console.error('Error cargando pedidos', e); rowsContainer.innerHTML = '<div class="empty-state"><h3>Error cargando pedidos</h3></div>'; }
         })();
 
-        // Actualización en tiempo real (polling)
-        const POLL_MS = 15000;
+        // Actualización en segundo plano (polling) solo si la pestaña está visible
+        const POLL_MS = 30000;
         setInterval(async () => {
+            if (document.hidden) return;
             try{
-                const res = await fetch(`${BASE_PATH}/backend/php/orders_list.php`);
+                const res = await fetch(`${BASE_PATH}/backend/php/orders_list.php`, { silent: true });
                 const data = await res.json();
                 if(data && data.ok){
                     AdminOrdersCache = data.orders || [];

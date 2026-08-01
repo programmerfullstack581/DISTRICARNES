@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../static/js/loading_overlay.js"></script>
     <title>Dashboard Administrativo - DistriCarnes</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -1063,13 +1064,13 @@
             });
 
             // Cargar estadísticas y notificaciones
-            loadDashboardStats();
-            loadNotifications();
-            loadSalesChart();
-            // Refrescar en tiempo real periódicamente
-            setInterval(loadDashboardStats, 5000);
-            setInterval(loadNotifications, 3000);
-            setInterval(loadSalesChart, 5000);
+            loadDashboardStats(false);
+            loadNotifications(false);
+            loadSalesChart(false);
+            // Refrescar en segundo plano (solo cuando la pestaña esté visible)
+            setInterval(function(){ if (!document.hidden) loadDashboardStats(true); }, 30000);
+            setInterval(function(){ if (!document.hidden) loadNotifications(true); }, 30000);
+            setInterval(function(){ if (!document.hidden) loadSalesChart(true); }, 60000);
         }
 
         // Toggle user menu
@@ -1094,9 +1095,10 @@
         })();
 
         // Cargar estadísticas del dashboard
-        function loadDashboardStats() {
+        function loadDashboardStats(quiet) {
             fetch('../backend/php/dashboard_stats.php', {
-                    cache: 'no-store'
+                    cache: 'no-store',
+                    ...(quiet ? { silent: true } : {})
                 })
                 .then(function(resp) {
                     return resp.json();
@@ -1124,7 +1126,7 @@
         }
 
         let salesChart = null;
-        function loadSalesChart() {
+        function loadSalesChart(quiet) {
             if (typeof Chart === 'undefined') { console.error('Chart.js no cargado'); return; }
             
             const now = new Date();
@@ -1136,7 +1138,7 @@
             const fromStr = `${from.getFullYear()}-${pad(from.getMonth()+1)}-${pad(from.getDate())} 00:00:00`;
             const toStr = `${to.getFullYear()}-${pad(to.getMonth()+1)}-${pad(to.getDate())} 23:59:59`;
 
-            fetch(`../backend/php/sales_list.php?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}`, { cache: 'no-store' })
+            fetch(`../backend/php/sales_list.php?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}`, { cache: 'no-store', ...(quiet ? { silent: true } : {}) })
                 .then(r => {
                     if (!r.ok) throw new Error('Network response was not ok');
                     return r.json();
@@ -1228,10 +1230,11 @@
                 .catch(err => { console.error('Error cargando ventas para el gráfico', err); });
         }
         // Cargar notificaciones recientes
-        async function loadNotifications() {
+        async function loadNotifications(quiet) {
             try {
                 const resp = await fetch('../backend/php/notifications_list.php', {
-                    cache: 'no-store'
+                    cache: 'no-store',
+                    ...(quiet ? { silent: true } : {})
                 });
                 const data = await resp.json();
                 const badge = document.getElementById('notificationBadge');

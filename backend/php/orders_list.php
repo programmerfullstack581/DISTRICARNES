@@ -27,6 +27,14 @@ $conexion->exec("CREATE TABLE IF NOT EXISTS order_items_pg (
   FOREIGN KEY (order_id) REFERENCES orders_pg(id) ON DELETE CASCADE
 )");
 
+// Índices para acelerar consultas frecuentes del panel (listados, ventas, notificaciones)
+$conexion->exec("CREATE INDEX IF NOT EXISTS idx_orders_pg_status ON orders_pg(status)");
+$conexion->exec("CREATE INDEX IF NOT EXISTS idx_orders_pg_created_at ON orders_pg(created_at)");
+$conexion->exec("CREATE INDEX IF NOT EXISTS idx_order_items_pg_order_id ON order_items_pg(order_id)");
+try {
+  $conexion->exec("CREATE INDEX IF NOT EXISTS idx_facturas_fecha ON facturas(fecha_emision DESC)");
+} catch (Throwable $e) { /* la tabla facturas puede no existir aún */ }
+
 $status = isset($_GET['status']) ? trim($_GET['status']) : '';
 $from = isset($_GET['from']) ? trim($_GET['from']) : '';
 $to = isset($_GET['to']) ? trim($_GET['to']) : '';
