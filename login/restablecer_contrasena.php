@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../static/css/responsive.css" />
   <link rel="stylesheet" href="../static/css/base.css" />
   <script src="../static/js/header_actions.js"></script>
+  <script src="../static/js/auth_modal.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     /* Estilo inspirado en la captura, con body negro */

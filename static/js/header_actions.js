@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
       var logged = AuthSystem.isLoggedIn(user);
       if (!logged) {
         e.preventDefault();
-        var goLogin = function(){ window.location.href = 'https://districarnes-83qm.onrender.com/login/login.php'; };
+        var goLogin = function(){ if (typeof window.openAuthModal === 'function') window.openAuthModal('login'); else window.location.href = 'https://districarnes-83qm.onrender.com/login/login.php'; };
         if (typeof Swal !== 'undefined' && Swal && typeof Swal.fire === 'function') {
           Swal.fire({ icon: 'warning', title: 'Debes iniciar sesión para ver tu carrito', showCancelButton: true, confirmButtonText: 'Iniciar sesión', cancelButtonText: 'Cerrar' }).then(function(r){ if (r && r.isConfirmed) goLogin(); });
         } else if (window.toast) {

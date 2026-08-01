@@ -1844,7 +1844,11 @@
                         confirmButtonText: 'Iniciar sesión'
                     }).then(() => {
                         sessionStorage.setItem('postLoginRedirect', window.location.pathname);
-                        window.location.href = '../login/login.php?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal('login');
+                        } else {
+                            window.location.href = '../login/login.php?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        }
                     });
                     return;
                 }
@@ -1915,7 +1919,11 @@
                         confirmButtonText: 'Iniciar sesión'
                     }).then(() => {
                         sessionStorage.setItem('postLoginRedirect', window.location.pathname);
-                        window.location.href = '../login/login.php?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal('login');
+                        } else {
+                            window.location.href = '../login/login.php?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        }
                     });
                     return;
                 }
@@ -2055,6 +2063,7 @@
     </script>
     <!-- Script de acciones del header (sesión/visibilidad) -->
     <script src="../static/js/header_actions.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../static/js/index.js"></script>
     <script src="../static/js/chatbot.js"></script>

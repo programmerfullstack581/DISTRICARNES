@@ -1432,6 +1432,7 @@ require_once __DIR__ . '/backend/php/conexion.php';
 
     <!-- Script de autenticación global -->
     <script src="./static/js/header_actions.js"></script>
+    <script src="./static/js/auth_modal.js"></script>
     <script src="./js/auth.js"></script>
     <script src="./static/js/cart_badge.js"></script>
     <script src="./static/js/history_favorites.js"></script>

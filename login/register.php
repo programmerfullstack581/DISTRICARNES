@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../static/css/responsive.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
     <script src="../static/js/header_actions.js"></script>
+    <script src="../static/js/auth_modal.js"></script>
 </head>
 
 <body style="background-color: black; color: white; text-shadow: 0 0 2px rgba(255,255,255,0.5);">

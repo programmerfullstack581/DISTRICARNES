@@ -1803,6 +1803,7 @@ $basePath = str_replace('\\', '/', $basePath);
         xintegrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <script src="./static/js/header_actions.js"></script>
+    <script src="./static/js/auth_modal.js"></script>
     <script src="./static/js/index.js"></script>
     <script src="./static/js/chatbot.js"></script>
     <script>
