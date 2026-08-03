@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /backend/
+Disallow: /login/
+Disallow: /checkout/
+Disallow: /carrito-de-compras/
+Disallow: /config/
+Disallow: /tests/
+
+Sitemap: https://districarnes-83qm.onrender.com/sitemap.xml

@@ -1,18 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://districarnes.onrender.com/</loc>
-    <lastmod>2026-03-22</lastmod>
+    <loc>https://districarnes-83qm.onrender.com/</loc>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  <!-- Agrega más URLs si tienes otras páginas -->
-  <!--
   <url>
-    <loc>https://districarnes.onrender.com/productos.php</loc>
-    <lastmod>2026-03-22</lastmod>
+    <loc>https://districarnes-83qm.onrender.com/productos.php</loc>
+    <lastmod>2026-08-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  -->
+  <url>
+    <loc>https://districarnes-83qm.onrender.com/promociones.php</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://districarnes-83qm.onrender.com/contacto.php</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://districarnes-83qm.onrender.com/sobre_nosotros.php</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://districarnes-83qm.onrender.com/politica-de-privacidad.php</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://districarnes-83qm.onrender.com/terminos-y-condiciones.php</loc>
+    <lastmod>2026-08-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
 </urlset>

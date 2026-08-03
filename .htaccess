@@ -22,6 +22,10 @@
     RewriteCond %{THE_REQUEST} /backend/api/.*\.php [NC]
     RewriteCond %{THE_REQUEST} !/backend/api/(chat)\.php [NC]
     RewriteRule ^ - [F,L]
+    
+    # Bloquear acceso directo a los archivos PHP de config/ (bootstrap, app, init, sitemap)
+    RewriteCond %{THE_REQUEST} /config/.*\.php [NC]
+    RewriteRule ^ - [F,L]
 </IfModule>
 
 # Headers de seguridad

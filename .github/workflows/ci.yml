@@ -1,0 +1,38 @@
+name: CI - Sintaxis PHP
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  lint-php:
+    name: Validar sintaxis PHP (php -l)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Lint de todos los archivos PHP
+        run: |
+          errores=0
+          while IFS= read -r -d '' archivo; do
+            salida=$(php -l "$archivo" 2>&1)
+            if echo "$salida" | grep -q "No syntax errors"; then
+              echo "OK   $archivo"
+            else
+              echo "FAIL $archivo"
+              echo "$salida"
+              errores=$((errores + 1))
+            fi
+          done < <(find . -name '*.php' -not -path './vendor/*' -print0)
+          if [ "$errores" -gt 0 ]; then
+            echo "Se encontraron $errores archivo(s) con errores de sintaxis."
+            exit 1
+          fi
+          echo "Todos los archivos PHP tienen sintaxis correcta."

@@ -1,9 +1,5 @@
 <?php
-$basePath = dirname($_SERVER['SCRIPT_NAME']);
-if ($basePath === '/' || $basePath === '\\') {
-    $basePath = '';
-}
-$basePath = str_replace('\\', '/', $basePath);
+require_once __DIR__ . '/config/bootstrap.php';
 
 require_once __DIR__ . '/backend/php/core/conexion.php';
 
