@@ -948,7 +948,7 @@
         function checkAuthentication() {
             const userData = localStorage.getItem('userData');
             if (!userData) {
-                window.openAuthModal('login');
+                window.location.href = '../index.php';
                 return;
             }
 
@@ -972,7 +972,7 @@
                 updateUserInterface();
             } catch (error) {
                 console.error('Error al parsear datos de usuario:', error);
-                window.openAuthModal('login');
+                window.location.href = '../index.php';
             }
         }
 

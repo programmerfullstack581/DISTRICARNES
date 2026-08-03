@@ -66,6 +66,12 @@
     } catch (e) { }
   }
 
+  function redirectToHome() {
+    try {
+      location.replace('../index.php');
+    } catch (e) { }
+  }
+
   // Abre el modal de acceso una vez que auth_modal.js haya inicializado su overlay
   // (session_guard corre antes de DOMContentLoaded; ahí el modal aún no existe).
   function openLoginModal() {
@@ -108,17 +114,16 @@
     const { logged, user } = getSession();
 
     // Refuerzo de área admin: exige sesión válida y rol admin.
-    // Sin sesión: abre el mismo modal de acceso de la tienda (login único admin/usuario).
-    // Usuario normal logueado: no accede al panel, va a la home.
+    // Sin sesión (o sin rol admin): redirige al inicio de la tienda.
     if (isAdminArea()) {
       // Permitir libre acceso a la página de login del admin
       if (!isLoginPage()) {
         if (!logged) {
-          openLoginModal();
+          redirectToHome();
           return;
         }
         if (!isAdminUser(user)) {
-          redirectToLogin();
+          redirectToHome();
           return;
         }
       }
@@ -219,6 +224,22 @@
   function init() {
     const { logged } = getSession();
     if (isLoginPage() || isHomePage()) { try { sessionStorage.removeItem(LOGOUT_FLAG_KEY); } catch (e) { } }
+    // Refuerzo del modal de acceso dentro del área admin: si la sesión no es de
+    // administrador, nunca abrir el modal de la tienda sino redirigir al inicio.
+    (function guardAdminModal() {
+      const original = window.openAuthModal;
+      if (typeof original !== 'function') return;
+      window.openAuthModal = function (tab, ...args) {
+        if (isAdminArea() && !isLoginPage()) {
+          const s = getSession();
+          if (!s.logged || !isAdminUser(s.user)) {
+            redirectToHome();
+            return;
+          }
+        }
+        return original.apply(this, [tab].concat(args));
+      };
+    })();
     protect();
     hook();
   }

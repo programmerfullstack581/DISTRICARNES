@@ -775,10 +775,10 @@
                 var data = raw ? JSON.parse(raw) : null;
                 var user = data && data.user ? data.user : data;
                 if (!user || user.rol !== 'admin') {
-                    window.openAuthModal('login');
+                    window.location.href = '../index.php';
                 }
             } catch(e) {
-                window.openAuthModal('login');
+                window.location.href = '../index.php';
             }
         })();
     </script>
@@ -1781,7 +1781,7 @@
         // El manejador del botón ya se configuró arriba
       }
 
-      window.logout = function(){ try{ localStorage.removeItem('userData'); sessionStorage.clear(); }catch(e){} if (window.openAuthModal) { window.openAuthModal('login'); } else { location.href = 'https://districarnes-83qm.onrender.com'; } };
+      window.logout = function(){ try{ localStorage.removeItem('userData'); sessionStorage.clear(); }catch(e){} if (window.openAuthModal) { window.location.href = '../index.php'; } else { location.href = 'https://districarnes-83qm.onrender.com'; } };
 
       document.addEventListener('DOMContentLoaded', () => { initUI(); loadStats(); loadList(); });
     })();

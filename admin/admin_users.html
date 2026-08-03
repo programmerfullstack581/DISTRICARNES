@@ -585,10 +585,10 @@
                 var data = raw ? JSON.parse(raw) : null;
                 var user = data && data.user ? data.user : data;
                 if (!user || user.rol !== 'admin') {
-                    window.openAuthModal('login');
+                    window.location.href = '../index.php';
                 }
             } catch(e) {
-                window.openAuthModal('login');
+                window.location.href = '../index.php';
             }
         })();
     </script>
