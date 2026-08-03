@@ -721,6 +721,44 @@
         .inventory-card.expired .stock-badge { color: #d8b4fe; }
         .inventory-card.expired { border-color: rgba(192, 132, 252, 0.5); }
         .inventory-card.expired .stock-fill { background: #a855f7; }
+        .lotes-block {
+            margin-top: 12px;
+            border-top: 1px dashed #333;
+            padding-top: 10px;
+        }
+        .lotes-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lote-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            border: 1px solid #2a2a2a;
+        }
+        .lote-row.lote-vigente { background: rgba(72, 187, 120, 0.08); }
+        .lote-row.lote-vencido { background: rgba(239, 68, 68, 0.1); }
+        .lote-num { font-weight: 600; color: #e2e8f0; }
+        .lote-qty { color: #cbd5e1; margin-left: auto; }
+        .lote-exp { color: #cbd5e1; }
+        .lote-price { color: #94a3b8; }
+        .lote-tag {
+            font-size: 0.62rem;
+            padding: 2px 6px;
+            border-radius: 999px;
+            border: 1px solid #333;
+        }
+        .lote-tag.vigente { color: #48bb78; }
+        .lote-tag.vencido { color: #f87171; }
         
         @media (max-width: 768px) {
             .sidebar {
@@ -1106,6 +1144,12 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="newPrecioCompra">Precio de Compra del Lote (Opcional)</label>
+                    <input type="number" id="newPrecioCompra" name="new_precio_compra" step="0.01" min="0" placeholder="Cuánto costó esta compra">
+                    <small style="color:#94a3b8;">Se guarda en el lote nuevo; si se deja vacío se usa el precio del producto.</small>
+                </div>
+                
+                <div class="form-group">
                     <label for="newExpiry">Nueva Fecha de Caducidad (Opcional)</label>
                     <input type="date" id="newExpiry" name="new_expiry" placeholder="Actualiza la fecha de vencimiento del lote">
                     <small style="color:#94a3b8;">Si el producto estaba vencido, al actualizar la fecha se reanuda su venta.</small>
@@ -1339,7 +1383,7 @@
         async function loadInventory(){
             try{
                 await fetchCategories();
-                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1');
+                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1&incluir_lotes=1');
                 const data = await res.json();
                 if(!data || !data.ok){ throw new Error('No se pudo obtener productos'); }
                 const products = (data.products || []).map(normalizeProduct);
@@ -1370,7 +1414,8 @@
                 ubicacion: (row.ubicacion || row.location || row.ubicacion_estante || row.localizacion || row.posicion || 'A1-B2'),
                 imagen: (row.imagen || row.image || ''),
                 vencido: (row.vencido === true || row.vencido === 'true' || row.vencido === 1 || row.vencido === '1'),
-                fecha_caducidad: (row.fecha_caducidad || row.fecha_vencimiento || row.expiry_date || null)
+                fecha_caducidad: (row.fecha_caducidad || row.fecha_vencimiento || row.expiry_date || null),
+                lotes: Array.isArray(row.lotes) ? row.lotes : []
             };
         }
 
@@ -1501,6 +1546,18 @@
                                 <span class="detail-value">${p.fecha_caducidad ? escapeHtml(p.fecha_caducidad) : 'No definida'}</span>
                             </div>
                         </div>
+                        ${p.lotes && p.lotes.length ? `
+                        <div class="lotes-block">
+                            <div class="lotes-title"><i class="fas fa-boxes"></i> Lotes (${p.lotes.length})</div>
+                            ${p.lotes.map(l => `
+                                <div class="lote-row ${l.vencido ? 'lote-vencido' : 'lote-vigente'}">
+                                    <span class="lote-num">${escapeHtml(l.numero_lote || 'Sin nro.')}</span>
+                                    <span class="lote-qty">${l.cantidad} uds</span>
+                                    <span class="lote-exp">${escapeHtml(l.fecha_caducidad)}</span>
+                                    <span class="lote-price">${formatCurrency(l.precio_compra_lote)}</span>
+                                    <span class="lote-tag ${l.vencido ? 'vencido' : 'vigente'}">${l.vencido ? 'Vencido' : 'Vigente'}</span>
+                                </div>`).join('')}
+                        </div>` : ''}
                         <div class="stock-info">
                             <div class="stock-bar">
                                 <div class="stock-fill ${st.key}" style="width: ${stockFillWidth(p)}%"></div>

@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_lotes.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
@@ -65,8 +66,16 @@ if ($newExpiry !== '') {
   $hasNewExpiry = true;
 }
 
-// Obtener stock actual
-$stmt = $conexion->prepare("SELECT \"$stockCol\" FROM \"$table\" WHERE \"$idCol\" = ? LIMIT 1");
+// Precio de compra del lote (opcional): si no se envía, se usa el del producto
+$newPrecioCompra = ($_POST['new_precio_compra'] ?? '');
+if (is_string($newPrecioCompra)) $newPrecioCompra = trim($newPrecioCompra);
+
+// Obtener stock actual + fecha de caducidad y precio de compra actuales
+$extraSelect = '';
+foreach (['fecha_caducidad', 'precio_compra_lote'] as $c) {
+  if (in_array($c, $columns, true)) { $extraSelect .= ', "' . $c . '"'; }
+}
+$stmt = $conexion->prepare("SELECT \"$stockCol\"$extraSelect FROM \"$table\" WHERE \"$idCol\" = ? LIMIT 1");
 $stmt->execute([$productId]);
 // fetch directly
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -81,6 +90,11 @@ $stmt->closeCursor();
 
 $newStock = $currentStock + $addQuantity;
 
+// Registrar el lote nuevo (cada compra es un lote con su propia fecha)
+$loteFecha = $hasNewExpiry ? $newExpiry : (isset($row['fecha_caducidad']) && $row['fecha_caducidad'] !== null ? $row['fecha_caducidad'] : null);
+$lotePrecio = ($newPrecioCompra !== '' && $newPrecioCompra !== null) ? $newPrecioCompra : (isset($row['precio_compra_lote']) ? $row['precio_compra_lote'] : null);
+$loteRegistrado = producto_lotes_registrar($conexion, $productId, $addQuantity, $loteFecha, $lotePrecio, null, $notes);
+
 // Actualizar stock (y opcionalmente fecha de caducidad + revertir vencido)
 if ($hasNewExpiry) {
   $stmt2 = $conexion->prepare("UPDATE \"$table\" SET \"$stockCol\" = ?, fecha_caducidad = ?, estado_vencido = FALSE WHERE \"$idCol\" = ?");
@@ -92,7 +106,12 @@ if ($hasNewExpiry) {
 $stmt2->closeCursor();
 
 if ($ok) {
-  echo json_encode(['success' => true, 'message' => 'Stock actualizado correctamente', 'new_stock' => $newStock]);
+  echo json_encode([
+    'success' => true,
+    'message' => 'Stock actualizado correctamente',
+    'new_stock' => $newStock,
+    'lote' => $loteRegistrado
+  ]);
 } else {
   echo json_encode(['success' => false, 'message' => 'No fue posible actualizar el stock']);
 }

@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_lotes.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
@@ -389,7 +390,20 @@ if ($action === 'create' || $action === 'update') {
         $stmt = $conexion->prepare("INSERT INTO \"$table\" ($colsStr) VALUES ($placeholders)");
         $values = array_values($filtered);
         $ok = $stmt->execute($values);
+        $newId = $ok ? $conexion->lastInsertId() : null;
         $stmt->closeCursor();
+        // Registrar el lote inicial (compra de creación)
+        if ($ok && $newId) {
+            $loteRegistrado = producto_lotes_registrar(
+                $conexion,
+                $newId,
+                isset($filtered['stock']) ? $filtered['stock'] : 0,
+                isset($filtered['fecha_caducidad']) ? $filtered['fecha_caducidad'] : null,
+                isset($filtered['precio_compra_lote']) ? $filtered['precio_compra_lote'] : null,
+                isset($filtered['numero_lote']) ? $filtered['numero_lote'] : null,
+                'Lote inicial'
+            );
+        }
         echo json_encode(['success' => $ok, 'message' => $ok ? 'Producto creado' : 'No se pudo crear el producto']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Error BD: ' . $e->getMessage()]);

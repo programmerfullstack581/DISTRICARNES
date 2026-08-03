@@ -9,6 +9,7 @@ require_once __DIR__ . '/../core/producto_caducidad.php';
 producto_caducidad_aplicar($conexion);
 
 $incluirVencidos = isset($_GET['incluir_vencidos']) && in_array(strtolower((string)$_GET['incluir_vencidos']), ['1', 'true', 'yes', 'si'], true);
+$incluirLotes = isset($_GET['incluir_lotes']) && in_array(strtolower((string)$_GET['incluir_lotes']), ['1', 'true', 'yes', 'si'], true);
 
 $categoria_id = isset($_GET['categoria_id']) ? $_GET['categoria_id'] : null;
 $idsParam = isset($_GET['ids']) ? trim((string)$_GET['ids']) : null; // lista de IDs para filtrar
@@ -279,7 +280,20 @@ while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
     }
   }
   if ($providerText !== null) { $row['proveedor'] = $providerText; }
+  $row['lotes'] = [];
   $products[] = $row;
+}
+
+// Adjuntar los lotes registrados por producto (una sola consulta)
+if ($incluirLotes && !empty($products)) {
+  $prodIds = array_map(function ($p) { return $p['id_producto'] ?? $p['id'] ?? null; }, $products);
+  $mapLotes = producto_lotes_listar_muchos($conexion, $prodIds);
+  foreach ($products as $i => $p) {
+    $pid = $p['id_producto'] ?? $p['id'] ?? null;
+    if ($pid !== null && isset($mapLotes[(int)$pid])) {
+      $products[$i]['lotes'] = $mapLotes[(int)$pid];
+    }
+  }
 }
 
 echo json_encode([

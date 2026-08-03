@@ -66,6 +66,12 @@ if (!function_exists('producto_caducidad_revertir')) {
 if (!function_exists('producto_caducidad_aplicar')) {
   // Rutina completa. Llamar en endpoints que listan o venden productos.
   function producto_caducidad_aplicar(PDO $db): array {
+    // Mantener también el esquema y estado de los lotes por producto
+    require_once __DIR__ . '/producto_lotes.php';
+    producto_lotes_asegurar_esquema($db);
+    producto_lotes_marcar_vencidos($db);
+    producto_lotes_revertir_vencidos($db);
+    // Estado de vencido a nivel de producto
     producto_caducidad_asegurar_esquema($db);
     $marcados = producto_caducidad_marcar_vencidos($db);
     $revertidos = producto_caducidad_revertir($db);
