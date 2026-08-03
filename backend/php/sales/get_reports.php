@@ -1,8 +1,12 @@
 <?php
 require __DIR__ . '/../core/conexion.php';
 require __DIR__ . '/../core/producto_caducidad.php';
+require __DIR__ . '/../core/cache_respuesta.php';
 
 header('Content-Type: application/json');
+
+// Copia fresca en caché? Evita el costo de caducidad + todas las agregaciones
+if (cache_respuesta_probar(20, 'reports')) { exit; }
 
 // Asegurar columna de vencidos y refrescar estado antes de los reportes
 producto_caducidad_aplicar($conexion);
@@ -449,7 +453,7 @@ try {
         }
     }
 
-echo json_encode([
+$resp = [
     'ok' => true,
     'range' => $range,
     'sales' => $salesData,
@@ -457,5 +461,7 @@ echo json_encode([
     'customers' => $customersData,
     'inventory' => $inventoryData,
     'topTable' => $topProducts
-]);
+];
+cache_respuesta_guardar($resp, 'reports');
+echo json_encode($resp);
 ?>

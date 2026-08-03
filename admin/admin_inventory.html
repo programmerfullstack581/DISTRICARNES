@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/admin_cache.js"></script>
     <script src="../static/js/auth_modal.js"></script>
     <title>Gestión de Inventario - DistriCarnes Admin</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
@@ -1354,6 +1355,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    if (window.adminCacheClear) adminCacheClear();
                     alert(data.message);
                     closeModal();
                     location.reload();
@@ -1383,8 +1385,9 @@
         async function loadInventory(){
             try{
                 await fetchCategories();
-                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1&incluir_lotes=1');
-                const data = await res.json();
+                const productsUrl = '../backend/php/catalog/get_products.php?incluir_vencidos=1&incluir_lotes=1';
+                // Mostrar al instante la copia en caché (si existe) y refrescar en segundo plano
+                const { data } = await adminCacheFetchJson(productsUrl, { ttl: 30000 });
                 if(!data || !data.ok){ throw new Error('No se pudo obtener productos'); }
                 const products = (data.products || []).map(normalizeProduct);
                 allProducts = products;

@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/conexion.php'; // PDO
+require_once __DIR__ . '/../core/cache_respuesta.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : 'list');
 
@@ -83,6 +84,7 @@ switch ($action) {
         $ins->execute([$orderId,$title,$price,$qty,$img]);
       }
     }
+    cache_respuesta_invalidar();
     echo json_encode(['ok'=>true,'id'=>$orderId]);
     exit;
 
@@ -102,6 +104,7 @@ switch ($action) {
     $params[] = $id;
     $sql = "UPDATE orders_pg SET " . implode(', ', $fields) . " WHERE id = ?";
     $ok = $conexion->prepare($sql)->execute($params);
+    if ($ok) { cache_respuesta_invalidar(); }
     echo json_encode(['ok'=>$ok]);
     exit;
 
@@ -109,6 +112,7 @@ switch ($action) {
     $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     if ($id <= 0) { echo json_encode(['ok'=>false,'error'=>'id_required']); exit; }
     $ok = $conexion->prepare("DELETE FROM orders_pg WHERE id = ?")->execute([$id]);
+    if ($ok) { cache_respuesta_invalidar(); }
     echo json_encode(['ok'=>$ok]);
     exit;
 }

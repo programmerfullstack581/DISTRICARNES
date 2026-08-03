@@ -92,9 +92,9 @@ async function updateReports() {
     }
 
     try {
-        const res = await fetch(`../backend/php/sales/get_reports.php?${params.toString()}`);
-        const data = await res.json();
-        
+        const url = `../backend/php/sales/get_reports.php?${params.toString()}`;
+        const { data } = await adminCacheFetchJson(url, { ttl: 20000 });
+
         if (data.ok) {
                     updateSales(data.sales);
                     updateProducts(data.products);

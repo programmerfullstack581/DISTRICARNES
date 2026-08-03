@@ -3,6 +3,10 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
+require_once __DIR__ . '/../core/cache_respuesta.php';
+
+// Copia fresca en caché? Evita el costo de caducidad + las consultas
+if (cache_respuesta_probar(15, 'notifications')) { exit; }
 
 // Asegurar columna de vencidos y refrescar estado
 producto_caducidad_aplicar($conexion);
@@ -126,7 +130,9 @@ try {
         if ($ts !== false && $ts >= $threshold) { $unread++; }
     }
 
-    echo json_encode(['ok' => true, 'notifications' => $notifications, 'unread_count' => $unread]);
+    $resp = ['ok' => true, 'notifications' => $notifications, 'unread_count' => $unread];
+    cache_respuesta_guardar($resp, 'notifications');
+    echo json_encode($resp);
 
 } catch (PDOException $e) {
     echo json_encode(['ok' => false, 'error' => $e->getMessage()]);

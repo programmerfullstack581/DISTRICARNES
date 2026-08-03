@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../static/js/loading_overlay.js"></script>
+    <script src="../static/js/admin_cache.js"></script>
     <script src="../static/js/auth_modal.js"></script>
     <title>Gestión de Productos - DistriCarnes Admin</title>
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico">
@@ -1523,8 +1524,8 @@ window.location.href = '../index.php';
 
         async function fetchProducts(){
             try{
-                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1');
-                const data = await res.json();
+                const productsUrl = '../backend/php/catalog/get_products.php?incluir_vencidos=1';
+                const { data } = await adminCacheFetchJson(productsUrl, { ttl: 30000 });
                 adminProducts = (data && data.products ? data.products : []).map(normalizeRow);
                 renderProductsGrid();
             }catch(err){
@@ -1796,6 +1797,7 @@ window.location.href = '../index.php';
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            if (window.adminCacheClear) adminCacheClear();
                             Swal.fire({
                                 title: '¡Actualizado!',
                                 text: data.message,
@@ -1851,6 +1853,7 @@ window.location.href = '../index.php';
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            if (window.adminCacheClear) adminCacheClear();
                             Swal.fire({
                                 title: '¡Eliminado!',
                                 text: data.message,
@@ -1957,6 +1960,9 @@ window.location.href = '../index.php';
                 if (data.success) {
                     // Cerrar modal inmediatamente
                     closeModal();
+                    
+                    // Limpiar caché local para que el reload traiga datos frescos
+                    if (window.adminCacheClear) adminCacheClear();
                     
                     // Guardar mensaje de éxito en sessionStorage
                     sessionStorage.setItem('productSuccess', data.message);

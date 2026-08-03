@@ -2,6 +2,7 @@
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
+require_once __DIR__ . '/../core/cache_respuesta.php';
 require_once __DIR__ . '/sales_utils.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -91,6 +92,7 @@ try {
     // Ignorar error si ya existe o no es crítico
     
     $conexion->commit();
+    cache_respuesta_invalidar();
     echo json_encode(['ok' => true, 'order_id' => $orderId, 'message' => 'Venta registrada']);
 
 } catch (Exception $e) {

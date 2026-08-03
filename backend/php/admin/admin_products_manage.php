@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_lotes.php';
+require_once __DIR__ . '/../core/cache_respuesta.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
@@ -404,6 +405,7 @@ if ($action === 'create' || $action === 'update') {
                 'Lote inicial'
             );
         }
+        if ($ok) { cache_respuesta_invalidar(); }
         echo json_encode(['success' => $ok, 'message' => $ok ? 'Producto creado' : 'No se pudo crear el producto']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Error BD: ' . $e->getMessage()]);
@@ -454,6 +456,7 @@ if ($action === 'create' || $action === 'update') {
     $values[] = $productId;
     $ok = $stmt->execute($values);
     $stmt->closeCursor();
+    if ($ok) { cache_respuesta_invalidar(); }
     echo json_encode(['success' => $ok, 'message' => $ok ? 'Producto actualizado' : 'No se pudo actualizar el producto']);
     // $conexion->close();
     exit;

@@ -3,6 +3,10 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
+require_once __DIR__ . '/../core/cache_respuesta.php';
+
+// Copia fresca en caché? Evita el costo de caducidad + todos los conteos
+if (cache_respuesta_probar(15, 'dash_stats')) { exit; }
 
 // Asegurar columna de vencidos y refrescar estado antes del conteo
 producto_caducidad_aplicar($conexion);
@@ -98,12 +102,14 @@ function safe_active_customers(PDO $db): int {
   return $cnt;
 }
 
-echo json_encode([
+$resp = [
   'ok' => true,
   'salesToday' => safe_sum_today_sales($conexion),
   'ordersInRoute' => safe_orders_in_route($conexion),
   'lowStockItems' => safe_low_stock_count($conexion),
   'activeCustomers' => safe_active_customers($conexion),
-]);
+];
+cache_respuesta_guardar($resp, 'dash_stats');
+echo json_encode($resp);
 exit;
 ?>

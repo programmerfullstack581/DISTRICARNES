@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
 require_once __DIR__ . '/../core/conexion.php'; // PDO PostgreSQL
 require_once __DIR__ . '/../core/producto_caducidad.php';
+require_once __DIR__ . '/../core/cache_respuesta.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
@@ -145,6 +146,7 @@ $items    = $input['items'] ?? [];
     }
   }
 
+  cache_respuesta_invalidar();
   echo json_encode(['ok'=>true, 'order_id'=>$orderId]);
 } catch (Throwable $e) {
   echo json_encode(['ok'=>false, 'error'=>$e->getMessage()]);
