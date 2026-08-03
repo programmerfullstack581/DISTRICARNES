@@ -1100,7 +1100,7 @@ $basePath = str_replace('\\', '/', $basePath);
             DPR = Math.min(window.devicePixelRatio || 1, 1.5);
 
             var w = window.innerWidth;
-            POINTS = w < 768 ? 320 : w < 1280 ? 430 : 560;
+            POINTS = w < 768 ? 400 : w < 1280 ? 540 : 700;
             buildSphere();
 
             function resize() {
@@ -1117,9 +1117,9 @@ $basePath = str_replace('\\', '/', $basePath);
             resize();
             window.addEventListener('resize', function () {
               resize();
-              var w2 = window.innerWidth;
-              var n = w2 < 768 ? 320 : w2 < 1280 ? 430 : 560;
-              if (n !== POINTS) { POINTS = n; buildSphere(); }
+            var w2 = window.innerWidth;
+            var n = w2 < 768 ? 400 : w2 < 1280 ? 540 : 700;
+            if (n !== POINTS) { POINTS = n; buildSphere(); }
             });
 
             // ---------- Interacción ----------
@@ -1192,7 +1192,7 @@ $basePath = str_replace('\\', '/', $basePath);
             var cosY = Math.cos(yaw), sinY = Math.sin(yaw);
             var cosP = Math.cos(pitch), sinP = Math.sin(pitch);
 
-            var sRadius = Math.min(W, H) * 0.34;
+            var sRadius = Math.max(W, H) * 0.55;
             var cx = W / 2, cy = H / 2;
 
             for (var i = 0; i < POINTS; i++) {
