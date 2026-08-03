@@ -25,6 +25,7 @@ $basePath = str_replace('\\', '/', $basePath);
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/tailwind.css" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
     <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 </head>
 
 <body class=" bg-black text-white ">
@@ -792,6 +793,7 @@ $basePath = str_replace('\\', '/', $basePath);
         // Función para cerrar el modal
         function closeModal() {
             document.getElementById('welcomeModal').style.display = 'none';
+            if (window.playHeroEntrance) window.playHeroEntrance();
         }
 
         // Mostrar el modal al cargar la página
@@ -946,16 +948,16 @@ $basePath = str_replace('\\', '/', $basePath);
             class=" relative max-w-7xl mx-auto px-20 py-[150px] flex flex-col md:flex-row items-center md:items-start gap-12 ">
 
             <!--Contenido el mensaje que esta al lado del carnicero-->
-            <div class="md:w-1/2 flex flex-col justify-center space-y-4 animate-fade-in-left ">
+            <div class="md:w-1/2 flex flex-col justify-center space-y-4">
                 <br><br><br>
                 <!--Modal para colocar distintas img de fondos con js-->
-                <h1 class="text-6xl md:text-7xl font-extrabold leading-tight animate-slide-in-down ">
+                <h1 id="heroTitle" class="text-6xl md:text-7xl font-extrabold leading-tight">
                     CARNE FRESCA, SEGURA Y DE CALIDAD
                 </h1>
-                <p class="text-gray-300 text-lg md:text-xl max-w-md animate-fade-in-up ">
+                <p id="heroSub" class="text-gray-300 text-lg md:text-xl max-w-md">
                     <span id="typedSub"></span><span class="typed-caret typed-caret--sm" aria-hidden="true"></span>
                 </p>
-                <button onclick="window.location.href='productos.php'" style="background-color: red;"
+                <button id="heroCta" onclick="window.location.href='productos.php'" style="background-color: red;"
                     class="bg-red-700 hover:bg-red-800 transition flex items-center space-x-2 text-white font-semibold px-4 py-2 rounded w-max ">
                     <i class="fas fa-shopping-cart "></i><span>Comprar online</span>
                 </button>
@@ -964,9 +966,9 @@ $basePath = str_replace('\\', '/', $basePath);
 
 
             <!--imagen de carnicero navarro-->
-            <div class="md:w-1/2 relative flex items-center justify-center animate-fade-in-right ">
-                <img alt="Man in white uniform holding meat cleaver in butcher shop with blurred background lights "
-                    class="w-full max-h-[600px] object-contain rounded-md ml-2 mr-4 mt--2 mb-4 -translate-y-4 "
+            <div class="md:w-1/2 relative flex items-center justify-center">
+                <img id="heroImg" alt="Man in white uniform holding meat cleaver in butcher shop with blurred background lights "
+                    class="w-full max-h-[600px] object-contain rounded-md ml-2 mr-4 mt--2 mb-4 "
                     src="./static/images/carnicero_navarro.png " />
 
                 <!-- Contenedor de elementos de usuario logueado al lado de la imagen -->
@@ -1039,160 +1041,458 @@ $basePath = str_replace('\\', '/', $basePath);
         }
     </style>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            initPlexusNetwork();
-        });
+        (function () {
+            'use strict';
+            var rafId = null;
+            var particles = [], pulses = [], rings = [], sparks = [], meteors = [];
+            var cursor = { tx: -9999, ty: -9999, active: false };
+            var canvas, ctx, container, W = 0, H = 0;
+            var LINK = 150, MOUSE_R = 230, VORTEX = 0.05;
 
-        function initPlexusNetwork() {
-            const canvas = document.getElementById('plexus-canvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const container = document.querySelector('.hero1section');
+            function random(min, max) { return min + Math.random() * (max - min); }
 
-            function resizeCanvas() {
-                const rect = container ? container.getBoundingClientRect() : {
-                    width: window.innerWidth,
-                    height: window.innerHeight
-                };
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-            }
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-            const config = {
-                dotCount: 100,
-                dotSize: 2,
-                connectionDistance: 150,
-                mouseDistance: 250,
-                baseSpeed: 0.4,
-            };
-            const dots = [];
-            for (let i = 0; i < config.dotCount; i++) {
-                dots.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * config.baseSpeed,
-                    vy: (Math.random() - 0.5) * config.baseSpeed,
-                    size: config.dotSize + Math.random() * 1.5,
-                    originalSize: config.dotSize + Math.random() * 1.5
-                });
-            }
-            let mouseX = -1000,
-                mouseY = -1000;
-            document.addEventListener('mousemove', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                mouseX = e.clientX - rect.left;
-                mouseY = e.clientY - rect.top;
-            });
-            document.addEventListener('mouseleave', () => {
-                mouseX = -1000;
-                mouseY = -1000;
-            });
+            function initHeroAnimation() {
+                canvas = document.getElementById('plexus-canvas');
+                if (!canvas) return;
+                ctx = canvas.getContext('2d');
+                container = document.querySelector('.hero1section') || document.body;
+                var DPR = Math.min(window.devicePixelRatio || 1, 2);
 
-            function getDistance(x1, y1, x2, y2) {
-                const dx = x2 - x1;
-                const dy = y2 - y1;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
+                function resize() {
+                    var rect = container.getBoundingClientRect();
+                    W = Math.max(rect.width || window.innerWidth, 1);
+                    H = Math.max(rect.height || window.innerHeight, 1);
+                    canvas.width = W * DPR;
+                    canvas.height = H * DPR;
+                    canvas.style.width = W + 'px';
+                    canvas.style.height = H + 'px';
+                    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+                }
+                resize();
+                window.addEventListener('resize', resize);
 
-            function drawLine(x1, y1, x2, y2, opacity, width = 0.5) {
-                const gradient = ctx.createLinearGradient(x1, y1, x2, y2);
-                gradient.addColorStop(0, `rgba(220, 20, 60, ${opacity * 0.3})`);
-                gradient.addColorStop(0.5, `rgba(255, 51, 51, ${opacity * 0.6})`);
-                gradient.addColorStop(1, `rgba(220, 20, 60, ${opacity * 0.3})`);
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.strokeStyle = gradient;
-                ctx.lineWidth = width;
-                ctx.stroke();
-            }
+                var dotCount = Math.max(60, Math.min(150, Math.floor((W * H) / 11000)));
 
-            function drawDot(dot) {
-                const gradient = ctx.createRadialGradient(dot.x, dot.y, 0, dot.x, dot.y, dot.size * 4);
-                gradient.addColorStop(0, 'rgba(255, 51, 51, 0.8)');
-                gradient.addColorStop(0.5, 'rgba(220, 20, 60, 0.4)');
-                gradient.addColorStop(1, 'transparent');
-                ctx.beginPath();
-                ctx.arc(dot.x, dot.y, dot.size * 4, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
-                ctx.fillStyle = '#ff3333';
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(dot.x - dot.size * 0.3, dot.y - dot.size * 0.3, dot.size * 0.4, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                ctx.fill();
-            }
-            let animationId;
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                dots.forEach((dot, index) => {
-                    dot.x += dot.vx;
-                    dot.y += dot.vy;
-                    if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
-                    if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
-                    const mouseDist = getDistance(dot.x, dot.y, mouseX, mouseY);
-                    if (mouseDist < config.mouseDistance) {
-                        const force = (config.mouseDistance - mouseDist) / config.mouseDistance;
-                        const angle = Math.atan2(mouseY - dot.y, mouseX - dot.x);
-                        dot.x += Math.cos(angle) * force * 1.5;
-                        dot.y += Math.sin(angle) * force * 1.5;
-                        dot.size = dot.originalSize * (1 + force * 1.5);
-                    } else {
-                        dot.size += (dot.originalSize - dot.size) * 0.05;
+                function makeParticle(big) {
+                    var p = {
+                        x: random(0, W),
+                        y: random(0, H),
+                        vx: random(-0.3, 0.3),
+                        vy: random(-0.3, 0.3),
+                        z: random(0.35, 1),
+                        phase: random(0, Math.PI * 2),
+                        size: random(1.5, 3.6),
+                        burstT: 0,
+                        age: 0
+                    };
+                    if (big) {
+                        var a = random(0, Math.PI * 2);
+                        var sp = random(6, 26);
+                        p.x = W / 2;
+                        p.y = H / 2;
+                        p.vx = Math.cos(a) * sp;
+                        p.vy = Math.sin(a) * sp;
                     }
-                    for (let j = index + 1; j < dots.length; j++) {
-                        const otherDot = dots[j];
-                        const distance = getDistance(dot.x, dot.y, otherDot.x, otherDot.y);
-                        if (distance < config.connectionDistance) {
-                            const opacity = 1 - (distance / config.connectionDistance);
-                            const lineWidth = 0.3 + opacity * 0.8;
-                            drawLine(dot.x, dot.y, otherDot.x, otherDot.y, opacity, lineWidth);
+                    return p;
+                }
+
+                // Entrada tipo "big bang": los puntos explotan desde el centro
+                for (var i = 0; i < dotCount; i++) particles.push(makeParticle(true));
+
+                function spawnPulse() {
+                    for (var tries = 0; tries < 40; tries++) {
+                        var a = particles[(Math.random() * particles.length) | 0];
+                        var b = particles[(Math.random() * particles.length) | 0];
+                        if (a === b) continue;
+                        var dx = a.x - b.x, dy = a.y - b.y;
+                        if (dx * dx + dy * dy < LINK * LINK) {
+                            pulses.push({ a: a, b: b, t: 0, speed: random(0.006, 0.013) });
+                            return;
                         }
                     }
-                    if (mouseDist < config.connectionDistance * 1.5) {
-                        const opacity = 1 - (mouseDist / (config.connectionDistance * 1.5));
-                        drawLine(dot.x, dot.y, mouseX, mouseY, opacity * 0.9, 1.2);
+                }
+
+                // Re-energía el canvas (se dispara al cerrar el modal)
+                window.heroCanvasBurst = function () {
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+                        var a = random(0, Math.PI * 2);
+                        var sp = random(3, 11);
+                        p.vx = Math.cos(a) * sp;
+                        p.vy = Math.sin(a) * sp;
+                        p.burstT = 1;
                     }
-                    drawDot(dot);
+                    rings.push({ x: W / 2, y: H / 2, r: 8, max: Math.max(W, H) * 0.55, alpha: 0.9, lineW: 3.2, speed: 7.5 });
+                    rings.push({ x: random(0, W), y: random(0, H), r: 4, max: 280, alpha: 0.7, lineW: 2, speed: 5.5 });
+                    for (var k = 0; k < 16; k++) spawnPulse();
+                    for (var j = 0; j < 46; j++) {
+                        var an = random(0, Math.PI * 2);
+                        var spd = random(2, 8);
+                        sparks.push({
+                            x: W / 2, y: H / 2,
+                            vx: Math.cos(an) * spd,
+                            vy: Math.sin(an) * spd,
+                            life: 1,
+                            decay: random(0.012, 0.03),
+                            size: random(1, 2.8),
+                            hue: Math.random() < 0.65 ? 0 : random(0, 50)
+                        });
+                    }
+                };
+
+                document.addEventListener('mousemove', function (e) {
+                    var rect = canvas.getBoundingClientRect();
+                    var inside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+                    if (!inside) { cursor.active = false; return; }
+                    cursor.tx = e.clientX - rect.left;
+                    cursor.ty = e.clientY - rect.top;
+                    cursor.active = true;
                 });
-                animationId = requestAnimationFrame(animate);
-            }
-            animate();
-            document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    cancelAnimationFrame(animationId);
-                } else {
-                    animate();
-                }
-            });
-            document.addEventListener('click', (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const clickX = e.clientX - rect.left;
-                const clickY = e.clientY - rect.top;
-                for (let i = 0; i < 15; i++) {
-                    const angle = (i / 15) * Math.PI * 2;
-                    const particle = {
-                        x: clickX,
-                        y: clickY,
-                        vx: Math.cos(angle) * 4,
-                        vy: Math.sin(angle) * 4,
-                        size: 3,
+                document.addEventListener('mouseout', function () {
+                    cursor.active = false;
+                    cursor.tx = -9999;
+                    cursor.ty = -9999;
+                });
+                document.addEventListener('touchmove', function (e) {
+                    var t = e.touches[0];
+                    if (!t) return;
+                    var rect = canvas.getBoundingClientRect();
+                    cursor.tx = t.clientX - rect.left;
+                    cursor.ty = t.clientY - rect.top;
+                    cursor.active = true;
+                }, { passive: true });
+
+                // Clic: onda de choque + supernova de chispas
+                document.addEventListener('click', function (e) {
+                    var rect = canvas.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    rings.push({ x: x, y: y, r: 6, max: random(260, 360), alpha: 0.85, lineW: 2.6, speed: 5.2 });
+                    rings.push({ x: x, y: y, r: 2, max: random(130, 200), alpha: 0.55, lineW: 1.4, speed: 3.4, delay: 140 });
+                    for (var i = 0; i < 30; i++) {
+                        var a = random(0, Math.PI * 2);
+                        var sp = random(1.5, 7);
+                        sparks.push({
+                            x: x, y: y,
+                            vx: Math.cos(a) * sp,
+                            vy: Math.sin(a) * sp,
+                            life: 1,
+                            decay: random(0.012, 0.028),
+                            size: random(1, 2.6),
+                            hue: Math.random() < 0.7 ? 0 : random(0, 60)
+                        });
+                    }
+                    for (var j = 0; j < particles.length; j++) {
+                        var p = particles[j];
+                        var ddx = p.x - x, ddy = p.y - y;
+                        var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+                        if (dist < 190 && dist > 0) {
+                            var f = (1 - dist / 190) * 8;
+                            p.vx += (ddx / dist) * f;
+                            p.vy += (ddy / dist) * f;
+                            p.burstT = 1;
+                        }
+                    }
+                });
+
+                // Estrellas fugaces ocasionales
+                var meteorTimer = random(2600, 5200);
+                function spawnMeteor() {
+                    var ang = random(Math.PI * 0.2, Math.PI * 0.8);
+                    var speed = random(7, 12);
+                    meteors.push({
+                        x: random(0, W),
+                        y: random(0, H * 0.4),
+                        vx: Math.cos(ang) * speed,
+                        vy: Math.sin(ang) * speed,
                         life: 1,
-                        originalSize: 3
-                    };
-                    dots.push(particle);
-                    setTimeout(() => {
-                        const idx = dots.indexOf(particle);
-                        if (idx > -1) dots.splice(idx, 1);
-                    }, 800);
+                        trail: []
+                    });
                 }
-            });
-        }
+
+                function update() {
+                    var now = performance.now();
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+                        p.age += 1;
+                        p.vx += Math.sin(now * 0.0002 + p.phase) * 0.006;
+                        p.vy += Math.cos(now * 0.00023 + p.phase * 1.3) * 0.006;
+                        p.vx *= 0.99;
+                        p.vy *= 0.99;
+                        var maxS = 1.15 * p.z + 18 * Math.max(0, 1 - p.age / 240);
+                        var sp = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                        if (sp > maxS) { p.vx = (p.vx / sp) * maxS; p.vy = (p.vy / sp) * maxS; }
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < -20) p.x = W + 20; else if (p.x > W + 20) p.x = -20;
+                        if (p.y < -20) p.y = H + 20; else if (p.y > H + 20) p.y = -20;
+
+                        // Vórtice espiral alrededor del cursor (efecto imán + remolino)
+                        if (cursor.active) {
+                            var dx = cursor.tx - p.x, dy = cursor.ty - p.y;
+                            var d = Math.sqrt(dx * dx + dy * dy);
+                            if (d < MOUSE_R && d > 0) {
+                                var f = (1 - d / MOUSE_R) * VORTEX * (1.5 - p.z * 0.6);
+                                p.vx += (-dy / d) * f * 3.4;
+                                p.vy += (dx / d) * f * 3.4;
+                                p.vx += (dx / d) * f * 0.6;
+                                p.vy += (dy / d) * f * 0.6;
+                            }
+                        }
+                        if (p.burstT > 0) p.burstT -= 0.02;
+                    }
+
+                    if (pulses.length < 46 && Math.random() < 0.2) spawnPulse();
+                    for (var q = pulses.length - 1; q >= 0; q--) {
+                        pulses[q].t += pulses[q].speed;
+                        if (pulses[q].t >= 1) pulses.splice(q, 1);
+                    }
+                    for (var r = rings.length - 1; r >= 0; r--) {
+                        var rg = rings[r];
+                        if (rg.delay > 0) { rg.delay -= 16; continue; }
+                        rg.r += rg.speed;
+                        rg.alpha *= 0.97;
+                        if (rg.r > rg.max || rg.alpha < 0.02) rings.splice(r, 1);
+                    }
+                    for (var s = sparks.length - 1; s >= 0; s--) {
+                        var sk = sparks[s];
+                        sk.x += sk.vx; sk.y += sk.vy;
+                        sk.vx *= 0.98; sk.vy *= 0.98;
+                        sk.life -= sk.decay;
+                        if (sk.life <= 0) sparks.splice(s, 1);
+                    }
+                    meteorTimer -= 16;
+                    if (meteorTimer <= 0) { spawnMeteor(); meteorTimer = random(4200, 9500); }
+                    for (var m = meteors.length - 1; m >= 0; m--) {
+                        var mt = meteors[m];
+                        mt.x += mt.vx; mt.y += mt.vy;
+                        mt.trail.push({ x: mt.x, y: mt.y });
+                        if (mt.trail.length > 26) mt.trail.shift();
+                        mt.life -= 0.012;
+                        if (mt.life <= 0 || mt.y > H + 40 || mt.x < -40 || mt.x > W + 40) meteors.splice(m, 1);
+                    }
+                }
+
+                function glow(x, y, r, alpha) {
+                    var g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+                    g.addColorStop(0, 'rgba(255,51,51,' + alpha + ')');
+                    g.addColorStop(0.45, 'rgba(220,20,60,' + alpha * 0.45 + ')');
+                    g.addColorStop(1, 'rgba(220,20,60,0)');
+                    ctx.fillStyle = g;
+                    ctx.beginPath();
+                    ctx.arc(x, y, r * 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                function draw() {
+                    var time = performance.now() * 0.001;
+                    ctx.clearRect(0, 0, W, H);
+
+                    // Conexiones de la red neuronal
+                    for (var i = 0; i < particles.length; i++) {
+                        var a = particles[i];
+                        for (var j = i + 1; j < particles.length; j++) {
+                            var b = particles[j];
+                            var dx = a.x - b.x, dy = a.y - b.y;
+                            var d2 = dx * dx + dy * dy;
+                            if (d2 < LINK * LINK) {
+                                var d = Math.sqrt(d2);
+                                var alpha = (1 - d / LINK) * 0.5 * ((a.z + b.z) / 2);
+                                if (alpha > 0.02) {
+                                    ctx.strokeStyle = 'rgba(255,42,42,' + alpha.toFixed(3) + ')';
+                                    ctx.lineWidth = 0.6;
+                                    ctx.beginPath();
+                                    ctx.moveTo(a.x, a.y);
+                                    ctx.lineTo(b.x, b.y);
+                                    ctx.stroke();
+                                }
+                            }
+                        }
+                    }
+
+                    // Pulsos de energía viajando por la red
+                    for (var q = 0; q < pulses.length; q++) {
+                        var pu = pulses[q];
+                        var px = pu.a.x + (pu.b.x - pu.a.x) * pu.t;
+                        var py = pu.a.y + (pu.b.y - pu.a.y) * pu.t;
+                        var pg = 0.9 * (1 - Math.abs(pu.t * 2 - 1));
+                        glow(px, py, 2.2, pg * 0.8);
+                        ctx.fillStyle = 'rgba(255,255,255,' + (pg * 0.9).toFixed(3) + ')';
+                        ctx.beginPath();
+                        ctx.arc(px, py, 1.3 + pu.a.z, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Puntos brillantes (twinkle + profundidad)
+                    for (var i2 = 0; i2 < particles.length; i2++) {
+                        var p = particles[i2];
+                        var tw = 0.65 + 0.35 * Math.sin(time * 2 + p.phase);
+                        var size = p.size * p.z * (1 + p.burstT * 1.5);
+                        var alpha = (0.55 + 0.45 * tw) * (0.5 + 0.5 * p.z);
+                        glow(p.x, p.y, size, alpha * 0.5);
+                        ctx.fillStyle = 'rgba(255,90,90,' + alpha.toFixed(3) + ')';
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(255,255,255,' + (alpha * 0.7).toFixed(3) + ')';
+                        ctx.beginPath();
+                        ctx.arc(p.x - size * 0.3, p.y - size * 0.3, size * 0.38, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Ondas de choque
+                    for (var r = 0; r < rings.length; r++) {
+                        var rg = rings[r];
+                        ctx.strokeStyle = 'rgba(255,70,70,' + rg.alpha.toFixed(3) + ')';
+                        ctx.lineWidth = rg.lineW * rg.alpha;
+                        ctx.beginPath();
+                        ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    // Chispas (supernova)
+                    for (var s = 0; s < sparks.length; s++) {
+                        var sk = sparks[s];
+                        ctx.fillStyle = 'rgba(255,' + Math.round(120 + sk.hue) + ',60,' + sk.life.toFixed(3) + ')';
+                        ctx.beginPath();
+                        ctx.arc(sk.x, sk.y, sk.size * sk.life, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+
+                    // Estrellas fugaces
+                    for (var m = 0; m < meteors.length; m++) {
+                        var mt = meteors[m];
+                        var tl = mt.trail;
+                        for (var t = 0; t < tl.length; t++) {
+                            var at = (t / tl.length) * mt.life;
+                            ctx.fillStyle = 'rgba(255,80,80,' + (at * 0.8).toFixed(3) + ')';
+                            ctx.beginPath();
+                            ctx.arc(tl[t].x, tl[t].y, 1.7 * (t / tl.length), 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        glow(mt.x, mt.y, 2.6, mt.life * 0.9);
+                    }
+
+                    // Anillos de energía alrededor del cursor
+                    if (cursor.active) {
+                        ctx.strokeStyle = 'rgba(255,55,55,0.35)';
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.arc(cursor.tx, cursor.ty, 34, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.strokeStyle = 'rgba(255,55,55,0.15)';
+                        ctx.beginPath();
+                        ctx.arc(cursor.tx, cursor.ty, 66, 0, Math.PI * 2);
+                        ctx.stroke();
+                        glow(cursor.tx, cursor.ty, 3, 0.5);
+                    }
+                }
+
+                function loop() {
+                    rafId = requestAnimationFrame(loop);
+                    update();
+                    draw();
+                }
+                rafId = requestAnimationFrame(loop);
+
+                document.addEventListener('visibilitychange', function () {
+                    if (document.hidden) cancelAnimationFrame(rafId);
+                    else rafId = requestAnimationFrame(loop);
+                });
+            }
+
+            // --- Entrada del hero con anime.js (título letra por letra) ---
+            function splitLetters(el) {
+                var text = el.textContent.replace(/\s+/g, ' ').trim();
+                el.textContent = '';
+                var frag = document.createDocumentFragment();
+                var words = text.split(' ');
+                for (var wi = 0; wi < words.length; wi++) {
+                    var w = document.createElement('span');
+                    w.style.display = 'inline-block';
+                    w.style.whiteSpace = 'nowrap';
+                    for (var ci = 0; ci < words[wi].length; ci++) {
+                        var s = document.createElement('span');
+                        s.className = 'hero-letter';
+                        s.style.display = 'inline-block';
+                        s.style.opacity = '0';
+                        s.textContent = words[wi][ci];
+                        w.appendChild(s);
+                    }
+                    frag.appendChild(w);
+                    if (wi < words.length - 1) frag.appendChild(document.createTextNode(' '));
+                }
+                el.appendChild(frag);
+                return el.querySelectorAll('.hero-letter');
+            }
+
+            window.playHeroEntrance = function () {
+                if (window.__heroPlayed) return;
+                window.__heroPlayed = true;
+                if (window.heroCanvasBurst) window.heroCanvasBurst();
+                if (!window.anime) return;
+
+                var a = window.anime;
+                var h1 = document.getElementById('heroTitle');
+                var sub = document.getElementById('heroSub');
+                var cta = document.getElementById('heroCta');
+                var img = document.getElementById('heroImg');
+
+                if (sub) sub.style.opacity = '0';
+                if (cta) cta.style.opacity = '0';
+                if (img) img.style.opacity = '0';
+
+                if (h1) {
+                    var letters = splitLetters(h1);
+                    a({
+                        targets: letters,
+                        translateY: [60, 0],
+                        opacity: [0, 1],
+                        rotate: [6, 0],
+                        delay: a.stagger(45, { start: 150 }),
+                        duration: 900,
+                        easing: 'easeOutExpo'
+                    });
+                }
+                if (sub) {
+                    a({
+                        targets: sub,
+                        opacity: [0, 1],
+                        translateY: [26, 0],
+                        delay: 900,
+                        duration: 700,
+                        easing: 'easeOutQuad'
+                    });
+                }
+                if (cta) {
+                    a({
+                        targets: cta,
+                        opacity: [0, 1],
+                        scale: [0.6, 1],
+                        delay: 1100,
+                        duration: 700,
+                        easing: 'easeOutBack'
+                    });
+                }
+                if (img) {
+                    a({
+                        targets: img,
+                        opacity: [0, 1],
+                        translateY: [50, 0],
+                        scale: [0.85, 1],
+                        delay: 450,
+                        duration: 1000,
+                        easing: 'easeOutCubic'
+                    });
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initHeroAnimation);
+            } else {
+                initHeroAnimation();
+            }
+        })();
     </script>
 
     <section class="brand-marquee" aria-label="Marcas y servicios">
