@@ -1181,6 +1181,12 @@ include __DIR__ . '/includes/header.php';
                         justify-content: center;
                     }
                 }
+
+                @media (max-width: 576px) {
+                    .contact-form .btn-submit {
+                        width: 100%;
+                    }
+                }
             </style>
 
             <h1 class="text-white font-extrabold text-lg mb-4 " style="font-size: 2rem; color: red; ">
@@ -1207,29 +1213,30 @@ include __DIR__ . '/includes/header.php';
         </div>
 
         <div class="contact-form">
-            <form id="contactForm" method="post" action="https://formspree.io/f/mnjbandn">
+            <form id="contactForm" method="post" action="https://formspree.io/f/mnjbandn" autocomplete="on">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Ingresa un correo válido" required>
+                    <input type="email" id="email" name="email" placeholder="Ingresa un correo válido" required>
                 </div>
 
                 <div class="form-group">
                     <label for="name">Nombre</label>
-                    <input type="text" id="name" placeholder="Ingresa tu nombre" required>
+                    <input type="text" id="name" name="name" placeholder="Ingresa tu nombre" required>
                 </div>
 
                 <div class="form-group">
                     <label for="address">Dirección</label>
-                    <input type="text" id="address" placeholder="Ingresa tu dirección" required>
+                    <input type="text" id="address" name="address" placeholder="Ingresa tu dirección" required>
                 </div>
 
                 <div class="form-group">
                     <label for="message">Mensaje</label>
-                    <textarea id="message" placeholder="Escribe tu mensaje aquí..." required></textarea>
+                    <textarea id="message" name="message" placeholder="Escribe tu mensaje aquí..." required></textarea>
                 </div>
 
-                <button style="background-color: red;padding: 10px 20px;border-radius: 5px "
-                    type="submit">ENVIAR</button>
+                <div class="form-actions">
+                    <button class="btn-submit" type="submit">ENVIAR</button>
+                </div>
             </form>
         </div>
     </div>
@@ -1368,6 +1375,45 @@ include __DIR__ . '/includes/header.php';
     </div>
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var contactForm = document.getElementById('contactForm');
+            if (!contactForm) return;
+            contactForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                var formData = new FormData(contactForm);
+                var action = contactForm.getAttribute('action');
+
+                Swal.fire({
+                    title: 'Enviando...',
+                    text: 'Por favor, espera un momento.',
+                    allowOutsideClick: false,
+                    didOpen: function () { Swal.showLoading(); }
+                });
+
+                fetch(action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                }).then(function (response) {
+                    if (response.ok) {
+                        Swal.fire('¡Gracias!', 'Tu mensaje ha sido enviado con éxito.', 'success');
+                        contactForm.reset();
+                    } else {
+                        response.json().then(function (data) {
+                            var errorMessage = 'Ocurrió un error al enviar tu mensaje.';
+                            if (data && data.errors) {
+                                errorMessage = data.errors.map(function (error) { return error.message; }).join(', ');
+                            }
+                            Swal.fire('Error', errorMessage, 'error');
+                        });
+                    }
+                }).catch(function () {
+                    Swal.fire('Error', 'No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.', 'error');
+                });
+            });
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         xintegrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
