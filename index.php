@@ -984,13 +984,15 @@ include __DIR__ . '/includes/header.php';
     <!-- Sección del mapa -->
     <section class="px-4 py-8 max-w-7xl mx-auto" id="sobre_nosotros">
         <div style="display:flex; gap:16px; align-items:stretch; flex-wrap:wrap;">
-            <div style="flex:1 1 480px; min-width:300px;">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.6586502248737!2d-75.55148638476352!3d10.39697399240679!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef624e4b578f21f%3A0xa6156aaebc72a220!2sDistriCarnes!5e0!3m2!1es-419!2sco!4v1688330717498!5m2!1es-419!2sco"
-                    width="100%" height="350" style="border:0; border-radius:8px;" allowfullscreen loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                    aria-label="Ubicación de DistriCarnes en Cartagena, Colombia"
-                    title="Mapa de localización de DistriCarnes"></iframe>
+            <div class="map-wrapper" style="flex:1 1 480px; min-width:300px;">
+                <div id="districarnes-map" class="districarnes-map"
+                    data-lat="10.39697399240679"
+                    data-lng="-75.55148638476352"
+                    data-name="DistriCarnes - Hermanos Navarro"
+                    data-address="Olaya Herrera #34-71A-60, Cartagena de Indias, Colombia"
+                    data-phone="+573015210177"
+                    style="width:100%; height:350px; border-radius:8px;">
+                </div>
             </div>
             <div
                 style="flex:1 1 320px; min-width:280px; background:#0b0b0b; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px; color:#fff;">
@@ -1017,7 +1019,7 @@ include __DIR__ . '/includes/header.php';
                         target="_blank" rel="noopener noreferrer"
                         style="background:#22c55e; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">WhatsApp</a>
                     <button type="button"
-                        onclick="(function(){var t='Olaya Herrera #34-71A-60, Cartagena de Indias, Colombia';navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){try{Swal&&Swal.fire({icon:'success',title:'Dirección copiada',timer:1500,showConfirmButton:false});}catch(e){}});})()"
+                        onclick="(function(){var t='Olaya Herrera #34-71A-60, Cartagena de Indias, Colombia';navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){try{showToast('Dirección copiada','success',{duration:1500});}catch(e){}});})()"
                         style="background:#374151; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; border:none; cursor:pointer;">Copiar
                         dirección</button>
                 </div>
@@ -1370,9 +1372,17 @@ include __DIR__ . '/includes/header.php';
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         xintegrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
+    <script>
+        window.DISTRICARNES_CONFIG = {
+            googleMapsApiKey: <?php echo json_encode(GOOGLE_MAPS_API_KEY, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+            basePath: <?php echo json_encode(BASE_PATH, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+            baseUrl: <?php echo json_encode(BASE_URL, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>
+        };
+    </script>
     <script src="./static/js/header_actions.js"></script>
     <script src="./static/js/auth_modal.js"></script>
     <script src="./static/js/index.js"></script>
+    <script src="./static/js/google-maps.js"></script>
     <script src="./static/js/chatbot.js"></script>
     <script>
         (function() {

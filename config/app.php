@@ -28,6 +28,12 @@ if ($basePath === '/VENTAS' || $basePath === '') {
 
 define('IS_LOCAL', $isLocal);
 
+$envKey = getenv('GOOGLE_MAPS_API_KEY');
+if (!$envKey && isset($_ENV['GOOGLE_MAPS_API_KEY'])) {
+    $envKey = $_ENV['GOOGLE_MAPS_API_KEY'];
+}
+define('GOOGLE_MAPS_API_KEY', $envKey ? $envKey : '');
+
 function asset($path) {
     $path = ltrim($path, '/');
     return BASE_PATH . '/' . $path;

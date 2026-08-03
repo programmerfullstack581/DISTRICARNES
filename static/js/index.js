@@ -1,3 +1,109 @@
+var showToast = (function () {
+    var container = null;
+
+    function ensureContainer() {
+        if (container) return container;
+        container = document.createElement('div');
+        container.className = 'toast-container';
+        container.setAttribute('aria-live', 'polite');
+        container.setAttribute('aria-atomic', 'true');
+        document.body.appendChild(container);
+        return container;
+    }
+
+    function createToast(text, type, options) {
+        options = options || {};
+
+        var toast = document.createElement('div');
+        toast.className = 'toast toast-' + type + ' toast-enter';
+
+        var icon = document.createElement('span');
+        icon.className = 'toast-icon';
+        var iconMap = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-times-circle',
+            info: 'fas fa-info-circle',
+            warning: 'fas fa-exclamation-triangle'
+        };
+        icon.innerHTML = '<i class="' + (iconMap[type] || iconMap.info) + '"></i>';
+        toast.appendChild(icon);
+
+        var msg = document.createElement('span');
+        msg.className = 'toast-message';
+        msg.textContent = text;
+        toast.appendChild(msg);
+
+        var close = document.createElement('button');
+        close.className = 'toast-close';
+        close.setAttribute('aria-label', 'Cerrar');
+        close.innerHTML = '&times;';
+        toast.appendChild(close);
+
+        var progress = document.createElement('div');
+        progress.className = 'toast-progress toast-' + type + '-progress';
+        toast.appendChild(progress);
+
+        var duration = options.duration !== undefined ? options.duration : 4000;
+
+        close.addEventListener('click', function () {
+            dismiss(toast);
+        });
+
+        function dismiss(el) {
+            el.classList.remove('toast-enter');
+            el.classList.add('toast-exit');
+            setTimeout(function () {
+                if (el.parentNode) {
+                    el.parentNode.removeChild(el);
+                }
+            }, 300);
+        }
+
+        if (duration > 0) {
+            toast._hideTimer = setTimeout(function () {
+                dismiss(toast);
+            }, duration);
+        }
+
+        return toast;
+    }
+
+    function show(text, type, options) {
+        if (!type) type = 'info';
+        var toast = createToast(text, type, options);
+        var el = ensureContainer();
+        el.appendChild(toast);
+        return toast;
+    }
+
+    function clearAll() {
+        if (!container) return;
+        var toasts = container.querySelectorAll('.toast');
+        toasts.forEach(function (t) {
+            if (t._hideTimer) clearTimeout(t._hideTimer);
+            t.classList.remove('toast-enter');
+            t.classList.add('toast-exit');
+            setTimeout(function () {
+                if (t.parentNode) t.parentNode.removeChild(t);
+            }, 300);
+        });
+    }
+
+    return show;
+})();
+
+window.showToast = showToast;
+window.clearAllToasts = function () {
+    var container = document.querySelector('.toast-container');
+    if (container) {
+        var toasts = container.querySelectorAll('.toast');
+        toasts.forEach(function (t) {
+            if (t._hideTimer) clearTimeout(t._hideTimer);
+            container.removeChild(t);
+        });
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userMenu = document.getElementById('userMenu');
@@ -19,19 +125,18 @@ document.addEventListener('DOMContentLoaded', function() {
 function handleLogout(e) {
     e.preventDefault();
 
-    // Create and show confirmation modal
     const modal = document.createElement('div');
     modal.innerHTML = `
-<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; ">
-<div style="background: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 400px; width: 90%; ">
-<h3 style="margin-bottom: 15px; color: #333; ">¿Estás seguro que deseas cerrar sesión?</h3>
-<div style="display: flex; justify-content: center; gap: 10px; ">
-<button onclick="confirmLogout() " 
-style="background: #dc2626; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; ">
+<div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+<div style="background: #111; padding: 24px; border-radius: 12px; text-align: center; max-width: 400px; width: 90%; border: 1px solid #333;">
+<h3 style="margin-bottom: 15px; color: #fff;">¿Estás seguro que deseas cerrar sesión?</h3>
+<div style="display: flex; justify-content: center; gap: 12px;">
+<button onclick="confirmLogout()" 
+style="background: #dc2626; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
 Sí, cerrar sesión
 </button>
-<button onclick="this.parentElement.parentElement.parentElement.remove() " 
-style="background: #gray; color: #333; padding: 8px 16px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; ">
+<button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" 
+style="background: #333; color: #fff; padding: 10px 20px; border: 1px solid #555; border-radius: 6px; cursor: pointer; font-weight: 600;">
 Cancelar
 </button>
 </div>
@@ -42,7 +147,6 @@ Cancelar
 }
 
 function confirmLogout() {
-    // Marcar logout y limpiar estado accesible antes de redirigir
     try {
         sessionStorage.setItem('logoutFlag', '1');
         localStorage.removeItem('userData');
@@ -50,28 +154,13 @@ function confirmLogout() {
         window.dispatchEvent(new CustomEvent('auth:loggedOut'));
     } catch (e) {}
 
-    // Show success message
-    const message = document.createElement('div');
-    message.innerHTML = `
-<div style="position: fixed; top: 20px; right: 20px; background: #22c55e; color: white; padding: 15px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 9999; animation: slideIn 0.3s ease-out; ">
-¡Sesión cerrada exitosamente! Redirigiendo...
-</div>
-`;
-    document.body.appendChild(message);
+    showToast('¡Sesión cerrada exitosamente! Redirigiendo...', 'success', { duration: 1500 });
 
-    // Add animation
-    const style = document.createElement('style');
-    style.textContent = `
-@keyframes slideIn {
-from { transform: translateX(100%); }
-to { transform: translateX(0); }
-}
-`;
-    document.head.appendChild(style);
-
-    // Redirect after delay
     setTimeout(() => {
-        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
+        var redirectUrl = (window.DISTRICARNES_CONFIG && window.DISTRICARNES_CONFIG.baseUrl)
+            ? window.DISTRICARNES_CONFIG.baseUrl + '/index.php'
+            : window.location.origin + '/index.php';
+        window.location.href = redirectUrl;
     }, 1500);
 }
 //-----------------------------CARRUSERL DE EQUIPO FUNIONALIDAD-----------------------------
