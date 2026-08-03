@@ -1,7 +1,8 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
-require_once __DIR__ . '/../core/conexion.php'; // PDO PostgreSQL
+require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/orders_schema.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
@@ -84,44 +85,9 @@ try {
     }
   }
 
-  $conexion->exec("
-    CREATE TABLE IF NOT EXISTS orders_pg (
-      id SERIAL PRIMARY KEY,
-      user_id INT NULL,
-      user_email VARCHAR(255),
-      user_name VARCHAR(255),
-      status VARCHAR(32) NOT NULL,
-      total NUMERIC(12,2) NOT NULL DEFAULT 0,
-      delivery_method VARCHAR(32) NOT NULL,
-      pay_method VARCHAR(32) NULL,
-      address_json JSONB NULL,
-      schedule_json JSONB NULL,
-      paypal_id VARCHAR(255) NULL,
-      factus_invoice_id VARCHAR(255) NULL,
-      factus_number VARCHAR(255) NULL,
-      factus_status VARCHAR(32) NULL,
-      factus_pdf_url TEXT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  ");
-  // Asegurar columnas para evitar errores si la tabla ya existe
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS user_id INT NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS paypal_id VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_invoice_id VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_number VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_status VARCHAR(32) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_pdf_url TEXT NULL"); } catch(Throwable $_){}
+  // Garantizar esquema completo y consistente (creado por cualquier otro endpoint)
+  ensure_orders_schema($conexion);
 
-  $conexion->exec("
-    CREATE TABLE IF NOT EXISTS order_items_pg (
-      id SERIAL PRIMARY KEY,
-      order_id INT NOT NULL REFERENCES orders_pg(id) ON DELETE CASCADE,
-      title VARCHAR(255),
-      price NUMERIC(12,2) NOT NULL DEFAULT 0,
-      qty INT NOT NULL DEFAULT 1,
-      image TEXT NULL
-    )
-  ");
   $stmt = $conexion->prepare('
     INSERT INTO orders_pg (user_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
     VALUES (?,?,?,?,?,?,?,?::jsonb,?::jsonb)
@@ -151,6 +117,22 @@ try {
       }
     }
   }
+  cache_respuesta_invalidar();
+
+  // Registrar notificación de admin
+  try {
+    ensure_notificaciones_schema($conexion);
+    record_notificacion(
+      $conexion,
+      'order',
+      "Nuevo pedido #$orderId",
+      "$userEmail realizó un pedido pendiente",
+      $orderId,
+      $pay
+    );
+    cache_respuesta_invalidar();
+  } catch (Throwable $_) {}
+
   echo json_encode(['ok'=>true,'order_id'=>$orderId]);
 } catch (Throwable $e) {
   error_log('orders_save_pending.php: ' . $e->getMessage());

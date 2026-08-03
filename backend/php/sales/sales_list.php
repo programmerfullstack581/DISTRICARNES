@@ -3,19 +3,23 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/orders_schema.php';
+
+// Garantizar esquema completo y consistente
+ensure_orders_schema($conexion);
 
 try {
     // Consultar directamente la tabla de órdenes para obtener datos en tiempo real
-    // Esto evita problemas de sincronización con tablas secundarias
     
     $from = isset($_GET['from']) ? trim($_GET['from']) : '';
     $to   = isset($_GET['to']) ? trim($_GET['to']) : '';
 
     // Consulta base a la tabla orders
     // Filtramos por estado COMPLETED para solo contar ventas reales
-    $query = "SELECT id, paypal_id, user_email as customer_email, user_name as customer_name, total, created_at 
-              FROM orders_pg 
-              WHERE status = 'COMPLETED'";
+    $query = "SELECT o.id, o.paypal_id, o.user_email as customer_email, o.user_name as customer_name, o.total, o.created_at,
+              (SELECT COUNT(*) FROM order_items_pg WHERE order_id = o.id) as items_count
+              FROM orders_pg o
+              WHERE o.status = 'COMPLETED'";
     
     $params = [];
 
@@ -47,11 +51,12 @@ try {
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
       $sales[] = [
         'id' => intval($row['id']),
-        'order_id' => intval($row['id']), // En orders, id es el order_id
+        'order_id' => intval($row['id']),
         'paypal_id' => $row['paypal_id'],
         'customer_email' => $row['customer_email'],
         'customer_name' => $row['customer_name'],
         'total' => floatval($row['total']),
+        'items_count' => isset($row['items_count']) ? intval($row['items_count']) : 0,
         'created_at' => $row['created_at'],
       ];
     }

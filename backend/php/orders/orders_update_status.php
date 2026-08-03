@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/orders_schema.php';
 require_once __DIR__ . '/../sales/sales_utils.php';
 
 $raw = file_get_contents('php://input');
@@ -25,14 +26,43 @@ if (!in_array($statusNorm, ['PENDING','PROCESSING','COMPLETED','CANCELLED'], tru
   exit;
 }
 
+// Asegurar esquema antes de cualquier operación
+ensure_orders_schema($conexion);
+
 $stmt = $conexion->prepare("UPDATE orders_pg SET status = ? WHERE id = ?");
 $stmt->execute([$statusNorm, $orderId]);
 $ok = $stmt->rowCount() > 0;
 
 $sale = null;
 if ($ok && $statusNorm === 'COMPLETED') {
-  // Registrar venta automáticamente cuando la orden queda COMPLETED
-  $sale = record_sale_for_order($conexion, $orderId);
+    // Registrar venta automáticamente cuando la orden queda COMPLETED
+    $sale = record_sale_for_order($conexion, $orderId);
+
+    // Registrar notificación de venta completada
+    try {
+        ensure_notificaciones_schema($conexion);
+        record_notificacion(
+            $conexion,
+            'sale',
+            "Orden completada #$orderId",
+            "La orden fue marcada como completada",
+            $orderId
+        );
+        cache_respuesta_invalidar();
+    } catch (Throwable $_) {}
+} else if ($ok) {
+    // Registrar notificación de actualización de estado
+    try {
+        ensure_notificaciones_schema($conexion);
+        record_notificacion(
+            $conexion,
+            'order',
+            "Pedido actualizado #$orderId",
+            "Estado cambiado a: " . strtolower($statusNorm),
+            $orderId
+        );
+        cache_respuesta_invalidar();
+    } catch (Throwable $_) {}
 }
 
 echo json_encode(['ok'=>$ok, 'sale'=>$sale]);

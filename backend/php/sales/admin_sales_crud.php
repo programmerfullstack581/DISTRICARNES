@@ -1,35 +1,14 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/admin_auth.php';
-require_once __DIR__ . '/../core/conexion.php'; // PDO
+require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/orders_schema.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : 'list');
 
-// Asegurar tablas
-try {
-  $conexion->exec("CREATE TABLE IF NOT EXISTS orders_pg (
-    id SERIAL PRIMARY KEY,
-    paypal_id VARCHAR(64) NULL,
-    user_email VARCHAR(255) NULL,
-    user_name VARCHAR(255) NULL,
-    status VARCHAR(32) NOT NULL,
-    total NUMERIC(12,2) NOT NULL DEFAULT 0,
-    delivery_method VARCHAR(32) NOT NULL DEFAULT 'domicilio',
-    pay_method VARCHAR(32) NULL,
-    address_json JSONB NULL,
-    schedule_json JSONB NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )");
-  $conexion->exec("CREATE TABLE IF NOT EXISTS order_items_pg (
-    id SERIAL PRIMARY KEY,
-    order_id INT NOT NULL REFERENCES orders_pg(id) ON DELETE CASCADE,
-    title VARCHAR(255),
-    price NUMERIC(12,2) NOT NULL DEFAULT 0,
-    qty INT NOT NULL DEFAULT 1,
-    image TEXT NULL
-  )");
-} catch (Throwable $e) { error_log('admin_sales_crud.php: ' . $e->getMessage()); echo json_encode(['ok'=>false,'error'=>'Error de base de datos']); exit; }
+// Garantizar esquema completo y consistente de orders_pg / order_items_pg
+ensure_orders_schema($conexion);
 
 switch ($action) {
   case 'list':

@@ -5,14 +5,18 @@ require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
+require_once __DIR__ . '/../core/orders_schema.php';
 
 // Copia fresca en caché? Evita el costo de caducidad + todos los conteos
 if (cache_respuesta_probar(15, 'dash_stats')) { exit; }
 
-// Asegurar columna de vencidos y refrescar estado antes del conteo
+ensure_orders_schema($conexion);
+ensure_notificaciones_schema($conexion);
+
 producto_caducidad_aplicar($conexion);
 
-function table_exists(PDO $db, string $name): bool {
+if (!function_exists('table_exists_dashboard')) {
+    function table_exists_dashboard(PDO $db, string $name): bool {
   static $cache = [];
   if (array_key_exists($name, $cache)) return $cache[$name];
   $stmt = $db->prepare("SELECT 1 FROM information_schema.tables WHERE table_name = ? LIMIT 1");
@@ -23,7 +27,7 @@ function table_exists(PDO $db, string $name): bool {
 }
 
 function safe_sum_today_sales(PDO $db): float {
-  if (!table_exists($db, 'orders_pg')) return 0.0;
+    if (!table_exists_dashboard($db, 'orders_pg')) return 0.0;
   $sql = "SELECT SUM(total) AS suma FROM orders_pg WHERE status = 'COMPLETED' AND DATE(created_at) = CURRENT_DATE";
   try {
       if ($res = $db->query($sql)) {
@@ -36,7 +40,7 @@ function safe_sum_today_sales(PDO $db): float {
 }
 
 function safe_orders_in_route(PDO $db): int {
-  if (!table_exists($db, 'orders_pg')) return 0;
+    if (!table_exists_dashboard($db, 'orders_pg')) return 0;
   // Consideramos 'PROCESSING' como en ruta/preparación
   $sql = "SELECT COUNT(*) AS cnt FROM orders_pg WHERE status = 'PROCESSING'";
   try {
@@ -52,7 +56,7 @@ function safe_orders_in_route(PDO $db): int {
 function detect_stock_column(PDO $db, string $table = 'producto'): ?string {
   static $cache = [];
   if (array_key_exists($table, $cache)) return $cache[$table];
-  if (!table_exists($db, $table)) { $cache[$table] = null; return null; }
+    if (!table_exists_dashboard($db, $table)) { $cache[$table] = null; return null; }
   $stmt = $db->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = ?");
   $stmt->execute([$table]);
   $cols = [];
@@ -87,7 +91,7 @@ function safe_active_customers(PDO $db): int {
   $cnt = 0;
   
   // Opción 1: Contar desde tabla 'usuario' filtrando rol
-  if (table_exists($db, 'usuario')) {
+    if (table_exists_dashboard($db, 'usuario')) {
       $sql = "SELECT COUNT(*) AS cnt FROM usuario WHERE rol != 'admin'";
       try {
           if ($res = $db->query($sql)) {

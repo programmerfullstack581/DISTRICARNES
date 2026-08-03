@@ -3,6 +3,7 @@ require __DIR__ . '/../core/admin_auth.php';
 require __DIR__ . '/../core/conexion.php';
 require __DIR__ . '/../core/producto_caducidad.php';
 require __DIR__ . '/../core/cache_respuesta.php';
+require __DIR__ . '/../core/orders_schema.php';
 
 header('Content-Type: application/json');
 
@@ -11,6 +12,7 @@ if (cache_respuesta_probar(20, 'reports')) { exit; }
 
 // Asegurar columna de vencidos y refrescar estado antes de los reportes
 producto_caducidad_aplicar($conexion);
+ensure_orders_schema($conexion);
 
 // Parámetros de filtro
 $range = $_GET['range'] ?? 'week';

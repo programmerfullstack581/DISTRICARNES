@@ -1,9 +1,10 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
-require_once __DIR__ . '/../core/conexion.php'; // PDO PostgreSQL
+require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
+require_once __DIR__ . '/../core/orders_schema.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
@@ -100,44 +101,8 @@ $items    = $input['items'] ?? [];
     }
   }
 
-  // Tablas en PostgreSQL
-  $conexion->exec("
-    CREATE TABLE IF NOT EXISTS orders_pg (
-      id SERIAL PRIMARY KEY,
-      user_id INT NULL,
-      paypal_id VARCHAR(64) NULL,
-      user_email VARCHAR(255) NULL,
-      user_name VARCHAR(255) NULL,
-      status VARCHAR(32) NOT NULL,
-      total NUMERIC(12,2) NOT NULL DEFAULT 0,
-      delivery_method VARCHAR(32) NOT NULL,
-      pay_method VARCHAR(32) NULL,
-      address_json JSONB NULL,
-      schedule_json JSONB NULL,
-      factus_invoice_id VARCHAR(255) NULL,
-      factus_number VARCHAR(255) NULL,
-      factus_status VARCHAR(32) NULL,
-      factus_pdf_url TEXT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  ");
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS user_id INT NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS paypal_id VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_invoice_id VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_number VARCHAR(255) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_status VARCHAR(32) NULL"); } catch(Throwable $_){}
-  try { $conexion->exec("ALTER TABLE orders_pg ADD COLUMN IF NOT EXISTS factus_pdf_url TEXT NULL"); } catch(Throwable $_){}
-
-  $conexion->exec("
-    CREATE TABLE IF NOT EXISTS order_items_pg (
-      id SERIAL PRIMARY KEY,
-      order_id INT NOT NULL REFERENCES orders_pg(id) ON DELETE CASCADE,
-      title VARCHAR(255),
-      price NUMERIC(12,2) NOT NULL DEFAULT 0,
-      qty INT NOT NULL DEFAULT 1,
-      image TEXT NULL
-    )
-  ");
+  // Garantizar esquema completo y consistente (creado por cualquier otro endpoint)
+  ensure_orders_schema($conexion);
 
   $stmt = $conexion->prepare("
     INSERT INTO orders_pg (user_id, paypal_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
@@ -171,6 +136,33 @@ $items    = $input['items'] ?? [];
   }
 
   cache_respuesta_invalidar();
+
+  // Registrar notificación de admin
+  try {
+    ensure_notificaciones_schema($conexion);
+    $statusNorm = strtoupper((string)$status);
+    if ($statusNorm === 'COMPLETED') {
+      record_notificacion(
+        $conexion,
+        'sale',
+        "Venta registrada #$orderId",
+        "$userEmail realizó una compra de $" . number_format($total, 2),
+        $orderId,
+        $paypalId
+      );
+    } else {
+      record_notificacion(
+        $conexion,
+        'order',
+        "Nuevo pedido #$orderId",
+        "$userEmail realizó un pedido",
+        $orderId,
+        $paypalId
+      );
+    }
+    cache_respuesta_invalidar();
+  } catch (Throwable $_) {}
+
   echo json_encode(['ok'=>true, 'order_id'=>$orderId]);
 } catch (Throwable $e) {
   error_log('orders_save.php: ' . $e->getMessage());

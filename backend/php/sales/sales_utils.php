@@ -3,14 +3,7 @@
 // Crea la tabla 'sales' si no existe y registra una fila por cada orden COMPLETED
 
 require_once __DIR__ . '/../core/conexion.php';
-
-function table_exists(PDO $db, string $name): bool {
-  $stmt = $db->prepare("SELECT 1 FROM information_schema.tables WHERE table_name = ? LIMIT 1");
-  $stmt->execute([$name]);
-  $exists = (bool)$stmt->fetch();
-  $stmt->closeCursor();
-  return $exists;
-}
+require_once __DIR__ . '/../core/orders_schema.php';
 
 function ensure_table_schema(PDO $db, string $table): void {
   // PostgreSQL syntax
