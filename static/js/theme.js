@@ -105,7 +105,7 @@
   // Aplicar antes del primer paint para evitar el parpadeo claro/oscuro
   var stored = null;
   try { stored = localStorage.getItem(KEY); } catch (e) {}
-  apply(stored || 'light');
+  apply(stored || 'dark');
 
   window.DCTheme = { get: current, set: apply, toggle: function () { apply(current() === 'dark' ? 'light' : 'dark'); } };
 
