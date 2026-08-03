@@ -716,7 +716,7 @@ $basePath = str_replace('\\', '/', $basePath);
                     let orders = [];
                     if (email || userId) {
                         try {
-                            const res = await fetch(`backend/php/orders_get.php?email=${encodeURIComponent(email.trim())}&user_id=${userId}`);
+                            const res = await fetch(`backend/php/orders/orders_get.php?email=${encodeURIComponent(email.trim())}&user_id=${userId}`);
                             const text = await res.text();
                             console.log('Respuesta bruta del servidor:', text);
                             const data = JSON.parse(text);
@@ -732,7 +732,7 @@ $basePath = str_replace('\\', '/', $basePath);
                     } else {
                         // Intentar sin parámetros (el servidor usará la sesión)
                         try {
-                            const res = await fetch(`backend/php/orders_get.php`);
+                            const res = await fetch(`backend/php/orders/orders_get.php`);
                             const data = await res.json();
                             if (data && data.ok) {
                                 orders = data.orders || [];
@@ -749,7 +749,7 @@ $basePath = str_replace('\\', '/', $basePath);
                             const name = u ? (u.nombres_completos || u.name || u.user_name || '') : '';
                             if (name) {
                                 console.log('Intentando búsqueda por nombre:', name);
-                                const res = await fetch('backend/php/orders_get.php?email=' + encodeURIComponent(name.trim()));
+                                const res = await fetch('backend/php/orders/orders_get.php?email=' + encodeURIComponent(name.trim()));
                                 const data = await res.json();
                                 if (data && data.ok) {
                                     orders = data.orders || [];
@@ -791,7 +791,7 @@ $basePath = str_replace('\\', '/', $basePath);
           </div>
           <div class="card-footer" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
             <div><strong>Total:</strong> $${(Number(order.total || 0)).toFixed(2)}</div>
-            ${order.id ? `<a href="backend/php/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid #444;border-radius:6px;">Ver factura</a>` : ''}
+            ${order.id ? `<a href="backend/php/orders/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid #444;border-radius:6px;">Ver factura</a>` : ''}
           </div>
         </div>
       `).join('');

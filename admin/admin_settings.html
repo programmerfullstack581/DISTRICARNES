@@ -524,7 +524,7 @@
         }
 
         function loadSettings() {
-            fetch('../backend/php/admin_settings_manage.php?action=get_settings')
+            fetch('../backend/php/admin/admin_settings_manage.php?action=get_settings')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.settings) {
@@ -559,7 +559,7 @@
                 }
             });
 
-            fetch('../backend/php/admin_settings_manage.php?action=save_settings', {
+            fetch('../backend/php/admin/admin_settings_manage.php?action=save_settings', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -599,7 +599,7 @@
         }
 
         function backupDatabase() {
-             fetch('../backend/php/admin_settings_manage.php?action=backup_database', { method: 'POST' })
+             fetch('../backend/php/admin/admin_settings_manage.php?action=backup_database', { method: 'POST' })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

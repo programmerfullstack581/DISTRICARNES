@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Ruta corregida desde el directorio admin
-            const response = await fetch('../backend/php/login_verify.php', {
+            const response = await fetch('../backend/php/auth/login_verify.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',

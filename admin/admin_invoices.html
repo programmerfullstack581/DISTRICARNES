@@ -1237,8 +1237,8 @@
 
         async function loadInvoices(quiet) {
             try {
-                console.log('Cargando facturas desde:', `${BASE_PATH}/backend/php/invoices_list.php`);
-                const res = await fetch(`${BASE_PATH}/backend/php/invoices_list.php`, ...(quiet ? [{ silent: true }] : []));
+                console.log('Cargando facturas desde:', `${BASE_PATH}/backend/php/orders/invoices_list.php`);
+                const res = await fetch(`${BASE_PATH}/backend/php/orders/invoices_list.php`, ...(quiet ? [{ silent: true }] : []));
                 const data = await res.json();
                 console.log('Datos recibidos:', data);
                 
@@ -1288,7 +1288,7 @@
                 itemsList.innerHTML = '<div class="invoice-item"><span class="item-name">Cargando items...</span></div>';
                 
                 try {
-                    const res = await fetch(`${BASE_PATH}/backend/php/orders_list.php?id=${invoiceId}`);
+                    const res = await fetch(`${BASE_PATH}/backend/php/orders/orders_list.php?id=${invoiceId}`);
                     const data = await res.json();
                     if (data && data.ok && data.orders && data.orders[0]) {
                         const order = data.orders[0];
@@ -1332,16 +1332,16 @@
 
         function printInvoice() {
             if (!currentInvoice) return;
-            window.open(`${BASE_PATH}/backend/php/order_invoice.php?order_id=${currentInvoice.id}&print=1`, '_blank');
+            window.open(`${BASE_PATH}/backend/php/orders/order_invoice.php?order_id=${currentInvoice.id}&print=1`, '_blank');
         }
 
         function downloadInvoice() {
             if (!currentInvoice) return;
-            window.open(`${BASE_PATH}/backend/php/order_invoice.php?order_id=${currentInvoice.id}`, '_blank');
+            window.open(`${BASE_PATH}/backend/php/orders/order_invoice.php?order_id=${currentInvoice.id}`, '_blank');
         }
 
         function downloadInvoiceById(invoiceId) {
-            window.open(`${BASE_PATH}/backend/php/order_invoice.php?order_id=${invoiceId}`, '_blank');
+            window.open(`${BASE_PATH}/backend/php/orders/order_invoice.php?order_id=${invoiceId}`, '_blank');
         }
 
         async function sendInvoiceEmail() {
@@ -1360,7 +1360,7 @@
             }
 
             try {
-                const res = await fetch(`${BASE_PATH}/backend/php/send_invoice_email.php`, {
+                const res = await fetch(`${BASE_PATH}/backend/php/orders/send_invoice_email.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

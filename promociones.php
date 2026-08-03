@@ -5,7 +5,7 @@ if ($basePath === '/' || $basePath === '\\') {
 }
 $basePath = str_replace('\\', '/', $basePath);
 
-require_once 'backend/php/conexion.php';
+require_once __DIR__ . '/backend/php/core/conexion.php';
 
 function getActiveOffers($db) {
     try {

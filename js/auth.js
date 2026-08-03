@@ -177,7 +177,7 @@
                 const email = currentUser.correo_electronico || currentUser.email || '';
                 if (email) {
                     // llamar siempre a la ruta absoluta del backend
-                    fetch('/backend/php/get_user_by_email.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email }) })
+                    fetch('/backend/php/auth/get_user_by_email.php', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ email }) })
                         .then(r => r.json())
                         .then(result => {
                             if (result && result.success && result.user && result.user.foto) {

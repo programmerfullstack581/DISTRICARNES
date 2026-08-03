@@ -52,7 +52,7 @@
         var id = u.id || u.id_usuario;
         var email = u.correo_electronico || u.email;
         if (!id || !email) { resolve(false); return; }
-        fetch('/backend/php/ensure_session.php', {
+        fetch('/backend/php/auth/ensure_session.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ id: String(id), email: String(email) })
@@ -86,7 +86,7 @@
     el('email').value = u.correo_electronico || u.email || '';
   }
   function reloadServerProfile() {
-    fetch('./backend/php/user_profile_manage.php', {
+    fetch('./backend/php/user/user_profile_manage.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ action: 'get_profile' })
@@ -133,7 +133,7 @@
         if (!inputFile || !inputFile.files || !inputFile.files[0]) { if (alertBox) alertBox.textContent = 'Selecciona una imagen.'; if (typeof Swal !== 'undefined') { Swal.fire({icon:'warning',title:'Sin imagen',text:'Selecciona una imagen antes de subir.',confirmButtonColor:'#ff0000',background:'#1a1a1a',color:'#ffffff'});} return; }
         var fd = new FormData();
         fd.append('photo', inputFile.files[0]);
-        fetch('/backend/php/profile_photo_upload.php', { method: 'POST', body: fd })
+        fetch('/backend/php/user/profile_photo_upload.php', { method: 'POST', body: fd })
           .then(function (r) { return r.json(); })
           .then(function (d) {
             if (d && d.success && d.url) {
@@ -172,7 +172,7 @@
         var fullName = el('fullName').value.trim();
         var email = el('email').value.trim();
         if (fullName === '' || email === '') { alertBox.textContent = 'Completa nombre y correo.'; if (typeof Swal !== 'undefined') { Swal.fire({icon:'warning',title:'Campos requeridos',text:'Completa nombre y correo.',confirmButtonColor:'#ff0000',background:'#1a1a1a',color:'#ffffff'}); } return; }
-        fetch('/backend/php/user_profile_manage.php', {
+        fetch('/backend/php/user/user_profile_manage.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ action: 'update_profile', fullName: fullName, email: email })
@@ -196,7 +196,7 @@
               if (d && d.message && /iniciar sesión/i.test(String(d.message))) {
                 ensureServerSession().then(function(ok){
                   if (ok) {
-                    return fetch('/backend/php/user_profile_manage.php', {
+                    return fetch('/backend/php/user/user_profile_manage.php', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                       body: new URLSearchParams({ action: 'update_profile', fullName: fullName, email: email })
@@ -236,7 +236,7 @@
         var confirmPassword = el('confirmPassword').value;
         if ((newPassword || '').length < 8) { alertBox.textContent = 'La nueva contraseña debe tener al menos 8 caracteres.'; if (typeof Swal !== 'undefined') { Swal.fire({icon:'warning',title:'Contraseña muy corta',text:'Debe tener al menos 8 caracteres.',confirmButtonColor:'#ff0000',background:'#1a1a1a',color:'#ffffff'}); } return; }
         if (newPassword !== confirmPassword) { alertBox.textContent = 'Las contraseñas nuevas no coinciden.'; if (typeof Swal !== 'undefined') { Swal.fire({icon:'warning',title:'No coinciden',text:'Las contraseñas nuevas no coinciden.',confirmButtonColor:'#ff0000',background:'#1a1a1a',color:'#ffffff'}); } return; }
-        fetch('/backend/php/user_profile_manage.php', {
+        fetch('/backend/php/user/user_profile_manage.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({
@@ -257,7 +257,7 @@
               if (d && d.message && /iniciar sesión/i.test(String(d.message))) {
                 ensureServerSession().then(function(ok){
                   if (ok) {
-                    return fetch('/backend/php/user_profile_manage.php', {
+                    return fetch('/backend/php/user/user_profile_manage.php', {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                       body: new URLSearchParams({
@@ -328,7 +328,7 @@
     } catch (e) { }
     (function loadServerSettings(){
       ensureServerSession().then(function(){
-        fetch('/backend/php/user_settings_manage.php', {
+        fetch('/backend/php/user/user_settings_manage.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ action: 'get_settings' })
@@ -352,7 +352,7 @@
           showIVA: !!showIVA.checked
         };
         ensureServerSession().then(function(){
-          fetch('/backend/php/user_settings_manage.php', {
+          fetch('/backend/php/user/user_settings_manage.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -396,7 +396,7 @@
                   }
                   return;
                 }
-                fetch('/backend/php/user_settings_manage.php', {
+                fetch('/backend/php/user/user_settings_manage.php', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                   body: new URLSearchParams({

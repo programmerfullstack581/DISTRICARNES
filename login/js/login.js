@@ -17,7 +17,7 @@ window.handleCredentialResponse = async function(response) {
     const responsePayload = decodeJwtResponse(response.credential);
     console.log('GSI callback recibido', responsePayload && responsePayload.email ? responsePayload.email : '(sin email)');
     try {
-        const res = await fetch('../backend/php/google_login.php', {
+        const res = await fetch('../backend/php/auth/google_login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Ruta corregida desde el directorio login
-            const response = await fetch('../backend/php/login_verify.php', {
+            const response = await fetch('../backend/php/auth/login_verify.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to send Facebook Access Token to backend
     async function sendFacebookTokenToBackend(accessToken) {
         try {
-                        const response = await fetch('../backend/php/facebook_login.php', {
+                        const response = await fetch('../backend/php/auth/facebook_login.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',

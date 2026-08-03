@@ -211,7 +211,7 @@
       e.preventDefault();
       const email = document.getElementById('email').value.trim();
       try {
-        const resp = await fetch('../backend/php/request_password_reset.php', {
+        const resp = await fetch('../backend/php/auth/request_password_reset.php', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams({ email })

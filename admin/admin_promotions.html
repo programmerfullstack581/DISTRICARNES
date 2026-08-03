@@ -1318,7 +1318,7 @@
                 formData.append('productos_json', JSON.stringify(selected));
             } catch(err) { /* noop */ }
             
-            fetch('../backend/php/admin_promotions_manage.php', {
+            fetch('../backend/php/admin/admin_promotions_manage.php', {
                 method: 'POST',
                 body: formData
             })
@@ -1364,7 +1364,7 @@
                 color: '#ffffff'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch('../backend/php/admin_promotions_manage.php', {
+                    fetch('../backend/php/admin/admin_promotions_manage.php', {
                         method: 'POST',
                         body: JSON.stringify({
                             action: 'delete',
@@ -1519,7 +1519,7 @@
 
       async function loadStats(){
         try {
-          const res = await fetchJSON('../backend/php/admin_promotions_manage.php?action=stats');
+          const res = await fetchJSON('../backend/php/admin/admin_promotions_manage.php?action=stats');
           if(res.ok){
             setText('statTotalPromotions', String(res.total_promotions || 0));
             setText('statActivePromotions', String(res.active_promotions || 0));
@@ -1537,7 +1537,7 @@
           const type = document.getElementById('typeFilter')?.value || '';
           const q = document.getElementById('searchInput')?.value || '';
           const qs = `?action=list&status=${encodeURIComponent(status)}&type=${encodeURIComponent(type)}&q=${encodeURIComponent(q)}`;
-          const res = await fetchJSON('../backend/php/admin_promotions_manage.php' + qs);
+          const res = await fetchJSON('../backend/php/admin/admin_promotions_manage.php' + qs);
           currentList = res.ok ? (res.promotions || []) : [];
           renderPromotions(currentList);
         } catch(e){ console.error(e); }
@@ -1547,7 +1547,7 @@
         // Cargar productos para el selector
         let productsList = [];
         try {
-          const productsRes = await fetchJSON('../backend/php/get_products.php');
+          const productsRes = await fetchJSON('../backend/php/catalog/get_products.php');
           productsList = productsRes?.products || [];
         } catch(e) {
           console.error('Error loading products', e);
@@ -1617,7 +1617,7 @@
           }
         });
         if(formValues && formValues.title){
-          const res = await postForm('../backend/php/admin_promotions_manage.php', formValues);
+          const res = await postForm('../backend/php/admin/admin_promotions_manage.php', formValues);
           if(res.ok){ Swal.fire('Guardado', 'Promoción creada', 'success'); loadStats(); loadList(); }
           else { Swal.fire('Error', res.message || 'No se pudo crear', 'error'); }
         }
@@ -1630,7 +1630,7 @@
         // Cargar productos para el selector
         let productsList = [];
         try {
-          const productsRes = await fetchJSON('../backend/php/get_products.php');
+          const productsRes = await fetchJSON('../backend/php/catalog/get_products.php');
           productsList = productsRes?.products || [];
         } catch(e) {
           console.error('Error loading products', e);
@@ -1703,7 +1703,7 @@
           }
         });
         if(formValues && formValues.title){
-          const res = await postForm('../backend/php/admin_promotions_manage.php', formValues);
+          const res = await postForm('../backend/php/admin/admin_promotions_manage.php', formValues);
           if(res.ok){ Swal.fire('Actualizado', 'Promoción actualizada', 'success'); loadStats(); loadList(); }
           else { Swal.fire('Error', res.message || 'No se pudo actualizar', 'error'); }
         }
@@ -1734,7 +1734,7 @@
         });
 
         if (result.isConfirmed) {
-            const res = await postForm('../backend/php/admin_promotions_manage.php', { action: 'toggle', id });
+            const res = await postForm('../backend/php/admin/admin_promotions_manage.php', { action: 'toggle', id });
             if(res.ok){ 
                 Swal.fire({
                     title: '¡Actualizado!',
@@ -1765,7 +1765,7 @@
       window.deletePromotion = async function(id){
         const conf = await Swal.fire({ title: 'Eliminar', text: '¿Desea eliminar la promoción?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sí, eliminar' });
         if(conf.isConfirmed){
-          const res = await postForm('../backend/php/admin_promotions_manage.php', { action: 'delete', id });
+          const res = await postForm('../backend/php/admin/admin_promotions_manage.php', { action: 'delete', id });
           if(res.ok){ Swal.fire('Eliminada', 'Promoción eliminada', 'success'); loadStats(); loadList(); }
           else { Swal.fire('Error', res.message || 'No se pudo eliminar', 'error'); }
         }

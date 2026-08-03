@@ -35,7 +35,7 @@
                 <p class="form-subtitle-main">Completa tus datos para unirte a la comunidad DistriCarnes Hermanos
                     Navarro.</p>
 
-                <form method="POST" action="../backend/php/guardar_usuario.php" id="registroForm">
+                <form method="POST" action="../backend/php/auth/guardar_usuario.php" id="registroForm">
                     <div class="input-row">
                         <div class="input-group-half">
                             <label for="nombre" class="form-label">Nombres Completos</label>

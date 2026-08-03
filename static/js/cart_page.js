@@ -188,7 +188,7 @@
     // Cotizar envío real con backend (estimación: domicilio)
     let shipping = 0;
     try{
-      const res = await fetch('../backend/php/shipping_quote.php', {
+      const res = await fetch('../backend/php/orders/shipping_quote.php', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ items, delivery: 'domicilio' })

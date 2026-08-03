@@ -235,7 +235,7 @@
                 // Map de estado visual a estado real
                 const statusMap = { 'paid': 'COMPLETED', 'pending': 'PENDING', 'canceled': 'CANCELLED', '': '' };
                 const status = statusMap[statusFilter.value] || '';
-                let url = `../backend/php/orders_list.php`;
+                let url = `../backend/php/orders/orders_list.php`;
                 const qs = [];
                 if (status) qs.push(`status=${encodeURIComponent(status)}`);
                 if (from)   qs.push(`from=${encodeURIComponent(from)}`);

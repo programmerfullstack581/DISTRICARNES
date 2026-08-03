@@ -37,7 +37,7 @@ async function fetchProducts(){
     if(categoria) params.set('categoria', categoria);
     if(subcategoria) params.set('subcategoria', subcategoria);
 
-    const res = await fetch('backend/php/get_products.php' + (params.toString()?`?${params.toString()}`:''));
+    const res = await fetch('backend/php/catalog/get_products.php' + (params.toString()?`?${params.toString()}`:''));
     const data = await res.json();
     products = (data && data.products ? data.products : []).map(normalizeRow);
   }catch(e){

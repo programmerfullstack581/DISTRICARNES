@@ -240,19 +240,19 @@ function chatEndpoint(){
 function productsEndpoint(params){
     const base = getBase();
     const qs = params ? ('?' + new URLSearchParams(params).toString()) : '';
-    return base + '/backend/php/get_products.php' + qs;
+    return base + '/backend/php/catalog/get_products.php' + qs;
 }
 
 function categoriesEndpoint(params){
     const base = getBase();
     const qs = params ? ('?' + new URLSearchParams(params).toString()) : '';
-    return base + '/backend/php/get_categories.php' + qs;
+    return base + '/backend/php/catalog/get_categories.php' + qs;
 }
 
 function offersEndpoint(params){
     const base = getBase();
     const query = new URLSearchParams(Object.assign({ only_active: '1' }, (params||{}))).toString();
-    return base + '/backend/php/get_offers.php?' + query;
+    return base + '/backend/php/catalog/get_offers.php?' + query;
 }
 
 function parseMenuActionLabel(txt){

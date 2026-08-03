@@ -1289,7 +1289,7 @@
 
         async function fetchCategories() {
             try {
-                const res = await fetch('../backend/php/get_categories.php');
+                const res = await fetch('../backend/php/catalog/get_categories.php');
                 const data = await res.json();
                 adminCategories = (data && data.categories) ? data.categories : [];
             } catch (e) { console.error('Error cargando categorías', e); adminCategories = []; }
@@ -1297,7 +1297,7 @@
 
         async function fetchAllProducts() {
             try {
-                const res = await fetch('../backend/php/get_products.php');
+                const res = await fetch('../backend/php/catalog/get_products.php');
                 const data = await res.json();
                 allProducts = (data && data.products ? data.products : []).map(normalizeRow);
             } catch (e) { console.error('Error cargando productos', e); allProducts = []; }
@@ -1379,7 +1379,7 @@
                 const params = new URLSearchParams();
                 params.set('categoria', catName);
                 if (catId) params.set('categoria_id', catId);
-                const res = await fetch('../backend/php/get_products.php?' + params.toString());
+                const res = await fetch('../backend/php/catalog/get_products.php?' + params.toString());
                 const data = await res.json();
                 const items = (data && data.products ? data.products : []).map(normalizeRow);
                 renderProductsGrid(items);
@@ -1449,7 +1449,7 @@
                 const form = new FormData();
                 form.append('action', 'create');
                 form.append('nombre', nombre.trim());
-                const resp = await fetch('../backend/php/admin_categories_manage.php', { method: 'POST', body: form });
+                const resp = await fetch('../backend/php/admin/admin_categories_manage.php', { method: 'POST', body: form });
                 const data = await resp.json();
                 if (data && data.ok) {
                     await fetchCategories();

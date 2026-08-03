@@ -92,7 +92,7 @@ async function updateReports() {
     }
 
     try {
-        const res = await fetch(`../backend/php/get_reports.php?${params.toString()}`);
+        const res = await fetch(`../backend/php/sales/get_reports.php?${params.toString()}`);
         const data = await res.json();
         
         if (data.ok) {

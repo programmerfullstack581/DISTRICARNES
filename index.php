@@ -871,7 +871,7 @@ $basePath = str_replace('\\', '/', $basePath);
                     // Fallback: si no hay foto en sesión, consultar al backend y aplicar
                     if (!photo && displayEmail) {
                         try {
-                            fetch('./backend/php/get_user_by_email.php?email=' + encodeURIComponent(displayEmail))
+                            fetch('./backend/php/auth/get_user_by_email.php?email=' + encodeURIComponent(displayEmail))
                                 .then(function(r) {
                                     return r.ok ? r.json() : Promise.reject();
                                 })

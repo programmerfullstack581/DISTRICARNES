@@ -2,7 +2,7 @@
 // Obtiene el client_id de forma segura desde el backend (sin exponer el secret)
 
 async function fetchPayPalConfig() {
-  const res = await fetch('../backend/php/get_paypal_client.php');
+  const res = await fetch('../backend/php/payments/get_paypal_client.php');
   const conf = await res.json();
   return conf;
 }

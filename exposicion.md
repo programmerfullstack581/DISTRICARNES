@@ -154,7 +154,7 @@ DISTRICARNES/
 
 ### 1. Guardado de Órdenes (orders_save.php)
 
-**Ubicación:** `backend/php/orders_save.php` (líneas 89-118)
+**Ubicación:** `backend/php/orders/orders_save.php` (líneas 89-118)
 
 ```php
 // Inserta la orden en la base de datos
@@ -303,7 +303,7 @@ function initPlexusNetwork() {
 
 ### 4. Factura con QR (order_invoice.php)
 
-**Ubicación:** `backend/php/order_invoice.php` (líneas 110-119)
+**Ubicación:** `backend/php/orders/order_invoice.php` (líneas 110-119)
 
 ```php
 // Código único de factura

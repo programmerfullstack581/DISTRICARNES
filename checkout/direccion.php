@@ -1234,7 +1234,7 @@
                 const u = raw && raw.user ? raw.user : raw;
                 const userEmail = (u && (u.correo_electronico || u.email)) || '';
                 if (userEmail) {
-                    const res = await fetch('../backend/php/address_list.php', {
+                    const res = await fetch('../backend/php/orders/address_list.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1307,7 +1307,7 @@
             // Cotizar envío en backend según reglas
             let shipping = 0;
             try {
-                const res = await fetch('../backend/php/shipping_quote.php', {
+                const res = await fetch('../backend/php/orders/shipping_quote.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1363,7 +1363,7 @@
             });
             try {
                 window.__paypalLoading = true;
-                const confRes = await fetch('../backend/php/get_paypal_client.php');
+                const confRes = await fetch('../backend/php/payments/get_paypal_client.php');
                 const conf = await confRes.json();
                 const clientId = conf.client_id;
                 const currency = conf.currency || 'USD';
@@ -1416,7 +1416,7 @@
                         }
                     })()
                 };
-                const res = await fetch('../backend/php/orders_save.php', {
+                const res = await fetch('../backend/php/orders/orders_save.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1461,7 +1461,7 @@
                     },
                     createOrder: async function() {
                         try {
-                            const res = await fetch('../backend/php/create_paypal_order.php', {
+                            const res = await fetch('../backend/php/payments/create_paypal_order.php', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -1484,7 +1484,7 @@
                     },
                     onApprove: async function(data) {
                         try {
-                            const res = await fetch('../backend/php/capture_paypal_order.php', {
+                            const res = await fetch('../backend/php/payments/capture_paypal_order.php', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -1516,7 +1516,7 @@
                                     const u = raw && raw.user ? raw.user : raw;
                                     const email = (u && (u.correo_electronico || u.email)) || null;
                                     if (orderId && email) {
-                                        await fetch('../backend/php/send_invoice_email.php', {
+                                        await fetch('../backend/php/orders/send_invoice_email.php', {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -1554,7 +1554,7 @@
                                         const u = raw && raw.user ? raw.user : raw;
                                         const email = (u && (u.correo_electronico || u.email)) || null;
                                         if (email) {
-                                            await fetch('../backend/php/send_invoice_email.php', {
+                                            await fetch('../backend/php/orders/send_invoice_email.php', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -1717,7 +1717,7 @@
                     const raw = rawStr ? JSON.parse(rawStr) : null;
                     const u = raw && raw.user ? raw.user : raw;
                     const userEmail = (u && (u.correo_electronico || u.email)) || '';
-                    const res = await fetch('../backend/php/address_upsert.php', {
+                    const res = await fetch('../backend/php/orders/address_upsert.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1952,7 +1952,7 @@
                     });
                     try {
                         const items = getCart();
-                        const res = await fetch('../backend/php/orders_save_pending.php', {
+                        const res = await fetch('../backend/php/orders/orders_save_pending.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -1990,7 +1990,7 @@
                                 const u = raw && raw.user ? raw.user : raw;
                                 const email = (u && (u.correo_electronico || u.email)) || null;
                                 if (email) {
-                                    await fetch('../backend/php/send_invoice_email.php', {
+                                    await fetch('../backend/php/orders/send_invoice_email.php', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
@@ -2028,7 +2028,7 @@
                                 allowOutsideClick: false
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = '../backend/php/order_invoice.php?order_id=' + encodeURIComponent(out.order_id) + '&print=1';
+                                    window.location.href = '../backend/php/orders/order_invoice.php?order_id=' + encodeURIComponent(out.order_id) + '&print=1';
                                 }
                             });
                             return;

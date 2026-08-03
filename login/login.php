@@ -42,7 +42,7 @@
                     <h2 class="form-title">Iniciar <span class="highlight">Sesión</span></h2>
                     <p class="form-subtitle">Bienvenido de nuevo. ¡Te estábamos esperando!</p>
 
-                    <form id="loginForm" action="../backend/php/login_verify.php" method="POST" novalidate>
+                    <form id="loginForm" action="../backend/php/auth/login_verify.php" method="POST" novalidate>
                         <div class="mb-3">
                             <label for="email" class="form-label">Correo Electrónico</label>
                             <div class="input-group">

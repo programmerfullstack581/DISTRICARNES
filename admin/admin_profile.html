@@ -692,7 +692,7 @@
                 if (profileAvatarCard) profileAvatarCard.textContent = initials;
                 // Fallback al backend por email
                 if (email) {
-                    fetch('../backend/php/get_user_by_email.php', {
+                    fetch('../backend/php/auth/get_user_by_email.php', {
                         method: 'POST',
                         headers: {'Content-Type':'application/x-www-form-urlencoded'},
                         body: new URLSearchParams({ email })

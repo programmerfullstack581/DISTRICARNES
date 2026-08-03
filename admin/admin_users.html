@@ -1610,7 +1610,7 @@
                     formData.append('action', 'toggle_status');
                     formData.append('user_id', userId);
                     // CSRF no aplica en este entorno
-                    fetch('../backend/php/admin_users_manage.php', {
+                    fetch('../backend/php/admin/admin_users_manage.php', {
                         method: 'POST',
                         body: formData
                     })
@@ -1667,7 +1667,7 @@
                     formData.append('action', 'delete');
                     formData.append('user_id', userId);
                     // CSRF no aplica en este entorno
-                    fetch('../backend/php/admin_users_manage.php', {
+                    fetch('../backend/php/admin/admin_users_manage.php', {
                         method: 'POST',
                         body: formData
                     })
@@ -1721,7 +1721,7 @@
             }
             
             // CSRF no aplica en este entorno
-            fetch('../backend/php/admin_users_manage.php', {
+            fetch('../backend/php/admin/admin_users_manage.php', {
                 method: 'POST',
                 body: formData
             })
@@ -1907,7 +1907,7 @@
 
         async function loadUsers(quiet) {
             try {
-                const res = await fetch('../backend/php/get_users.php', ...(quiet ? [{ silent: true }] : []));
+                const res = await fetch('../backend/php/sales/get_users.php', ...(quiet ? [{ silent: true }] : []));
                 const data = await res.json();
                 if (data.ok) {
                     usersData = data.users || [];

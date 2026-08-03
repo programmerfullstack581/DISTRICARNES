@@ -1185,7 +1185,7 @@
 
         async function fetchCategories(){
             try{
-                const res = await fetch('../backend/php/get_categories.php');
+                const res = await fetch('../backend/php/catalog/get_categories.php');
                 const data = await res.json();
                 if(data && data.ok){
                     adminCategories = (data.categories || []);
@@ -1294,7 +1294,7 @@
             
             const formData = new FormData(this);
             
-            fetch('../backend/php/admin_inventory_manage.php', {
+            fetch('../backend/php/admin/admin_inventory_manage.php', {
                 method: 'POST',
                 body: formData
             })
@@ -1330,7 +1330,7 @@
         async function loadInventory(){
             try{
                 await fetchCategories();
-                const res = await fetch('../backend/php/get_products.php');
+                const res = await fetch('../backend/php/catalog/get_products.php');
                 const data = await res.json();
                 if(!data || !data.ok){ throw new Error('No se pudo obtener productos'); }
                 const products = (data.products || []).map(normalizeProduct);

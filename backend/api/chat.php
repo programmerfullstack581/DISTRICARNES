@@ -4,7 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 @ini_set('display_errors', '0');
 
-require_once __DIR__ . '/../php/conexion.php';
+require_once __DIR__ . '/../php/core/conexion.php';
 
 $apiKey = getenv('OPENAI_API_KEY') ?: '';
 if ($apiKey === '') {

@@ -88,7 +88,7 @@
     // Fallback: consultar al backend si hay foto guardada para este email
     if (displayEmail) {
       try {
-        fetch('./backend/php/get_user_by_email.php?email=' + encodeURIComponent(displayEmail))
+        fetch('./backend/php/auth/get_user_by_email.php?email=' + encodeURIComponent(displayEmail))
           .then(r => r.ok ? r.json() : Promise.reject())
           .then(d => {
             if (d && d.success && d.user && d.user.foto) {

@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (email) {
           (async () => {
             try {
-              const resp = await fetch('/backend/php/get_user_by_email.php', {
+              const resp = await fetch('/backend/php/auth/get_user_by_email.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({ email })

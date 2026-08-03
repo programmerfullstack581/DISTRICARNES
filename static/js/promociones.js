@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function fetchAllProducts() {
     if (ALL_PRODUCTS_CACHE.length) return;
     try {
-      const res = await fetch('./backend/php/get_products.php');
+      const res = await fetch('./backend/php/catalog/get_products.php');
       const data = await res.json();
       ALL_PRODUCTS_CACHE = (data?.products?.map(normalizeProductRow) || []);
     } catch (e) {
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function fetchOffers() {
     try {
-      const res = await fetch('./backend/php/get_offers.php?only_active=1');
+      const res = await fetch('./backend/php/catalog/get_offers.php?only_active=1');
       const data = await res.json();
       if (data?.ok) {
         renderOffersWithProducts(data.offers || []);
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let products = [];
     try {
       if (productIds.size) {
-        const res = await fetch(`./backend/php/get_products.php?ids=${encodeURIComponent(Array.from(productIds).join(','))}`);
+        const res = await fetch(`./backend/php/catalog/get_products.php?ids=${encodeURIComponent(Array.from(productIds).join(','))}`);
         const data = await res.json();
         products = data?.products || [];
       }

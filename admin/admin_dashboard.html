@@ -999,7 +999,7 @@
                 if (userAvatarLarge) userAvatarLarge.textContent = initials;
                 // Fallback: consultar al backend si hay foto guardada para este email
                 if (email) {
-                    fetch('../backend/php/get_user_by_email.php', {
+                    fetch('../backend/php/auth/get_user_by_email.php', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
                         body: new URLSearchParams({ email })
@@ -1097,7 +1097,7 @@
 
         // Cargar estadísticas del dashboard
         function loadDashboardStats(quiet) {
-            fetch('../backend/php/dashboard_stats.php', {
+            fetch('../backend/php/sales/dashboard_stats.php', {
                     cache: 'no-store',
                     ...(quiet ? { silent: true } : {})
                 })
@@ -1139,7 +1139,7 @@
             const fromStr = `${from.getFullYear()}-${pad(from.getMonth()+1)}-${pad(from.getDate())} 00:00:00`;
             const toStr = `${to.getFullYear()}-${pad(to.getMonth()+1)}-${pad(to.getDate())} 23:59:59`;
 
-            fetch(`../backend/php/sales_list.php?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}`, { cache: 'no-store', ...(quiet ? { silent: true } : {}) })
+            fetch(`../backend/php/sales/sales_list.php?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}`, { cache: 'no-store', ...(quiet ? { silent: true } : {}) })
                 .then(r => {
                     if (!r.ok) throw new Error('Network response was not ok');
                     return r.json();
@@ -1233,7 +1233,7 @@
         // Cargar notificaciones recientes
         async function loadNotifications(quiet) {
             try {
-                const resp = await fetch('../backend/php/notifications_list.php', {
+                const resp = await fetch('../backend/php/sales/notifications_list.php', {
                     cache: 'no-store',
                     ...(quiet ? { silent: true } : {})
                 });

@@ -1451,7 +1451,7 @@ window.openAuthModal('login');
 
         async function fetchCategories(){
             try{
-                const res = await fetch('../backend/php/get_categories.php');
+                const res = await fetch('../backend/php/catalog/get_categories.php');
                 const data = await res.json();
                 if(data && data.ok){
                     // Cargar categorías y filtrar duplicados y categorías provenientes de 'Jupyter'
@@ -1502,7 +1502,7 @@ window.openAuthModal('login');
 
         async function fetchProducts(){
             try{
-                const res = await fetch('../backend/php/get_products.php');
+                const res = await fetch('../backend/php/catalog/get_products.php');
                 const data = await res.json();
                 adminProducts = (data && data.products ? data.products : []).map(normalizeRow);
                 renderProductsGrid();
@@ -1767,7 +1767,7 @@ window.openAuthModal('login');
                     formData.append('product_id', productId);
                     // CSRF no requerido en este entorno
                     
-                    fetch('../backend/php/admin_products_manage.php', {
+                    fetch('../backend/php/admin/admin_products_manage.php', {
                         method: 'POST',
                         body: formData
                     })
@@ -1822,7 +1822,7 @@ window.openAuthModal('login');
                     formData.append('product_id', productId);
                     // CSRF no aplica en este entorno
                     
-                    fetch('../backend/php/admin_products_manage.php', {
+                    fetch('../backend/php/admin/admin_products_manage.php', {
                         method: 'POST',
                         body: formData
                     })
@@ -1926,7 +1926,7 @@ window.openAuthModal('login');
                 formData.append('action', 'create');
             }
             
-            fetch('../backend/php/admin_products_manage.php', {
+            fetch('../backend/php/admin/admin_products_manage.php', {
                 method: 'POST',
                 body: formData
             })

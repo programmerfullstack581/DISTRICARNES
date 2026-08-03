@@ -5,7 +5,7 @@ if ($basePath === '/' || $basePath === '\\') {
 }
 $basePath = str_replace('\\', '/', $basePath);
 
-require_once __DIR__ . '/backend/php/conexion.php';
+require_once __DIR__ . '/backend/php/core/conexion.php';
 
 // Obtener ID del producto
 $id_producto = isset($_GET['id']) ? intval($_GET['id']) : 0;

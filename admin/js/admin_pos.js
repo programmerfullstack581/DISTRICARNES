@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Cargar categorías
 function loadCategories() {
-    fetch('../backend/php/get_categories.php')
+    fetch('../backend/php/catalog/get_categories.php')
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('categoriesContainer');
@@ -48,7 +48,7 @@ function loadProducts() {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666; padding: 20px;">Cargando productos...</div>';
 
-    fetch('../backend/php/get_products.php')
+    fetch('../backend/php/catalog/get_products.php')
         .then(res => {
             if (!res.ok) throw new Error('Error en la respuesta del servidor');
             return res.json();
@@ -289,7 +289,7 @@ clientSearchInput.addEventListener('input', (e) => {
     
     if (searchTimeout) clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
-        fetch(`../backend/php/search_clients.php?q=${encodeURIComponent(q)}`)
+        fetch(`../backend/php/sales/search_clients.php?q=${encodeURIComponent(q)}`)
             .then(r => r.json())
             .then(data => {
                 if (data.ok && data.clients && data.clients.length > 0) {
@@ -349,7 +349,7 @@ function processSale() {
     
     Swal.fire({ title: 'Procesando...', didOpen: () => Swal.showLoading() });
     
-    fetch('../backend/php/pos_checkout.php', {
+    fetch('../backend/php/sales/pos_checkout.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -367,7 +367,7 @@ function processSale() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Abrir ticket en nueva ventana
-                    window.open(`../backend/php/print_receipt.php?id=${data.order_id}`, '_blank', 'width=400,height=600');
+                    window.open(`../backend/php/sales/print_receipt.php?id=${data.order_id}`, '_blank', 'width=400,height=600');
                 }
                 closeCheckoutModal();
                 clearCart();

@@ -8,10 +8,10 @@
   var scriptEl = document.currentScript;
   var src = (scriptEl && scriptEl.getAttribute('src')) || '';
   var BASE = (src.replace(/static\/js\/auth_modal\.js[^/]*$/, '') || './');
-  var ENDPOINT_LOGIN = BASE + 'backend/php/login_verify.php';
-  var ENDPOINT_REGISTER = BASE + 'backend/php/guardar_usuario.php';
-  var ENDPOINT_FORGOT = BASE + 'backend/php/request_password_reset.php';
-  var ENDPOINT_CHANGE = BASE + 'backend/php/perform_password_reset.php';
+  var ENDPOINT_LOGIN = BASE + 'backend/php/auth/login_verify.php';
+  var ENDPOINT_REGISTER = BASE + 'backend/php/auth/guardar_usuario.php';
+  var ENDPOINT_FORGOT = BASE + 'backend/php/auth/request_password_reset.php';
+  var ENDPOINT_CHANGE = BASE + 'backend/php/auth/perform_password_reset.php';
   var URL_PROFILE = BASE + 'perfil.php';
   var URL_ADMIN = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
   var LOGO_URL = '/assets/icon/LOGO-DISTRICARNES.png';

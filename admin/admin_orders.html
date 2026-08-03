@@ -1281,7 +1281,7 @@
             }
 
             try {
-                const response = await fetch(`${BASE_PATH}/backend/php/orders_update_status.php`, {
+                const response = await fetch(`${BASE_PATH}/backend/php/orders/orders_update_status.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ order_id: Number(orderId), status: newStatus })
@@ -1393,7 +1393,7 @@
         // Cargar pedidos del backend y renderizar con filtros/paginación
         (async function loadAdminOrders(){
             try{
-                const res = await fetch(`${BASE_PATH}/backend/php/orders_list.php`);
+                const res = await fetch(`${BASE_PATH}/backend/php/orders/orders_list.php`);
                 const data = await res.json();
                 if(!data || !data.ok){ rowsContainer.innerHTML = '<div class="empty-state"><h3>Error cargando pedidos</h3></div>'; return; }
                 AdminOrdersCache = data.orders || [];
@@ -1407,7 +1407,7 @@
         setInterval(async () => {
             if (document.hidden) return;
             try{
-                const res = await fetch(`${BASE_PATH}/backend/php/orders_list.php`, { silent: true });
+                const res = await fetch(`${BASE_PATH}/backend/php/orders/orders_list.php`, { silent: true });
                 const data = await res.json();
                 if(data && data.ok){
                     AdminOrdersCache = data.orders || [];

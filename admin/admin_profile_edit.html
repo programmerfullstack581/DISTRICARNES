@@ -670,7 +670,7 @@
                 if (userAvatarLarge) userAvatarLarge.textContent = initials;
                 if (adminAvatarPreview) adminAvatarPreview.textContent = initials;
                 if (email) {
-                    fetch('../backend/php/get_user_by_email.php', {
+                    fetch('../backend/php/auth/get_user_by_email.php', {
                         method: 'POST',
                         headers: {'Content-Type':'application/x-www-form-urlencoded'},
                         body: new URLSearchParams({ email })
@@ -734,7 +734,7 @@
                 formData.append('fullName', fullName);
                 formData.append('email', email);
 
-                fetch('../backend/php/admin_profile_manage.php', {
+                fetch('../backend/php/admin/admin_profile_manage.php', {
                     method: 'POST',
                     body: formData
                 })
@@ -813,7 +813,7 @@
                 const fd = new FormData();
                 fd.append('photo', f);
                 Swal.fire({ title:'Subiendo...', didOpen:()=>Swal.showLoading(), background:'#1a1a1a', color:'#fff', allowOutsideClick:false });
-                fetch('../backend/php/profile_photo_upload.php', { method:'POST', body: fd })
+                fetch('../backend/php/user/profile_photo_upload.php', { method:'POST', body: fd })
                 .then(r=>r.json())
                 .then(d=>{
                     if (d && d.success && d.url){

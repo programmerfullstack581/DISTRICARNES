@@ -4,7 +4,7 @@ if ($basePath === '/' || $basePath === '\\') {
     $basePath = '';
 }
 $basePath = str_replace('\\', '/', $basePath);
-require_once __DIR__ . '/backend/php/conexion.php';
+require_once __DIR__ . '/backend/php/core/conexion.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../backend/php/conexion.php';
+require_once __DIR__ . '/../backend/php/core/conexion.php';
 
 $token = isset($_GET['token']) ? trim($_GET['token']) : '';
 $valid = false;
@@ -254,7 +254,7 @@ endif; ?>
           return;
         }
         try {
-          const resp = await fetch('../backend/php/perform_password_reset.php', {
+          const resp = await fetch('../backend/php/auth/perform_password_reset.php', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded'
