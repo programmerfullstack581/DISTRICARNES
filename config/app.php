@@ -34,6 +34,12 @@ if (!$envKey && isset($_ENV['GOOGLE_MAPS_API_KEY'])) {
 }
 define('GOOGLE_MAPS_API_KEY', $envKey ? $envKey : '');
 
+$envStyleId = getenv('GOOGLE_MAPS_STYLE_ID');
+if (!$envStyleId && isset($_ENV['GOOGLE_MAPS_STYLE_ID'])) {
+    $envStyleId = $_ENV['GOOGLE_MAPS_STYLE_ID'];
+}
+define('GOOGLE_MAPS_STYLE_ID', $envStyleId ? $envStyleId : '');
+
 function asset($path) {
     $path = ltrim($path, '/');
     return BASE_PATH . '/' . $path;

@@ -160,6 +160,9 @@
         var lat = parseFloat(container.getAttribute('data-lat')) || DISTRICARNES_LOCATION.lat;
         var lng = parseFloat(container.getAttribute('data-lng')) || DISTRICARNES_LOCATION.lng;
 
+        var hasMapId = !!(window.DISTRICARNES_CONFIG && window.DISTRICARNES_CONFIG.googleMapsStyleId);
+        var useAdvancedMarker = hasMapId && google.maps.marker && google.maps.marker.AdvancedMarkerElement;
+
         var mapOptions = {
             center: { lat: lat, lng: lng },
             zoom: 16,
@@ -213,6 +216,10 @@
             gestureHandling: 'cooperative'
         };
 
+        if (hasMapId) {
+            mapOptions.mapId = window.DISTRICARNES_CONFIG.googleMapsStyleId;
+        }
+
         try {
             mapInstance = new google.maps.Map(container, mapOptions);
         } catch (e) {
@@ -223,42 +230,49 @@
 
         var markerPosition = { lat: lat, lng: lng };
 
-        var pinElement = document.createElement('div');
-        pinElement.className = 'districarnes-map-marker';
-        pinElement.style.width = '20px';
-        pinElement.style.height = '20px';
-        pinElement.style.borderRadius = '50%';
-        pinElement.style.background = '#ff0000';
-        pinElement.style.border = '2px solid #ffffff';
-        pinElement.style.boxShadow = '0 0 12px rgba(255,0,0,0.8)';
-        pinElement.style.transform = 'translateY(-50%)';
+        if (useAdvancedMarker) {
+            var pinElement = document.createElement('div');
+            pinElement.className = 'districarnes-map-marker';
+            pinElement.style.width = '20px';
+            pinElement.style.height = '20px';
+            pinElement.style.borderRadius = '50%';
+            pinElement.style.background = '#ff0000';
+            pinElement.style.border = '2px solid #ffffff';
+            pinElement.style.boxShadow = '0 0 12px rgba(255,0,0,0.8)';
+            pinElement.style.transform = 'translateY(-50%)';
+            pinElement.style.transition = 'transform 0.2s ease';
+            pinElement.addEventListener('mouseenter', function () {
+                pinElement.style.transform = 'translateY(-50%) scale(1.2)';
+            });
+            pinElement.addEventListener('mouseleave', function () {
+                pinElement.style.transform = 'translateY(-50%) scale(1)';
+            });
 
-        try {
-            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+            try {
                 markerInstance = new google.maps.marker.AdvancedMarkerElement({
                     position: markerPosition,
                     map: mapInstance,
                     title: DISTRICARNES_LOCATION.name,
-                    content: pinElement
+                    content: pinElement,
+                    collisionBehavior: google.maps.CollisionBehavior.OPTIONAL_AND_DRAGS_PEER_FORWARD
                 });
+            } catch (e) {
+                console.error('[DistriCarnes Maps] AdvancedMarkerElement fallido, usando Marker legacy:', e);
+                markerInstance = null;
+            }
+        }
 
-                pinElement.style.transition = 'transform 0.2s ease';
-                pinElement.addEventListener('mouseenter', function () {
-                    pinElement.style.transform = 'translateY(-50%) scale(1.2)';
-                });
-                pinElement.addEventListener('mouseleave', function () {
-                    pinElement.style.transform = 'translateY(-50%) scale(1)';
-                });
-            } else {
-                var fallbackSymbol = {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    fillColor: '#ff0000',
-                    fillOpacity: 1,
-                    strokeColor: '#ffffff',
-                    strokeWeight: 2,
-                    strokeOpacity: 1,
-                    scale: 10
-                };
+        if (!markerInstance) {
+            var fallbackSymbol = {
+                path: google.maps.SymbolPath.CIRCLE,
+                fillColor: '#ff0000',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 2,
+                strokeOpacity: 1,
+                scale: 10
+            };
+            try {
                 markerInstance = new google.maps.Marker({
                     position: markerPosition,
                     map: mapInstance,
@@ -266,18 +280,15 @@
                     icon: fallbackSymbol,
                     animation: google.maps.Animation.DROP
                 });
+            } catch (e) {
+                console.error('[DistriCarnes Maps] Error al crear el marcador:', e);
             }
-        } catch (e) {
-            console.error('[DistriCarnes Maps] Error al crear el marcador:', e);
         }
 
         infoWindowInstance = new google.maps.InfoWindow({
             content: buildInfoWindowContent(),
             maxWidth: 360
         });
-
-        var isAdvanced = google.maps.marker && google.maps.marker.AdvancedMarkerElement
-            && (markerInstance instanceof google.maps.marker.AdvancedMarkerElement);
 
         function openInfoWindow() {
             if (!infoWindowInstance) return;
@@ -292,20 +303,18 @@
             }
         }
 
-        if (markerInstance) {
-            if (isAdvanced) {
-                markerInstance.addListener('gmp-click', openInfoWindow);
-            } else {
-                google.maps.event.addListener(markerInstance, 'click', openInfoWindow);
-            }
-
-            google.maps.event.addListenerOnce(mapInstance, 'idle', function () {
-                if (infoWindowInstance && !window.__infoWindowOpened) {
-                    openInfoWindow();
-                    window.__infoWindowOpened = true;
-                }
-            });
+        if (markerInstance && useAdvancedMarker) {
+            markerInstance.addListener('gmp-click', openInfoWindow);
+        } else if (markerInstance) {
+            google.maps.event.addListener(markerInstance, 'click', openInfoWindow);
         }
+
+        google.maps.event.addListenerOnce(mapInstance, 'idle', function () {
+            if (infoWindowInstance && !window.__infoWindowOpened) {
+                openInfoWindow();
+                window.__infoWindowOpened = true;
+            }
+        });
 
         google.maps.event.addListenerOnce(mapInstance, 'idle', function () {
             google.maps.event.trigger(mapInstance, 'resize');
@@ -383,13 +392,18 @@
                 mapInstance = null;
             }
             if (markerInstance) {
-                markerInstance.setMap(null);
+                if (markerInstance instanceof google.maps.marker.AdvancedMarkerElement) {
+                    markerInstance.map = null;
+                } else if (typeof markerInstance.setMap === 'function') {
+                    markerInstance.setMap(null);
+                }
                 markerInstance = null;
             }
             if (infoWindowInstance) {
                 infoWindowInstance.close();
                 infoWindowInstance = null;
             }
+            window.__infoWindowOpened = false;
             scriptLoaded = false;
             bootstrap();
         },

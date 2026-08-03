@@ -1375,6 +1375,7 @@ include __DIR__ . '/includes/header.php';
     <script>
         window.DISTRICARNES_CONFIG = {
             googleMapsApiKey: <?php echo json_encode(GOOGLE_MAPS_API_KEY, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
+            googleMapsStyleId: <?php echo json_encode(GOOGLE_MAPS_STYLE_ID, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
             basePath: <?php echo json_encode(BASE_PATH, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>,
             baseUrl: <?php echo json_encode(BASE_URL, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT); ?>
         };
