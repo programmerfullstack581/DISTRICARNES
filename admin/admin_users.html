@@ -1448,7 +1448,11 @@
                 
                 <div class="form-group" id="passwordGroup">
                     <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password">
+                    <div style="display: flex; gap: 8px;">
+                        <input type="password" id="password" name="password" style="flex: 1;" placeholder="Déjalo vacío para auto-generar">
+                        <button type="button" id="generatePasswordBtn" class="btn" style="background:#333;color:#fff;padding:6px 12px;border-radius:6px;font-size:12px;">Generar</button>
+                    </div>
+                    <small style="color:#999;">Si dejas el campo vacío, se generará una contraseña automáticamente.</small>
                 </div>
                 
                 <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
@@ -1539,6 +1543,10 @@
             document.getElementById('modalTitle').textContent = 'Agregar Usuario';
             document.getElementById('userForm').reset();
             document.getElementById('passwordGroup').style.display = 'block';
+            var genBtn = document.getElementById('generatePasswordBtn');
+            if (genBtn) genBtn.style.display = 'inline-block';
+            var pwdSmall = document.querySelector('#passwordGroup small');
+            if (pwdSmall) pwdSmall.style.display = 'block';
             document.getElementById('userModal').style.display = 'block';
         }
 
@@ -1546,6 +1554,10 @@
             currentUserId = userId;
             document.getElementById('modalTitle').textContent = 'Editar Usuario';
             document.getElementById('passwordGroup').style.display = 'block';
+            var genBtn = document.getElementById('generatePasswordBtn');
+            if (genBtn) genBtn.style.display = 'none';
+            var pwdSmall = document.querySelector('#passwordGroup small');
+            if (pwdSmall) pwdSmall.style.display = 'none';
             document.getElementById('password').value = '';
             document.getElementById('password').placeholder = 'Dejar en blanco para no cambiar';
             
@@ -1708,11 +1720,33 @@
             });
         }
 
+        // Botón de generar contraseña automática
+        var generatePasswordBtn = document.getElementById('generatePasswordBtn');
+        if (generatePasswordBtn) {
+            generatePasswordBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var generatedPassword = '';
+                var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                var length = 10;
+                for (var i = 0; i < length; i++) {
+                    generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                document.getElementById('password').value = generatedPassword;
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Contraseña generada',
+                    text: 'Contraseña: ' + generatedPassword,
+                    confirmButtonColor: '#ff0000',
+                    draggable: true
+                });
+            });
+        }
+
         // Form submission
         document.getElementById('userForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const formData = new FormData(this);
+            var formData = new FormData(this);
             
             if (currentUserId) {
                 formData.append('action', 'update');
@@ -1729,17 +1763,42 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Cerrar el modal primero para que el mensaje sea visible
                     closeModal();
-                    Swal.fire({
+                    var toastSuccess = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    toastSuccess.fire({
+                        icon: 'success',
                         title: '¡Éxito!',
                         text: data.message,
-                        icon: 'success',
-                        confirmButtonColor: '#ff0000',
-                        draggable: true
-                    }).then(() => {
-                        location.reload();
+                        confirmButtonColor: '#ff0000'
                     });
+
+                    // Mostrar credenciales generadas si existen
+                    if (data.generated_credentials) {
+                        var credsHtml = '<div style="text-align:left;font-family:monospace;">' +
+                            '<p style="margin:4px 0;"><strong>Usuario:</strong> <span style="color:#ff0000;">' + 
+                            (data.generated_credentials.usuario_usuario || '') + '</span></p>' +
+                            '<p style="margin:4px 0;"><strong>Contraseña:</strong> <span style="color:#ff0000;">' + 
+                            (data.generated_credentials.password || '') + '</span></p>' +
+                            '<p style="margin:4px 0;font-size:12px;color:#888;">Comparte estas credenciales con el usuario.</p>' +
+                            '</div>';
+
+                        Swal.fire({
+                            title: 'Credenciales Generadas',
+                            html: credsHtml,
+                            icon: 'info',
+                            confirmButtonText: '¡Entendido!',
+                            confirmButtonColor: '#ff0000',
+                            draggable: true
+                        });
+                    }
+
+                    setTimeout(() => { location.reload(); }, 500);
                 } else {
                     Swal.fire({
                         title: 'Error',

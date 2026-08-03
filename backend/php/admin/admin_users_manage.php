@@ -27,6 +27,15 @@ function findIdColumn(array $cols): ?string {
   return null;
 }
 
+function generatePassword($length = 10): string {
+    $chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $password = '';
+    for ($i = 0; $i < $length; $i++) {
+        $password .= $chars[random_int(0, strlen($chars) - 1)];
+    }
+    return $password;
+}
+
 $table = 'usuario';
 $columns = getColumns($conexion, $table);
 $idCol = findIdColumn($columns);
@@ -79,6 +88,13 @@ if ($action === 'create' || $action === 'update') {
   $address = $_POST['address'] ?? '';
   $userType = $_POST['user_type'] ?? 'user';
   $password = $_POST['password'] ?? '';
+  $generatedPassword = '';
+
+  // Auto-generar contraseña si no se proporciona (solo en creación)
+  if ($action === 'create' && $password === '') {
+      $generatedPassword = generatePassword();
+      $password = $generatedPassword;
+  }
 
   $role = 'trabajo';
   if ($userType === 'staff') {
@@ -106,11 +122,25 @@ if ($action === 'create' || $action === 'update') {
   }
 
     if ($action === 'create') {
-    // Campos adicionales obligatorios para sistema de ventas
+    // Generar usuario automáticamente si no se proporciona
     if (in_array('usuario_usuario', $columns, true)) {
-        // Generar usuario basado en email si no existe
-        $parts = explode('@', $email);
-        $data['usuario_usuario'] = $parts[0];
+        $providedUsername = $_POST['usuario_usuario'] ?? '';
+        if ($providedUsername !== '') {
+            $data['usuario_usuario'] = $providedUsername;
+        } else {
+            // Generar a partir del nombre o email
+            $emailParts = explode('@', $email);
+            if (!empty($emailParts[0])) {
+                $data['usuario_usuario'] = $emailParts[0];
+            } elseif ($first !== '') {
+                $base = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $first));
+                $data['usuario_usuario'] = $base . time();
+            } elseif ($cedula !== '') {
+                $data['usuario_usuario'] = 'user' . $cedula;
+            } else {
+                $data['usuario_usuario'] = 'user' . time();
+            }
+        }
     }
     // Asegurar que nombres y apellidos se guarden en las columnas del sistema de ventas
     if (in_array('usuario_nombre', $columns, true)) $data['usuario_nombre'] = $first ?: 'Sin Nombre';
@@ -148,7 +178,14 @@ if ($action === 'create' || $action === 'update') {
     try {
         $ok = $stmt->execute($values);
         $stmt->closeCursor();
-        echo json_encode(['success' => true, 'message' => 'Usuario creado correctamente']);
+        $response = ['success' => true, 'message' => 'Usuario creado correctamente'];
+        if ($generatedPassword !== '' && in_array('contrasena', $columns, true)) {
+            $response['generated_credentials'] = [
+                'password' => $generatedPassword,
+                'usuario_usuario' => $data['usuario_usuario'] ?? ''
+            ];
+        }
+        echo json_encode($response);
     } catch(PDOException $e) {
         error_log('admin_users_manage.php (crear): ' . $e->getMessage());
         echo json_encode(['success' => false, 'message' => 'Error al crear el usuario']);

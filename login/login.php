@@ -44,11 +44,11 @@
 
                     <form id="loginForm" action="../backend/php/auth/login_verify.php" method="POST" novalidate>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <label for="email" class="form-label">Correo, Nombre o Cédula</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-                                <input style="background-color: black; color: white;" type="email" class="form-control"
-                                    id="email" name="email" placeholder="tu.correo@example.com" required>
+                                <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
+                                <input style="background-color: black; color: white;" type="text" class="form-control"
+                                    id="email" name="email" placeholder="tu.correo@example.com, Juan Pérez o 123456789" required>
                             </div>
                         </div>
                         <div class="mb-3">

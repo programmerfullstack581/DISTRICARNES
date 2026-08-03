@@ -56,17 +56,11 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 // Validar que existan los campos
-$email = $_POST['email'] ?? '';
+$identifier = $_POST['email'] ?? $_POST['identifier'] ?? '';
 $password = $_POST['password'] ?? '';
 
-if (empty($email) || empty($password)) {
+if (empty($identifier) || empty($password)) {
     echo json_encode(['success' => false, 'message' => 'Por favor, completa todos los campos.']);
-    exit;
-}
-
-// Validar formato de email
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['success' => false, 'message' => 'El formato del correo electrónico no es válido.']);
     exit;
 }
 
@@ -76,15 +70,45 @@ try {
     try { $conexion->exec("ALTER TABLE usuario ADD COLUMN IF NOT EXISTS email_verify_token_hash VARCHAR(64) NULL"); } catch (Throwable $_) {}
     try { $conexion->exec("ALTER TABLE usuario ADD COLUMN IF NOT EXISTS email_verify_expires TIMESTAMP NULL"); } catch (Throwable $_) {}
 
-    // Buscar por email y verificar hash de contraseña
+    // Detectar columnas disponibles
+    $cols = [];
+    $stmtCols = $conexion->query("SELECT column_name FROM information_schema.columns WHERE table_name = 'usuario'");
+    while ($r = $stmtCols->fetch(PDO::FETCH_ASSOC)) { $cols[] = $r['column_name']; }
+    $stmtCols->closeCursor();
+
+    $isEmail = filter_var($identifier, FILTER_VALIDATE_EMAIL);
+
+    // Construir cláusulas WHERE para email, nombre o cédula
+    $whereParts = [];
+    $params = [];
+
+    if (in_array('correo_electronico', $cols) && $isEmail) {
+        $whereParts[] = "correo_electronico = ?";
+        $params[] = $identifier;
+    }
+
+    if (in_array('nombres_completos', $cols)) {
+        $whereParts[] = "LOWER(TRIM(nombres_completos)) = LOWER(TRIM(?))";
+        $params[] = $identifier;
+    }
+
+    if (in_array('cedula', $cols)) {
+        $whereParts[] = "CAST(cedula AS TEXT) = ?";
+        $params[] = trim($identifier);
+    }
+
+    if (empty($whereParts)) {
+        echo json_encode(['success' => false, 'message' => 'No se pudo identificar el campo de búsqueda.']);
+        exit;
+    }
+
     $sql = "SELECT id_usuario, nombres_completos, correo_electronico, contrasena, rol, email_verified 
             FROM usuario 
-            WHERE correo_electronico = ? LIMIT 1";
+            WHERE " . implode(' OR ', $whereParts) . " LIMIT 1";
 
     $stmt = $conexion->prepare($sql);
-    $stmt->execute([$email]);
+    $stmt->execute($params);
     
-    // En PDO obtenemos el resultado directamente con fetch()
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
@@ -109,7 +133,8 @@ try {
 
             try {
                 $base = dc_base_url_login();
-                $verifyUrl = ($base !== '' ? $base : '') . '/backend/php/auth/guardar_usuario.php?verify=1&email=' . urlencode($email) . '&token=' . urlencode($token);
+                $userEmail = $user['correo_electronico'] ?? '';
+                $verifyUrl = ($base !== '' ? $base : '') . '/backend/php/auth/guardar_usuario.php?verify=1&email=' . urlencode($userEmail) . '&token=' . urlencode($token);
                 $subject = 'Verifica tu correo en DistriCarnes';
                 $name = $user['nombres_completos'] ?? 'Usuario';
                 $message = '<div style="font-family:Arial,sans-serif;line-height:1.5;color:#111">' .
@@ -120,7 +145,7 @@ try {
                     '<p style="margin:0 0 12px 0"><a href="' . htmlspecialchars($verifyUrl, ENT_QUOTES, 'UTF-8') . '">' . htmlspecialchars($verifyUrl, ENT_QUOTES, 'UTF-8') . '</a></p>' .
                     '<p style="margin:0;color:#555;font-size:12px">Este enlace vence en 24 horas.</p>' .
                     '</div>';
-                dc_send_mail_login($email, $subject, $message, 'text/html');
+                dc_send_mail_login($userEmail, $subject, $message, 'text/html');
             } catch (Throwable $_) {}
 
             echo json_encode([

@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 icon: 'warning',
                 title: 'Campo requerido',
-                text: 'Por favor ingresa tu correo electrónico.',
+                text: 'Por favor ingresa tu correo, nombre o cédula.',
                 confirmButtonColor: '#dc3545',
                 background: '#ffffff',
                 color: '#000000'
