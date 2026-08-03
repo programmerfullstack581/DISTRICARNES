@@ -67,7 +67,7 @@
         var script = document.createElement('script');
         script.id = scriptId;
         script.type = 'text/javascript';
-        var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(apiKey) + '&callback=initDistricarnesMap';
+        var apiUrl = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(apiKey) + '&loading=async&libraries=marker&callback=initDistricarnesMap';
         script.src = apiUrl;
         script.async = true;
         script.defer = true;
@@ -223,52 +223,88 @@
 
         var markerPosition = { lat: lat, lng: lng };
 
-        var svgMarker = {
-            path: google.maps.SymbolPath.CIRCLE,
-            fillColor: '#ff0000',
-            fillOpacity: 1,
-            strokeColor: '#ffffff',
-            strokeWeight: 2,
-            strokeOpacity: 1,
-            scale: 10
-        };
+        var pinElement = document.createElement('div');
+        pinElement.className = 'districarnes-map-marker';
+        pinElement.style.width = '20px';
+        pinElement.style.height = '20px';
+        pinElement.style.borderRadius = '50%';
+        pinElement.style.background = '#ff0000';
+        pinElement.style.border = '2px solid #ffffff';
+        pinElement.style.boxShadow = '0 0 12px rgba(255,0,0,0.8)';
+        pinElement.style.transform = 'translateY(-50%)';
 
         try {
-            markerInstance = new google.maps.Marker({
-                position: markerPosition,
-                map: mapInstance,
-                title: DISTRICARNES_LOCATION.name,
-                icon: svgMarker,
-                animation: google.maps.Animation.DROP
-            });
+            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+                markerInstance = new google.maps.marker.AdvancedMarkerElement({
+                    position: markerPosition,
+                    map: mapInstance,
+                    title: DISTRICARNES_LOCATION.name,
+                    content: pinElement
+                });
+
+                pinElement.style.transition = 'transform 0.2s ease';
+                pinElement.addEventListener('mouseenter', function () {
+                    pinElement.style.transform = 'translateY(-50%) scale(1.2)';
+                });
+                pinElement.addEventListener('mouseleave', function () {
+                    pinElement.style.transform = 'translateY(-50%) scale(1)';
+                });
+            } else {
+                var fallbackSymbol = {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    fillColor: '#ff0000',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2,
+                    strokeOpacity: 1,
+                    scale: 10
+                };
+                markerInstance = new google.maps.Marker({
+                    position: markerPosition,
+                    map: mapInstance,
+                    title: DISTRICARNES_LOCATION.name,
+                    icon: fallbackSymbol,
+                    animation: google.maps.Animation.DROP
+                });
+            }
         } catch (e) {
             console.error('[DistriCarnes Maps] Error al crear el marcador:', e);
         }
 
         infoWindowInstance = new google.maps.InfoWindow({
             content: buildInfoWindowContent(),
-            maxWidth: 360,
-            pixelOffset: new google.maps.Size(0, -40)
+            maxWidth: 360
         });
 
-        if (markerInstance) {
-            google.maps.event.addListener(markerInstance, 'click', function () {
-                if (infoWindowInstance) {
+        var isAdvanced = google.maps.marker && google.maps.marker.AdvancedMarkerElement
+            && (markerInstance instanceof google.maps.marker.AdvancedMarkerElement);
+
+        function openInfoWindow() {
+            if (!infoWindowInstance) return;
+            try {
+                infoWindowInstance.open({ map: mapInstance, anchor: markerInstance });
+            } catch (e) {
+                try {
                     infoWindowInstance.open(mapInstance, markerInstance);
+                } catch (e2) {
+                    console.error('[DistriCarnes Maps] No se pudo abrir el info window:', e2);
                 }
-            });
-
-            google.maps.event.addListener(mapInstance, 'idle', function () {
-                if (infoWindowInstance && typeof infoWindowInstance.getMap === 'function') {
-                    if (!infoWindowInstance.getMap()) {
-                        infoWindowInstance.open(mapInstance, markerInstance);
-                    }
-                }
-            });
-
-            if (infoWindowInstance) {
-                infoWindowInstance.open(mapInstance, markerInstance);
             }
+        }
+
+        if (markerInstance) {
+            if (isAdvanced) {
+                markerInstance.addListener('gmp-click', openInfoWindow);
+            } else {
+                google.maps.event.addListener(markerInstance, 'click', openInfoWindow);
+            }
+
+            google.maps.event.addListenerOnce(mapInstance, 'idle', function () {
+                if (infoWindowInstance && !window.__infoWindowOpened) {
+                    openInfoWindow();
+                    window.__infoWindowOpened = true;
+                }
+            });
         }
 
         google.maps.event.addListenerOnce(mapInstance, 'idle', function () {
