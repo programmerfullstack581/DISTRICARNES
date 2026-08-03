@@ -2,6 +2,10 @@
 require_once __DIR__ . '/config/bootstrap.php';
 
 require_once __DIR__ . '/backend/php/core/conexion.php';
+require_once __DIR__ . '/backend/php/core/producto_caducidad.php';
+
+// Marcar automáticamente productos vencidos
+producto_caducidad_aplicar($conexion);
 
 // Obtener ID del producto
 $id_producto = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -11,6 +15,12 @@ if ($id_producto > 0) {
     $stmt = $conexion->prepare("SELECT * FROM producto WHERE id_producto = ?");
     $stmt->execute([$id_producto]);
     $producto = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+// Indicar si el producto está vencido (no se puede vender)
+$producto_vencido = false;
+if ($producto) {
+    $producto_vencido = producto_caducidad_es_vencido_registro($producto);
 }
 
 // === LÓGICA DE RESEÑAS ===
@@ -231,7 +241,11 @@ if (file_exists($usdzAbs)) {
 $relatedProducts = [];
 // Buscar productos de la misma categoría (basado en nombre o id_categoria si existiera)
 // Usamos el nombre para derivar categoría
-$relatedStmt = $conexion->prepare("SELECT * FROM producto WHERE id_producto != ? AND (LOWER(nombre) LIKE ? OR LOWER(nombre) LIKE ?) LIMIT 4");
+$exclVencidosRel = producto_caducidad_filtro_excluir($conexion);
+$relatedSql = "SELECT * FROM producto WHERE id_producto != ?";
+if ($exclVencidosRel !== '') { $relatedSql .= " AND " . $exclVencidosRel; }
+$relatedSql .= " AND (LOWER(nombre) LIKE ? OR LOWER(nombre) LIKE ?) LIMIT 4";
+$relatedStmt = $conexion->prepare($relatedSql);
 $catTerm = '%' . $cat . '%';
 // Fallback simple: buscar por categoría derivada
 $relatedStmt->execute([$id_producto, $catTerm, $catTerm]);
@@ -239,7 +253,10 @@ $relatedProducts = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Si hay pocos, rellenar con cualquiera
 if (count($relatedProducts) < 4) {
-    $moreStmt = $conexion->prepare("SELECT * FROM producto WHERE id_producto != ? ORDER BY RANDOM() LIMIT " . (4 - count($relatedProducts)));
+    $moreSql = "SELECT * FROM producto WHERE id_producto != ?";
+    if ($exclVencidosRel !== '') { $moreSql .= " AND " . $exclVencidosRel; }
+    $moreSql .= " ORDER BY RANDOM() LIMIT " . (4 - count($relatedProducts));
+    $moreStmt = $conexion->prepare($moreSql);
     $moreStmt->execute([$id_producto]);
     while ($r = $moreStmt->fetch(PDO::FETCH_ASSOC)) {
         // Evitar duplicados si ya estaba
@@ -1196,7 +1213,11 @@ endif; ?>
                     <i class="fas fa-box-open"></i>
                     <div>
                         <span>Disponibilidad:</span>
-                        <strong style="color: #4ade80;"><?php echo $producto['stock']; ?> unidades</strong>
+                        <?php if ($producto_vencido): ?>
+                            <strong style="color: #ef4444;">Producto vencido - No disponible</strong>
+                        <?php else: ?>
+                            <strong style="color: #4ade80;"><?php echo $producto['stock']; ?> unidades</strong>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="meta-item">
@@ -1223,15 +1244,23 @@ endif; ?>
             </div>
 
             <div class="purchase-controls">
-                <div class="action-buttons" style="grid-template-columns: 1fr;">
-                    <button class="btn-large btn-add-cart-large add-to-cart" 
-                            data-id="<?php echo $producto['id_producto']; ?>"
-                            data-title="<?php echo htmlspecialchars($producto['nombre']); ?>"
-                            data-price="<?php echo $producto['precio_venta']; ?>"
-                            data-image="<?php echo htmlspecialchars($imagen_producto); ?>">
-                        <i class="fas fa-shopping-cart"></i> Agregar al Carrito
-                    </button>
-                </div>
+                <?php if ($producto_vencido): ?>
+                    <div class="action-buttons" style="grid-template-columns: 1fr;">
+                        <div style="background:#3f1d1d; color:#fca5a5; border:1px solid #7f1d1d; padding:14px 18px; border-radius:10px; text-align:center; font-weight:600;">
+                            Este producto está vencido y no se encuentra a la venta.
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="action-buttons" style="grid-template-columns: 1fr;">
+                        <button class="btn-large btn-add-cart-large add-to-cart" 
+                                data-id="<?php echo $producto['id_producto']; ?>"
+                                data-title="<?php echo htmlspecialchars($producto['nombre']); ?>"
+                                data-price="<?php echo $producto['precio_venta']; ?>"
+                                data-image="<?php echo htmlspecialchars($imagen_producto); ?>">
+                            <i class="fas fa-shopping-cart"></i> Agregar al Carrito
+                        </button>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

@@ -2,6 +2,10 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_caducidad.php';
+
+// Asegurar columna de vencidos y refrescar estado antes del conteo
+producto_caducidad_aplicar($conexion);
 
 function table_exists(PDO $db, string $name): bool {
   static $cache = [];
@@ -60,7 +64,8 @@ function safe_low_stock_count(PDO $db): int {
   $tbl = 'producto';
   $stockCol = detect_stock_column($db, $tbl);
   if (!$stockCol) return 0;
-  $sql = "SELECT COUNT(*) AS cnt FROM \"$tbl\" WHERE \"$stockCol\" < 10";
+  // Excluir productos vencidos del conteo de stock bajo
+  $sql = "SELECT COUNT(*) AS cnt FROM \"$tbl\" WHERE \"$stockCol\" < 10 AND (estado_vencido IS NULL OR estado_vencido = FALSE)";
   try {
       if ($res = $db->query($sql)) {
         $row = $res->fetch(PDO::FETCH_ASSOC);

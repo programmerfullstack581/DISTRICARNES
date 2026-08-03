@@ -5,6 +5,10 @@ header('Access-Control-Allow-Headers: Content-Type');
 @ini_set('display_errors', '0');
 
 require_once __DIR__ . '/../php/core/conexion.php';
+require_once __DIR__ . '/../php/core/producto_caducidad.php';
+
+// Asegurar columna de vencidos y refrescar estado antes de buscar productos
+producto_caducidad_aplicar($conexion);
 
 $apiKey = getenv('OPENAI_API_KEY') ?: '';
 if ($apiKey === '') {
@@ -48,7 +52,7 @@ if (!empty($words)) {
     $conds[] = 'LOWER(nombre) LIKE ?';
     $params[] = '%' . $w . '%';
   }
-  $sql = 'SELECT id_producto, nombre, precio_venta, stock FROM producto WHERE ' . implode(' AND ', $conds) . ' ORDER BY precio_venta ASC LIMIT 6';
+  $sql = 'SELECT id_producto, nombre, precio_venta, stock FROM producto WHERE (estado_vencido IS NULL OR estado_vencido = FALSE) AND ' . implode(' AND ', $conds) . ' ORDER BY precio_venta ASC LIMIT 6';
   try {
     $stmt = $conexion->prepare($sql);
     $stmt->execute($params);

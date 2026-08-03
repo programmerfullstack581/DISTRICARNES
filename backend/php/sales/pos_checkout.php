@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_caducidad.php';
 require_once __DIR__ . '/sales_utils.php';
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -19,6 +20,15 @@ $total = floatval($input['total'] ?? 0);
 if (empty($items)) {
     echo json_encode(['ok' => false, 'message' => 'El carrito está vacío']);
     exit;
+}
+
+// Validar que ningún producto de la venta esté vencido
+foreach ($items as $item) {
+    $pid = isset($item['id']) ? intval($item['id']) : 0;
+    if ($pid > 0 && producto_caducidad_es_vencido($conexion, $pid)) {
+        echo json_encode(['ok' => false, 'message' => 'Uno de los productos está vencido y no puede venderse. Retíralo de la venta.', 'code' => 'product_expired', 'product_id' => $pid]);
+        exit;
+    }
 }
 
 try {

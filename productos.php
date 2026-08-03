@@ -167,8 +167,15 @@ require_once __DIR__ . '/backend/php/core/conexion.php';
     }
 
     // Cargar todos los productos (según esquema real de BD)
+    require_once __DIR__ . '/backend/php/core/producto_caducidad.php';
+    producto_caducidad_aplicar($conexion);
+    $exclVencidos = producto_caducidad_filtro_excluir($conexion);
+
     $allProducts = [];
-    if ($res = $conexion->query("SELECT * FROM producto ORDER BY id_producto DESC")) {
+    $sqlProductos = "SELECT * FROM producto";
+    if ($exclVencidos !== '') { $sqlProductos .= ' WHERE ' . $exclVencidos; }
+    $sqlProductos .= " ORDER BY id_producto DESC";
+    if ($res = $conexion->query($sqlProductos)) {
         while ($r = $res->fetch(PDO::FETCH_ASSOC)) {
             $allProducts[] = $r;
         }

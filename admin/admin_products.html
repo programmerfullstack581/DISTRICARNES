@@ -370,6 +370,26 @@
             border: 1px solid rgba(255, 0, 0, 0.3);
         }
 
+        .status-expired {
+            background: rgba(148, 60, 180, 0.25);
+            color: #d8b4fe;
+            border: 1px solid rgba(192, 132, 252, 0.5);
+        }
+
+        .expiry-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: rgba(88, 28, 135, 0.85);
+            color: #e9d5ff;
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            font-size: 0.75rem;
+            text-align: center;
+        }
+
         .product-info {
             padding: 20px;
         }
@@ -1445,7 +1465,8 @@ window.location.href = '../index.php';
                 codigo: (row.codigo || row.code || row.barcode || ''),
                 tipo_unidad: (row.tipo_unidad || row.unit_type || 'Unidad'),
                 marca: (row.marca || row.brand || ''),
-                modelo: (row.modelo || row.model || '')
+                modelo: (row.modelo || row.model || ''),
+                vencido: (row.vencido === true || row.vencido === 'true' || row.vencido === 1 || row.vencido === '1')
             };
         }
 
@@ -1502,7 +1523,7 @@ window.location.href = '../index.php';
 
         async function fetchProducts(){
             try{
-                const res = await fetch('../backend/php/catalog/get_products.php');
+                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1');
                 const data = await res.json();
                 adminProducts = (data && data.products ? data.products : []).map(normalizeRow);
                 renderProductsGrid();
@@ -1556,7 +1577,7 @@ window.location.href = '../index.php';
                 card.setAttribute('data-product-brand', p.marca || '');
                 card.setAttribute('data-product-model', p.modelo || '');
 
-                const statusBadge = isLowStock ? '<span class="product-status status-low-stock">Stock Bajo</span>' : (isActive ? '<span class="product-status status-active">Activo</span>' : '<span class="product-status status-inactive">Inactivo</span>');
+                const statusBadge = p.vencido ? '<span class="product-status status-expired">Vencido</span>' : (isLowStock ? '<span class="product-status status-low-stock">Stock Bajo</span>' : (isActive ? '<span class="product-status status-active">Activo</span>' : '<span class="product-status status-inactive">Inactivo</span>'));
 
                 const imgHtml = p.imagen ? `<img src="${p.imagen}" alt="${p.nombre}">` : '<i class="fas fa-image placeholder"></i>';
 
@@ -1564,6 +1585,7 @@ window.location.href = '../index.php';
                     <div class="product-image">
                         ${imgHtml}
                         ${statusBadge}
+                        ${p.vencido ? `<span class="expiry-badge"><i class="fas fa-calendar-times"></i> Caduca: ${p.fecha_vencimiento || 'N/A'}</span>` : ''}
                     </div>
                     <div class="product-info">
                         <h3 class="product-title">${p.nombre}</h3>

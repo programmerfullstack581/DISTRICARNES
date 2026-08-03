@@ -718,6 +718,9 @@
         .inventory-card.ok .stock-badge { color: #48bb78; }
         .inventory-card.low .stock-badge { color: #ed8936; }
         .inventory-card.critical .stock-badge { color: #e61515; }
+        .inventory-card.expired .stock-badge { color: #d8b4fe; }
+        .inventory-card.expired { border-color: rgba(192, 132, 252, 0.5); }
+        .inventory-card.expired .stock-fill { background: #a855f7; }
         
         @media (max-width: 768px) {
             .sidebar {
@@ -1102,6 +1105,12 @@
                     <input type="text" id="notes" name="notes" placeholder="Proveedor, lote, etc.">
                 </div>
                 
+                <div class="form-group">
+                    <label for="newExpiry">Nueva Fecha de Caducidad (Opcional)</label>
+                    <input type="date" id="newExpiry" name="new_expiry" placeholder="Actualiza la fecha de vencimiento del lote">
+                    <small style="color:#94a3b8;">Si el producto estaba vencido, al actualizar la fecha se reanuda su venta.</small>
+                </div>
+                
                 <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Reabastecer</button>
@@ -1330,7 +1339,7 @@
         async function loadInventory(){
             try{
                 await fetchCategories();
-                const res = await fetch('../backend/php/catalog/get_products.php');
+                const res = await fetch('../backend/php/catalog/get_products.php?incluir_vencidos=1');
                 const data = await res.json();
                 if(!data || !data.ok){ throw new Error('No se pudo obtener productos'); }
                 const products = (data.products || []).map(normalizeProduct);
@@ -1359,7 +1368,9 @@
                 stock_minimo: Number(row.stock_minimo || row.min_stock || row.stock_min || row.stock_minimo_lote || 0),
                 proveedor: (proveedorTxt ? String(proveedorTxt) : (proveedorId ? `ID ${proveedorId}` : 'N/A')),
                 ubicacion: (row.ubicacion || row.location || row.ubicacion_estante || row.localizacion || row.posicion || 'A1-B2'),
-                imagen: (row.imagen || row.image || '')
+                imagen: (row.imagen || row.image || ''),
+                vencido: (row.vencido === true || row.vencido === 'true' || row.vencido === 1 || row.vencido === '1'),
+                fecha_caducidad: (row.fecha_caducidad || row.fecha_vencimiento || row.expiry_date || null)
             };
         }
 
@@ -1370,6 +1381,8 @@
         };
 
         function getStockStatus(p){
+            // Producto vencido: estado priorizado
+            if (p.vencido) return {key: 'expired', label: 'Vencido'};
             // Umbrales requeridos: "Stock Bajo" < 10, "Sin Stock" < 5
             if (p.stock < 5) return {key: 'out-of-stock', label: 'Sin Stock'};
             if (p.stock < 10) return {key: 'low-stock', label: 'Stock Bajo'};
@@ -1482,6 +1495,10 @@
                             <div class="detail-item">
                                 <span class="detail-label">Ubicación</span>
                                 <span class="detail-value">${escapeHtml(p.ubicacion)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Caducidad</span>
+                                <span class="detail-value">${p.fecha_caducidad ? escapeHtml(p.fecha_caducidad) : 'No definida'}</span>
                             </div>
                         </div>
                         <div class="stock-info">

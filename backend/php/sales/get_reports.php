@@ -1,7 +1,11 @@
 <?php
 require __DIR__ . '/../core/conexion.php';
+require __DIR__ . '/../core/producto_caducidad.php';
 
 header('Content-Type: application/json');
+
+// Asegurar columna de vencidos y refrescar estado antes de los reportes
+producto_caducidad_aplicar($conexion);
 
 // Parámetros de filtro
 $range = $_GET['range'] ?? 'week';
@@ -29,20 +33,29 @@ if (!$start) {
 
 // Helper para detectar columnas
 function colExists($pdo, $table, $col) {
+    static $cache = [];
+    $key = $table . '.' . $col;
+    if (array_key_exists($key, $cache)) return $cache[$key];
     try {
         $stmt = $pdo->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = ? AND column_name = ?");
         $stmt->execute([$table, $col]);
-        return $stmt->fetch() !== false;
-    } catch (Exception $e) { return false; }
+        $cache[$key] = $stmt->fetch() !== false;
+        $stmt->closeCursor();
+    } catch (Exception $e) { $cache[$key] = false; }
+    return $cache[$key];
 }
 
 // Helper para detectar tablas
 function tableExists($pdo, $table) {
+    static $cache = [];
+    if (array_key_exists($table, $cache)) return $cache[$table];
     try {
         $stmt = $pdo->prepare("SELECT 1 FROM information_schema.tables WHERE table_name = ?");
         $stmt->execute([$table]);
-        return $stmt->fetch() !== false;
-    } catch (Exception $e) { return false; }
+        $cache[$table] = $stmt->fetch() !== false;
+        $stmt->closeCursor();
+    } catch (Exception $e) { $cache[$table] = false; }
+    return $cache[$table];
 }
 
 // Detectar nombres de columnas clave
@@ -169,11 +182,13 @@ try {
     $stockMinCol = colExists($conexion, 'producto', 'stock_minimo') ? 'stock_minimo' : null;
     $lowStock = 0;
     if ($stockCol) {
+        // Excluir productos vencidos del conteo de stock bajo
+        $expFilter = "(estado_vencido IS NULL OR estado_vencido = FALSE)";
         if ($stockMinCol) {
-            $stmt = $conexion->query("SELECT COUNT(*) as low FROM producto WHERE \"$stockCol\" <= \"$stockMinCol\"");
+            $stmt = $conexion->query("SELECT COUNT(*) as low FROM producto WHERE \"$stockCol\" <= \"$stockMinCol\" AND $expFilter");
             $lowStock = $stmt->fetch(PDO::FETCH_ASSOC)['low'];
         } else {
-            $stmt = $conexion->query("SELECT COUNT(*) as low FROM producto WHERE \"$stockCol\" <= 5");
+            $stmt = $conexion->query("SELECT COUNT(*) as low FROM producto WHERE \"$stockCol\" <= 5 AND $expFilter");
             $lowStock = $stmt->fetch(PDO::FETCH_ASSOC)['low'];
         }
     } else {

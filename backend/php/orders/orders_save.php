@@ -2,10 +2,24 @@
 header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
 require_once __DIR__ . '/../core/conexion.php'; // PDO PostgreSQL
+require_once __DIR__ . '/../core/producto_caducidad.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON']); exit; }
+
+$items    = $input['items'] ?? [];
+
+// Validar que ningún producto del carrito esté vencido
+if (is_array($items)) {
+  foreach ($items as $it) {
+    $pid = isset($it['id']) ? intval($it['id']) : 0;
+    if ($pid > 0 && producto_caducidad_es_vencido($conexion, $pid)) {
+      echo json_encode(['ok'=>false, 'error'=>'Uno de los productos de tu carrito está vencido y no puede venderse. Retíralo para continuar.', 'code'=>'product_expired', 'product_id'=>$pid]);
+      exit;
+    }
+  }
+}
 
 $paypalId = $input['paypal_id'] ?? null;
 $status   = $input['status'] ?? 'PENDING';

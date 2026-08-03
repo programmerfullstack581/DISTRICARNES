@@ -3,6 +3,12 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_caducidad.php';
+
+// Marcar automáticamente productos vencidos y limpiar los renovados
+producto_caducidad_aplicar($conexion);
+
+$incluirVencidos = isset($_GET['incluir_vencidos']) && in_array(strtolower((string)$_GET['incluir_vencidos']), ['1', 'true', 'yes', 'si'], true);
 
 $categoria_id = isset($_GET['categoria_id']) ? $_GET['categoria_id'] : null;
 $idsParam = isset($_GET['ids']) ? trim((string)$_GET['ids']) : null; // lista de IDs para filtrar
@@ -70,6 +76,15 @@ if (!empty($where)) {
   $sql .= ' WHERE ' . implode(' AND ', $where);
 }
 
+// Excluir productos vencidos por defecto (la tienda no vende vencidos).
+// El panel admin puede pedirlos con ?incluir_vencidos=1
+if (!$incluirVencidos) {
+  $exclVencidos = producto_caducidad_filtro_excluir($conexion);
+  if ($exclVencidos !== '') {
+    $sql .= (empty($where) ? ' WHERE ' : ' AND ') . $exclVencidos;
+  }
+}
+
 // Fix backticks for PostgreSQL (Postgres uses double quotes for identifiers, but MySQL uses backticks)
 // Better to replace backticks with double quotes or remove them if no spaces/keywords
 $sql = str_replace('`', '"', $sql);
@@ -125,21 +140,33 @@ function normalize_web_path(string $fsPath, string $rootDir): string {
 }
 
 function find_fallback_image(?string $name, string $imagesDir, string $imagesProductsDir, string $rootDir): ?string {
+  // Índice de imágenes construido UNA vez por petición (evita glob() por producto)
+  static $dirIndex = null;
+  static $dirKey = null;
+  $key = $imagesDir . '|' . $imagesProductsDir;
+  if ($dirIndex === null || $dirKey !== $key) {
+    $dirIndex = [];
+    foreach ([$imagesProductsDir, $imagesDir] as $dir) {
+      foreach (['jpg', 'jpeg', 'png', 'webp', 'gif'] as $ext) {
+        foreach (glob($dir . DIRECTORY_SEPARATOR . '*.' . $ext) as $file) {
+          $base = mb_strtolower(pathinfo($file, PATHINFO_FILENAME));
+          $baseStripped = preg_replace('/[^a-z0-9]+/i', '', $base);
+          if (!isset($dirIndex[$baseStripped])) $dirIndex[$baseStripped] = $file;
+        }
+      }
+    }
+    $dirKey = $key;
+  }
   $lower = trim(mb_strtolower((string)$name));
   if ($lower === '') return normalize_web_path($imagesDir . '/image.png', $rootDir);
   $strip = preg_replace('/[^a-z0-9]+/i', '', $lower);
-  $candidates = [];
-  $exts = ['jpg','jpeg','png','webp','gif'];
-  $dirs = [$imagesProductsDir, $imagesDir];
-  foreach ($dirs as $dir) {
-    foreach ($exts as $ext) {
-      foreach (glob($dir . DIRECTORY_SEPARATOR . '*.' . $ext) as $file) {
-        $base = mb_strtolower(pathinfo($file, PATHINFO_FILENAME));
-        $baseStripped = preg_replace('/[^a-z0-9]+/i', '', $base);
-        if ($baseStripped === $strip || strpos($baseStripped, $strip) !== false) {
-          return normalize_web_path($file, $rootDir);
-        }
-      }
+  if (isset($dirIndex[$strip])) {
+    return normalize_web_path($dirIndex[$strip], $rootDir);
+  }
+  foreach ($dirIndex as $file) {
+    $baseStripped = preg_replace('/[^a-z0-9]+/i', '', mb_strtolower(pathinfo($file, PATHINFO_FILENAME)));
+    if ($baseStripped !== $strip && strpos($baseStripped, $strip) !== false) {
+      return normalize_web_path($file, $rootDir);
     }
   }
   // Fallback genérico si no se encuentra ninguna coincidencia
@@ -231,6 +258,10 @@ while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
   }
   // Añadir campo 'imagen' para el frontend
   $row['imagen'] = $image ?? '';
+
+  // Indicar si el producto está vencido (para el panel admin)
+  $row['vencido'] = producto_caducidad_es_vencido_registro($row);
+  $row['estado_vencido'] = isset($row['estado_vencido']) ? $row['estado_vencido'] : false;
   
   // Resolver proveedor: usar texto existente o buscar por ID en tabla proveedor
   $providerText = null;

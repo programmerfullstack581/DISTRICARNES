@@ -37,39 +37,56 @@ if ($hasCategorias) {
 
   // Si no se encuentran columnas conocidas, hacer fallback desde producto
   if ($idCol && $nameCol) {
-    $sqlCategorias = "SELECT \"$idCol\" AS id_cat, \"$nameCol\" AS nom_cat FROM categorias ORDER BY \"$nameCol\"";
-    $resultCat = $conexion->query($sqlCategorias);
-    if ($resultCat) {
-      while ($row = $resultCat->fetch(PDO::FETCH_ASSOC)) {
-        $id = isset($row['id_cat']) ? (string)$row['id_cat'] : null;
-        $nombre = trim((string)($row['nom_cat'] ?? ''));
-        $name = mb_strtolower($nombre);
-        $display = mb_strtoupper($nombre);
-
-        // Contar productos por categoría (soporte para FK o texto)
-        $count = 0;
-        if ($categoriaIdCol && $id !== null) {
-          $idEsc = $conexion->quote($id);
-          $sqlCount = "SELECT COUNT(*) AS c FROM producto WHERE \"$categoriaIdCol\" = $idEsc";
-          if ($resC = $conexion->query($sqlCount)) { $count = (int)($resC->fetch(PDO::FETCH_ASSOC)['c'] ?? 0); $resC->closeCursor(); }
-        } elseif ($categoriaTextCol) {
-          $nameEsc = $conexion->quote($name);
-          // Postgres lower/trim
-          $sqlCount = "SELECT COUNT(*) AS c FROM producto WHERE LOWER(TRIM(\"$categoriaTextCol\")) = $nameEsc";
-          // Usar try/catch para evitar errores silenciosos
-          try {
-             if ($resC = $conexion->query($sqlCount)) { $count = (int)($resC->fetch(PDO::FETCH_ASSOC)['c'] ?? 0); $resC->closeCursor(); }
-          } catch(PDOException $e) {}
+    // Un solo query con LEFT JOIN: evita una consulta de conteo por categoría (N+1)
+    if ($categoriaIdCol) {
+      $sqlCategorias = "SELECT c.\"$idCol\" AS id_cat, c.\"$nameCol\" AS nom_cat, COUNT(p.\"$categoriaIdCol\") AS cnt FROM categorias c LEFT JOIN producto p ON p.\"$categoriaIdCol\" = c.\"$idCol\" GROUP BY c.\"$idCol\", c.\"$nameCol\" ORDER BY c.\"$nameCol\"";
+      $resultCat = $conexion->query($sqlCategorias);
+      if ($resultCat) {
+        while ($row = $resultCat->fetch(PDO::FETCH_ASSOC)) {
+          $id = isset($row['id_cat']) ? (string)$row['id_cat'] : null;
+          $nombre = trim((string)($row['nom_cat'] ?? ''));
+          $name = mb_strtolower($nombre);
+          $display = mb_strtoupper($nombre);
+          $categories[] = [
+            'id' => $id,
+            'name' => $name,
+            'display' => $display,
+            'product_count' => (int)($row['cnt'] ?? 0)
+          ];
         }
-
-        $categories[] = [
-          'id' => $id,
-          'name' => $name,
-          'display' => $display,
-          'product_count' => $count
-        ];
+        $resultCat->closeCursor();
       }
-      $resultCat->closeCursor();
+    } else {
+      $sqlCategorias = "SELECT \"$idCol\" AS id_cat, \"$nameCol\" AS nom_cat FROM categorias ORDER BY \"$nameCol\"";
+      $resultCat = $conexion->query($sqlCategorias);
+      if ($resultCat) {
+        while ($row = $resultCat->fetch(PDO::FETCH_ASSOC)) {
+          $id = isset($row['id_cat']) ? (string)$row['id_cat'] : null;
+          $nombre = trim((string)($row['nom_cat'] ?? ''));
+          $name = mb_strtolower($nombre);
+          $display = mb_strtoupper($nombre);
+
+          // Contar productos por categoría (soporte para FK o texto)
+          $count = 0;
+          if ($categoriaTextCol) {
+            $nameEsc = $conexion->quote($name);
+            try {
+              if ($resC = $conexion->query("SELECT COUNT(*) AS c FROM producto WHERE LOWER(TRIM(\"$categoriaTextCol\")) = $nameEsc")) {
+                $count = (int)($resC->fetch(PDO::FETCH_ASSOC)['c'] ?? 0);
+                $resC->closeCursor();
+              }
+            } catch (PDOException $e) {}
+          }
+
+          $categories[] = [
+            'id' => $id,
+            'name' => $name,
+            'display' => $display,
+            'product_count' => $count
+          ];
+        }
+        $resultCat->closeCursor();
+      }
     }
   } else {
     // Si no se detectan columnas esperadas, hacemos fallback

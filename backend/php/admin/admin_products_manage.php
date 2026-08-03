@@ -371,6 +371,12 @@ if ($action === 'create' || $action === 'update') {
     }
   }
 
+  // Sincronizar estado de vencido según la fecha de caducidad guardada
+  if (isset($filtered['fecha_caducidad']) && in_array('estado_vencido', $columns, true)) {
+    $fd = strtotime((string)$filtered['fecha_caducidad']);
+    $filtered['estado_vencido'] = ($fd !== false && $fd < strtotime(date('Y-m-d'))) ? 'true' : 'false';
+  }
+
   if ($action === 'create') {
     if (empty($filtered)) {
       echo json_encode(['success' => false, 'message' => 'No hay campos válidos para crear']);

@@ -2,6 +2,10 @@
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/producto_caducidad.php';
+
+// Asegurar columna de vencidos y refrescar estado
+producto_caducidad_aplicar($conexion);
 
 function format_order_event(array $row): array {
   $id = intval($row['id']);
@@ -92,7 +96,7 @@ try {
 
     // 3. Alerta de Stock Bajo (simplificado para PDO)
     if (table_exists($conexion, 'producto')) {
-        $stmt = $conexion->query("SELECT COUNT(*) AS cnt FROM producto WHERE stock < 10");
+        $stmt = $conexion->query("SELECT COUNT(*) AS cnt FROM producto WHERE stock < 10 AND (estado_vencido IS NULL OR estado_vencido = FALSE)");
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $cnt = isset($row['cnt']) ? intval($row['cnt']) : 0;
         if ($cnt > 0) {

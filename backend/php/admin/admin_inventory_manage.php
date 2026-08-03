@@ -53,6 +53,18 @@ if (!$idCol || !$stockCol) {
   exit;
 }
 
+// Nueva fecha de caducidad (opcional): al actualizarla se reanuda la venta
+$newExpiry = trim($_POST['new_expiry'] ?? '');
+$hasNewExpiry = false;
+if ($newExpiry !== '') {
+  $d = DateTime::createFromFormat('Y-m-d', $newExpiry);
+  if (!$d || $d->format('Y-m-d') !== $newExpiry) {
+    echo json_encode(['success' => false, 'message' => 'Fecha de caducidad inválida']);
+    exit;
+  }
+  $hasNewExpiry = true;
+}
+
 // Obtener stock actual
 $stmt = $conexion->prepare("SELECT \"$stockCol\" FROM \"$table\" WHERE \"$idCol\" = ? LIMIT 1");
 $stmt->execute([$productId]);
@@ -69,9 +81,14 @@ $stmt->closeCursor();
 
 $newStock = $currentStock + $addQuantity;
 
-// Actualizar stock
-$stmt2 = $conexion->prepare("UPDATE \"$table\" SET \"$stockCol\" = ? WHERE \"$idCol\" = ?");
-$ok = $stmt2->execute([$newStock, $productId]);
+// Actualizar stock (y opcionalmente fecha de caducidad + revertir vencido)
+if ($hasNewExpiry) {
+  $stmt2 = $conexion->prepare("UPDATE \"$table\" SET \"$stockCol\" = ?, fecha_caducidad = ?, estado_vencido = FALSE WHERE \"$idCol\" = ?");
+  $ok = $stmt2->execute([$newStock, $newExpiry, $productId]);
+} else {
+  $stmt2 = $conexion->prepare("UPDATE \"$table\" SET \"$stockCol\" = ? WHERE \"$idCol\" = ?");
+  $ok = $stmt2->execute([$newStock, $productId]);
+}
 $stmt2->closeCursor();
 
 if ($ok) {
