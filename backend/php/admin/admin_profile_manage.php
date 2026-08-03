@@ -1,14 +1,9 @@
 <?php
-session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-include_once __DIR__ . '/../core/conexion.php';
+require_once __DIR__ . '/../core/admin_auth.php';
 
-// Check if user is logged in and is an admin
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'admin') {
-    echo json_encode(['success' => false, 'message' => 'Acceso no autorizado.']);
-    exit;
-}
+include_once __DIR__ . '/../core/conexion.php';
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     echo json_encode(['success' => false, 'message' => 'Método no permitido.']);

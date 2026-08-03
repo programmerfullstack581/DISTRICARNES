@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 
 // Crear tablas si no existen (solo la primera vez; evita DDL costoso en cada petición)

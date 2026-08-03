@@ -9,6 +9,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   exit;
 }
 
+// Solo en modo depuración se devuelve el enlace en la respuesta (evita secuestro de cuenta)
+$debugMode = getenv('DC_DEBUG') === '1';
+
 $email = trim($_POST['email'] ?? '');
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   echo json_encode(['success' => false, 'message' => 'Correo electrónico inválido']);
@@ -60,11 +63,13 @@ try {
              $resetUrl . "\n\n" .
              "Si no solicitaste esto, puedes ignorar este mensaje.";
 
-  // Guardar enlace en log para pruebas locales
-  try {
-    file_put_contents(__DIR__ . '/reset_links.log', date('c') . ' ' . $email . ' => ' . $resetUrl . "\n", FILE_APPEND);
-  } catch (Throwable $logErr) {
-    // Ignorar errores al escribir log
+  // Guardar enlace en log SOLO en modo depuración (no exponer tokens en producción)
+  if ($debugMode) {
+    try {
+      file_put_contents(__DIR__ . '/reset_links.log', date('c') . ' ' . $email . ' => ' . $resetUrl . "\n", FILE_APPEND);
+    } catch (Throwable $logErr) {
+      // Ignorar errores al escribir log
+    }
   }
 
   // Selección automática de proveedor (prioriza APIs con clave válida)
@@ -92,19 +97,13 @@ try {
   if ($prov === 'smtp') {
     $placeholderPasses = ['tu_contrasena_de_aplicacion', 'APP_PASSWORD_AQUI', ''];
     if (SMTP_USER === 'tu_correo@gmail.com' || in_array(SMTP_PASS, $placeholderPasses, true)) {
-      echo json_encode([
-        'success' => false,
-        'message' => 'Configura SMTP con una "Contraseña de aplicación" en backend/php/core/email_config.php o define una API (BREVO_API_KEY). Mientras tanto, usa el enlace directo para restablecer tu contraseña.',
-        'reset_url' => $resetUrl
-      ]);
+      $msg = 'Configura SMTP con una "Contraseña de aplicación" en backend/php/core/email_config.php o define una API (BREVO_API_KEY).';
+      echo json_encode($debugMode ? array_merge(['success' => false, 'message' => $msg . ' Mientras tanto, usa el enlace directo para restablecer tu contraseña.'], ['reset_url' => $resetUrl]) : ['success' => false, 'message' => $msg . ' Revisa tu correo más tarde.']);
       exit;
     }
     if (SMTP_HOST === 'smtp.gmail.com' && !preg_match('/^[A-Za-z0-9]{16}$/', SMTP_PASS)) {
-      echo json_encode([
-        'success' => false,
-        'message' => 'Tu contraseña SMTP debe ser una "Contraseña de aplicación" de 16 caracteres alfanuméricos (sin espacios). O usa una API como Brevo para evitar bloqueos de red.',
-        'reset_url' => $resetUrl
-      ]);
+      $msg = 'Tu contraseña SMTP debe ser una "Contraseña de aplicación" de 16 caracteres alfanuméricos (sin espacios). O usa una API como Brevo para evitar bloqueos de red.';
+      echo json_encode($debugMode ? array_merge(['success' => false, 'message' => $msg], ['reset_url' => $resetUrl]) : ['success' => false, 'message' => $msg]);
       exit;
     }
   }
@@ -163,20 +162,18 @@ try {
     error_log('SMTP error: ' . $err);
     $isSmtpTimeout = (strpos($err, 'Conexión fallida') !== false || strpos($err, 'timed out') !== false || strpos($err, '(110)') !== false);
     $friendly = ($prov === 'smtp' && $isSmtpTimeout)
-      ? 'El servidor no permite conexiones SMTP salientes. Usa el enlace directo para continuar.'
-      : 'No se pudo enviar el correo (API). Usa el enlace directo o intenta más tarde.';
-    echo json_encode([
-      'success' => false,
-      'message' => $friendly . ' Detalle: ' . $err,
-      'reset_url' => $resetUrl
-    ]);
+      ? 'El servidor no permite conexiones SMTP salientes. Revisa tu correo más tarde.'
+      : 'No se pudo enviar el correo (API). Intenta más tarde.';
+    $resp = ['success' => false, 'message' => $friendly];
+    if ($debugMode) $resp['reset_url'] = $resetUrl;
+    echo json_encode($resp);
   }
   else {
     echo json_encode(['success' => true, 'message' => 'Te enviamos el enlace para restablecer la contraseña. Revisa tu correo.']);
   }
 } catch (Throwable $e) {
   error_log('request_password_reset.php error: ' . $e->getMessage());
-  echo json_encode(['success' => false, 'message' => 'Error en el servidor: ' . $e->getMessage()]);
+  echo json_encode(['success' => false, 'message' => 'Error en el servidor. Intenta más tarde.']);
 }
 
 // PDO no requiere cierre explícito

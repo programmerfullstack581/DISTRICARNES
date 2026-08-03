@@ -1,12 +1,7 @@
 <?php
-session_start();
 header('Content-Type: application/json; charset=utf-8');
 
-// Check if user is logged in and is an admin
-if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || $_SESSION['rol'] !== 'admin') {
-    echo json_encode(['success' => false, 'message' => 'Acceso no autorizado.']);
-    exit;
-}
+require_once __DIR__ . '/../core/admin_auth.php';
 
 $settingsFilePath = __DIR__ . '/../core/settings.json';
 $action = $_REQUEST['action'] ?? '';

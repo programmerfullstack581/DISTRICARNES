@@ -34,6 +34,21 @@ try {
         exit; 
     }
 
+    // Autorización: solo se puede consultar el historial del propio usuario (anti-IDOR)
+    if (session_status() === PHP_SESSION_NONE) @session_start();
+    $sesEmail = $_SESSION['user_email'] ?? '';
+    $sesName  = $_SESSION['user_name'] ?? '';
+    $sesId    = (int)($_SESSION['user_id'] ?? 0);
+    $authorized = false;
+    if ($sesId > 0 && $sesId === $userId) $authorized = true;
+    if ($email !== null && strtolower($email) === strtolower($sesEmail)) $authorized = true;
+    if ($email !== null && $sesName !== '' && strtolower($email) === strtolower($sesName)) $authorized = true;
+    if (!$authorized) {
+        ob_end_clean();
+        echo json_encode(['ok'=>false,'error'=>'Acceso no autorizado.']);
+        exit;
+    }
+
     // Asegurar tablas (solo si es necesario, pero lo hacemos rápido)
     try {
         $conexion->exec("CREATE TABLE IF NOT EXISTS orders_pg (
@@ -177,6 +192,7 @@ try {
 
 } catch (Throwable $e) {
     if (ob_get_level() > 0) ob_end_clean();
-    echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+    error_log('orders_get.php: ' . $e->getMessage());
+    echo json_encode(['ok' => false, 'error' => 'Error al consultar tus pedidos']);
 }
  

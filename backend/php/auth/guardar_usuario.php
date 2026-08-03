@@ -171,6 +171,7 @@ try {
     echo json_encode(['success' => false, 'message' => 'No se pudo registrar']);
   }
 } catch (Throwable $e) {
-  echo json_encode(['success' => false, 'message' => 'Error de servidor: ' . $e->getMessage()]);
+  error_log('guardar_usuario.php: ' . $e->getMessage());
+  echo json_encode(['success' => false, 'message' => 'Error de servidor. Intenta más tarde.']);
 }
 ?>

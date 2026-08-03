@@ -32,6 +32,7 @@ try {
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
   echo json_encode(['ok' => true, 'addresses' => $rows]);
 } catch (Throwable $e) {
-  echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+  error_log('address_list.php: ' . $e->getMessage());
+  echo json_encode(['ok' => false, 'error' => 'Error al consultar las direcciones']);
 }
 ?> 

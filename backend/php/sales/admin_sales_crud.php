@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php'; // PDO
 require_once __DIR__ . '/../core/cache_respuesta.php';
 
@@ -28,7 +29,7 @@ try {
     qty INT NOT NULL DEFAULT 1,
     image TEXT NULL
   )");
-} catch (Throwable $e) { echo json_encode(['ok'=>false,'error'=>$e->getMessage()]); exit; }
+} catch (Throwable $e) { error_log('admin_sales_crud.php: ' . $e->getMessage()); echo json_encode(['ok'=>false,'error'=>'Error de base de datos']); exit; }
 
 switch ($action) {
   case 'list':

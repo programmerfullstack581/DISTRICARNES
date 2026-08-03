@@ -59,7 +59,8 @@ try {
   echo json_encode(['success' => true, 'message' => 'Foto actualizada', 'url' => $publicUrl]);
   exit;
 } catch (Throwable $e) {
-  echo json_encode(['success' => false, 'message' => 'Error del servidor', 'detail' => $e->getMessage()]);
+  error_log('profile_photo_upload.php: ' . $e->getMessage());
+  echo json_encode(['success' => false, 'message' => 'Error del servidor']);
   exit;
 }
 ?>

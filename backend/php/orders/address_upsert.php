@@ -75,6 +75,7 @@ try {
 
   echo json_encode(['ok'=>true, 'id'=>$addrId]);
 } catch (Throwable $e) {
-  echo json_encode(['ok'=>false, 'error'=>$e->getMessage()]);
+  error_log('address_upsert.php: ' . $e->getMessage());
+  echo json_encode(['ok'=>false, 'error'=>'Error al guardar la dirección']);
 }
 ?> 

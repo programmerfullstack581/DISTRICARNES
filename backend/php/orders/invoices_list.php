@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
+require_once __DIR__ . '/../core/admin_auth.php';
 ob_start();
 
 try {
@@ -39,6 +40,7 @@ try {
     
 } catch (Throwable $e) {
     ob_end_clean();
-    echo json_encode(['ok' => true, 'invoices' => [], 'error' => $e->getMessage()]);
+    error_log('invoices_list.php: ' . $e->getMessage());
+    echo json_encode(['ok' => true, 'invoices' => [], 'error' => 'Error al consultar facturas']);
     exit;
 }

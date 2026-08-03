@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
 
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
@@ -97,7 +96,8 @@ try {
     }
 } catch (PDOException $e) {
   http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => $e->getMessage()], JSON_UNESCAPED_UNICODE);
+  error_log('get_products.php: ' . $e->getMessage());
+  echo json_encode(['ok' => false, 'error' => 'Error al consultar el catálogo'], JSON_UNESCAPED_UNICODE);
   exit;
 }
 

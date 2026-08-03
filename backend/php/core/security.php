@@ -5,17 +5,26 @@
 
 // Iniciar sesión segura
 if (session_status() === PHP_SESSION_NONE) {
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure'   => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'),
+    ]);
     session_start();
 }
 
 // Headers de seguridad HTTP
 if (!headers_sent()) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
     header('X-Content-Type-Options: nosniff');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-XSS-Protection: 1; mode=block');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
-    header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    // Strict-Transport-Security solo tiene sentido sobre HTTPS; no forzarlo en HTTP (localhost/dev)
+    if ($isHttps) {
+        header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+    }
     
     // ANTI-CACHE: Evitar que el navegador guarde la vista del admin al cerrar sesión
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");

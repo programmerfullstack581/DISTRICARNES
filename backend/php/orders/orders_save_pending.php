@@ -16,11 +16,35 @@ $items    = $input['items'] ?? [];
 $user     = $input['user'] ?? [];
 $pay      = $input['pay'] ?? null;
 
-// Recalcular total para asegurar envío gratis si > 10,000
+// Recalcular total usando precios reales de la BD (anti-manipulación)
+$verifiedPrices = [];
+if (is_array($items)) {
+  $precioStmt = $conexion->prepare("SELECT precio_venta, stock FROM producto WHERE id_producto = ? LIMIT 1");
+  foreach ($items as $it) {
+    $pid = isset($it['id']) ? intval($it['id']) : 0;
+    if ($pid > 0) {
+      $precioStmt->execute([$pid]);
+      $prod = $precioStmt->fetch(PDO::FETCH_ASSOC);
+      $precioStmt->closeCursor();
+      if (!$prod) {
+        echo json_encode(['ok'=>false, 'error'=>'Uno de los productos de tu carrito ya no está disponible. Actualiza el carrito.', 'code'=>'product_not_found', 'product_id'=>$pid]);
+        exit;
+      }
+      $q = intval($it['qty'] ?? ($it['quantity'] ?? 1));
+      if (intval($prod['stock']) < $q) {
+        echo json_encode(['ok'=>false, 'error'=>'No hay suficiente stock de uno de tus productos. Actualiza el carrito.', 'code'=>'insufficient_stock', 'product_id'=>$pid]);
+        exit;
+      }
+      $verifiedPrices[$pid] = floatval($prod['precio_venta']);
+    }
+  }
+}
+
 $calculatedSubtotal = 0;
 if (is_array($items)) {
   foreach ($items as $it) {
-    $p = floatval($it['price'] ?? 0);
+    $pid = isset($it['id']) ? intval($it['id']) : 0;
+    $p = ($pid > 0 && isset($verifiedPrices[$pid])) ? $verifiedPrices[$pid] : 0;
     $q = intval($it['qty'] ?? ($it['quantity'] ?? 1));
     $calculatedSubtotal += ($p * $q);
   }
@@ -110,13 +134,13 @@ try {
     $ins = $conexion->prepare('INSERT INTO order_items_pg (order_id, title, price, qty, image) VALUES (?,?,?,?,?)');
     foreach ($items as $it) {
       $title = $it['title'] ?? ($it['name'] ?? 'Producto');
-      $price = floatval($it['price'] ?? 0);
+      $productId = isset($it['id']) ? intval($it['id']) : 0;
+      $price = ($productId > 0 && isset($verifiedPrices[$productId])) ? $verifiedPrices[$productId] : 0;
       $qty   = intval($it['qty'] ?? ($it['quantity'] ?? 1));
       $img   = $it['image'] ?? ($it['img'] ?? null);
       $ins->execute([$orderId, $title, $price, $qty, $img]);
       
       // Disminuir el stock del producto
-      $productId = isset($it['id']) ? intval($it['id']) : 0;
       if ($productId > 0) {
         try {
           $stockStmt = $conexion->prepare("UPDATE producto SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
@@ -129,6 +153,7 @@ try {
   }
   echo json_encode(['ok'=>true,'order_id'=>$orderId]);
 } catch (Throwable $e) {
-  echo json_encode(['ok'=>false,'error'=>$e->getMessage()]);
+  error_log('orders_save_pending.php: ' . $e->getMessage());
+  echo json_encode(['ok'=>false,'error'=>'No se pudo registrar el pedido. Intenta más tarde.']);
 }
 ?> 

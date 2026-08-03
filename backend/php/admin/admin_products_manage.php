@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_lotes.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
@@ -116,7 +117,8 @@ if ($action === 'toggle') {
   try {
       $ok = $stmt2->execute([$new, $productId]);
   } catch (PDOException $e) {
-      echo json_encode(['success' => false, 'message' => 'Error al actualizar estado: ' . $e->getMessage()]);
+      error_log('admin_products_manage.php (estado): ' . $e->getMessage());
+      echo json_encode(['success' => false, 'message' => 'Error al actualizar estado']);
       exit;
   }
   $stmt2->closeCursor();
@@ -408,7 +410,8 @@ if ($action === 'create' || $action === 'update') {
         if ($ok) { cache_respuesta_invalidar(); }
         echo json_encode(['success' => $ok, 'message' => $ok ? 'Producto creado' : 'No se pudo crear el producto']);
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error BD: ' . $e->getMessage()]);
+        error_log('admin_products_manage.php (crear): ' . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error de base de datos al crear el producto']);
     }
     exit;
   } else {

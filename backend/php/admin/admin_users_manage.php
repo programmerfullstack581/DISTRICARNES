@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -149,7 +150,8 @@ if ($action === 'create' || $action === 'update') {
         $stmt->closeCursor();
         echo json_encode(['success' => true, 'message' => 'Usuario creado correctamente']);
     } catch(PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error al crear usuario: ' . $e->getMessage()]);
+        error_log('admin_users_manage.php (crear): ' . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error al crear el usuario']);
     }
     exit;
   } else {
@@ -185,7 +187,8 @@ if ($action === 'create' || $action === 'update') {
     try {
         $ok = $stmt->execute($values);
     } catch(PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Error al actualizar: ' . $e->getMessage()]);
+        error_log('admin_users_manage.php (actualizar): ' . $e->getMessage());
+        echo json_encode(['success' => false, 'message' => 'Error al actualizar el usuario']);
         exit;
     }
     $stmt->closeCursor();

@@ -140,7 +140,8 @@ try {
         $_SESSION['logged_in'] = true;
 
         // Redirigir siempre al panel de administración
-        $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+        $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $redirect_url = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/admin/admin_dashboard.html';
 
         // Respuesta exitosa con información del usuario
         echo json_encode([

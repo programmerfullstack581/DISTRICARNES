@@ -78,7 +78,8 @@ try {
   $currency = 'COP';
 
   // Usar URL directa para el logo en lugar de base64 para evitar recortes de Gmail
-  $logoUrl = 'https://districarnes-83qm.onrender.com/assets/icon/LOGO-DISTRICARNES.png';
+  $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+  $logoUrl = $baseUrl . '/assets/icon/LOGO-DISTRICARNES.png';
 
   $itemsHtml = '';
   $subtotal = 0.0;
@@ -135,7 +136,7 @@ try {
         . '<div class="r"><span>Envío:</span><span style="color:' . ($shipping > 0 ? '#333' : '#00c853') . '">' . ($shipping > 0 ? ('$' . number_format($shipping, 0, ',', '.')) : 'GRATIS') . '</span></div>'
         . '<div class="r f"><span>TOTAL:</span><span>$' . number_format($total, 0, ',', '.') . '</span></div>'
       . '</div>'
-      . '<div style="margin-top:15px;text-align:right;"><a href="https://districarnes-83qm.onrender.com/backend/php/orders/order_invoice.php?order_id=' . $orderId . '&print=1" style="display:inline-block;padding:8px 15px;background:#f00;color:#fff;text-decoration:none;border-radius:4px;font-size:13px;font-weight:bold;">Descargar PDF</a></div>';
+      . '<div style="margin-top:15px;text-align:right;"><a href="' . $baseUrl . '/backend/php/orders/order_invoice.php?order_id=' . $orderId . '&print=1" style="display:inline-block;padding:8px 15px;background:#f00;color:#fff;text-decoration:none;border-radius:4px;font-size:13px;font-weight:bold;">Descargar PDF</a></div>';
 
   if (!empty($address)) {
     $html .= '<div class="addr"><b>Entrega:</b> ' . htmlspecialchars($address['street'] ?? '') . ', ' . htmlspecialchars($address['city'] ?? '') . (!empty($address['notes']) ? (' (<em>' . htmlspecialchars($address['notes']) . '</em>)') : '') . '</div>';
@@ -210,12 +211,14 @@ try {
     // --------------------------------
 
   } catch (Throwable $e) {
-    echo json_encode(['ok'=>false,'error'=>$e->getMessage()]);
+    error_log('[send_invoice_email] ' . $e->getMessage());
+    echo json_encode(['ok'=>false,'error'=>'No se pudo enviar la factura. Intenta más tarde.']);
     exit;
   }
 
   echo json_encode(['ok'=>true]);
 } catch (Throwable $e) {
-  echo json_encode(['ok'=>false,'error'=>$e->getMessage()]);
+  error_log('[send_invoice_email] ' . $e->getMessage());
+  echo json_encode(['ok'=>false,'error'=>'No se pudo enviar la factura.']);
 }
 ?> 

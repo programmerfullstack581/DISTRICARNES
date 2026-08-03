@@ -27,17 +27,21 @@ if (empty($host) || empty($database) || empty($username) || empty($password)) {
     if (!headers_sent()) {
         header('Content-Type: application/json; charset=utf-8');
     }
-    echo json_encode([
+    $resp = [
         'success' => false,
         'message' => 'Faltan variables de entorno para la conexión.',
-        'error_details' => 'Verifica HOST, DB_NAME, DB_USER y DB_PASSWORD en Render',
-        'debug' => [
+    ];
+    // Detalles solo en entorno de depuración explícito
+    if (getenv('DC_DEBUG') === '1') {
+        $resp['error_details'] = 'Verifica HOST, DB_NAME, DB_USER y DB_PASSWORD en Render';
+        $resp['debug'] = [
             'host_empty' => empty($host),
             'database_empty' => empty($database),
             'username_empty' => empty($username),
             'password_empty' => empty($password)
-        ]
-    ]);
+        ];
+    }
+    echo json_encode($resp);
     exit();
 }
 
@@ -86,18 +90,23 @@ try {
         header('Content-Type: application/json; charset=utf-8');
     }
 
-    echo json_encode([
+    $resp = [
         'success' => false,
         'message' => 'Error de conexión a PostgreSQL.',
-        'error_details' => $e->getMessage(),
-        'debug_info' => [
+    ];
+    // Nunca exponer host/puerto/usuario/DSN ni mensajes internos fuera de depuración
+    if (getenv('DC_DEBUG') === '1') {
+        $resp['error_details'] = $e->getMessage();
+        $resp['debug_info'] = [
             'host' => $host,
             'port' => $port,
             'database' => $database,
             'username' => $username,
             'dsn' => $dsn ?? 'No generado'
-        ]
-    ]);
+        ];
+    }
+    error_log('Conexión PostgreSQL falló: ' . $e->getMessage());
+    echo json_encode($resp);
 
     exit();
 }

@@ -1,4 +1,5 @@
 <?php
+require __DIR__ . '/../core/admin_auth.php';
 require __DIR__ . '/../core/conexion.php';
 require __DIR__ . '/../core/producto_caducidad.php';
 require __DIR__ . '/../core/cache_respuesta.php';

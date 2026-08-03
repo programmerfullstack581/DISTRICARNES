@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

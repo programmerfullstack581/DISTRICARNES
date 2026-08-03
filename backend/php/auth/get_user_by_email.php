@@ -3,10 +3,15 @@
 header('Content-Type: application/json; charset=utf-8');
 try {
     require_once __DIR__ . '/../core/conexion.php';
-    if (!isset($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
+    $email = trim($_POST['email'] ?? ($_GET['email'] ?? ''));
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo json_encode(['success' => false, 'message' => 'Email inválido']); exit;
     }
-    $email = trim($_POST['email']);
+    // Solo se puede consultar la información del usuario logueado (evita enumeración de cuentas)
+    $sessionEmail = $_SESSION['user_email'] ?? '';
+    if ($sessionEmail === '' || strtolower($sessionEmail) !== strtolower($email)) {
+        echo json_encode(['success' => false, 'message' => 'Acceso no autorizado.']); exit;
+    }
     $stmt = $conexion->prepare("SELECT id_usuario, nombres_completos, correo_electronico, rol, usuario_foto FROM usuario WHERE correo_electronico = ? LIMIT 1");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -24,7 +29,8 @@ try {
         ]
     ]);
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error del servidor', 'detail' => $e->getMessage()]);
+    error_log('get_user_by_email.php: ' . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Error del servidor']);
 }
 exit;
 

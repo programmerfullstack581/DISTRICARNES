@@ -26,6 +26,14 @@
     # Bloquear acceso directo a los archivos PHP de config/ (bootstrap, app, init, sitemap)
     RewriteCond %{THE_REQUEST} /config/.*\.php [NC]
     RewriteRule ^ - [F,L]
+    
+    # Bloquear todo el directorio db/ (esquemas y credenciales)
+    RewriteCond %{THE_REQUEST} /db/ [NC]
+    RewriteRule ^ - [F,L]
+    
+    # Bloquear logs de tokens de recuperación y backups
+    RewriteCond %{THE_REQUEST} /backend/php/auth/reset_links\.log [NC]
+    RewriteRule ^ - [F,L]
 </IfModule>
 
 # Headers de seguridad
@@ -46,8 +54,8 @@ Options -Indexes
     Deny from all
 </FilesMatch>
 
-# Proteger archivos de configuración
-<FilesMatch "\.(env|json|md|sql|log)$">
+# Proteger archivos de configuración (incluye .txt con credenciales y .pem/.key)
+<FilesMatch "\.(env|json|md|sql|log|txt|pem|key|yml|yaml)$">
     Order allow,deny
     Deny from all
 </FilesMatch>

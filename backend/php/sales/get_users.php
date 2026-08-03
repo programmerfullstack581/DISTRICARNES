@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 
 try {
@@ -48,6 +49,7 @@ try {
   echo json_encode(['ok' => true, 'count' => count($users), 'users' => $users], JSON_UNESCAPED_UNICODE);
 } catch (Exception $e) {
   http_response_code(500);
-  echo json_encode(['ok' => false, 'error' => 'Server error: ' . $e->getMessage()]);
+  error_log('get_users.php: ' . $e->getMessage());
+  echo json_encode(['ok' => false, 'error' => 'Error del servidor']);
 }
 ?>

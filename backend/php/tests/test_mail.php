@@ -1,5 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/email_config.php';
 require_once __DIR__ . '/../core/smtp_mailer.php';
 

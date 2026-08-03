@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/producto_caducidad.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
@@ -135,7 +136,8 @@ try {
     echo json_encode($resp);
 
 } catch (PDOException $e) {
-    echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+    error_log('notifications_list.php: ' . $e->getMessage());
+    echo json_encode(['ok' => false, 'error' => 'Error al consultar notificaciones']);
 }
 exit;
 ?>

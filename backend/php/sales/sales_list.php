@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 
 try {
@@ -58,7 +59,8 @@ try {
 
     echo json_encode(['ok'=>true, 'sales'=>$sales]);
 } catch (Exception $e) {
-    echo json_encode(['ok'=>false, 'error'=>$e->getMessage()]);
+    error_log('sales_list.php: ' . $e->getMessage());
+    echo json_encode(['ok'=>false, 'error'=>'Error al consultar las ventas']);
 }
 exit;
 ?>

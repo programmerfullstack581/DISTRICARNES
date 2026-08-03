@@ -50,7 +50,7 @@ try {
   $mark = $conexion->prepare('UPDATE password_resets SET used = TRUE WHERE id = ?');
   $mark->execute([$row['id']]);
 
-  echo json_encode(['success' => true, 'message' => 'Contraseña actualizada correctamente', 'redirect_url' => 'https://districarnes-83qm.onrender.com/login/login.php']);
+  echo json_encode(['success' => true, 'message' => 'Contraseña actualizada correctamente', 'redirect_url' => (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/login/login.php']);
 } catch (Throwable $e) {
   error_log('perform_password_reset.php error: ' . $e->getMessage());
   echo json_encode(['success' => false, 'message' => 'Error en el servidor']);

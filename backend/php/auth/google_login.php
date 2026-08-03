@@ -81,7 +81,8 @@ try {
         $_SESSION['user_id'] = $user['id_usuario'];
         $_SESSION['user_rol'] = $user['rol'];
         $_SESSION['logged_in'] = true;
-        $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+        $base = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+        $redirect_url = $base . '/admin/admin_dashboard.html';
         $response = [
             'success' => true,
             'message' => 'Login successful',
@@ -107,7 +108,7 @@ try {
             $_SESSION['user_id'] = $new_user_id;
             $_SESSION['user_rol'] = $rol;
             $_SESSION['logged_in'] = true;
-            $redirect_url = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+            $redirect_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/admin/admin_dashboard.html';
             $response = [
                 'success' => true,
                 'message' => 'Registration and login successful',
@@ -127,7 +128,7 @@ try {
     }
 } catch (Exception $e) {
     $response['success'] = false;
-    $response['message'] = $e->getMessage();
+    $response['message'] = 'Error al iniciar sesión con Google. Intenta más tarde.';
     error_log('Google Login Error: ' . $e->getMessage());
 }
 $output = ob_get_clean();
