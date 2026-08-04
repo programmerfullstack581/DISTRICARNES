@@ -54,7 +54,7 @@ window.handleCredentialResponse = async function(response) {
                 if (result.redirect_url) {
                     return result.redirect_url.startsWith('/') ? 'https://districarnes-83qm.onrender.com' + result.redirect_url : result.redirect_url;
                 }
-                return 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+                return 'https://districarnes-83qm.onrender.com/index.php';
             })();
             const displayName = result.user.nombre || result.user.nombres_completos || result.user.email || 'Usuario';
             const displayEmail = result.user.email || result.user.correo_electronico || '';
@@ -251,8 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             window.location.href = result.redirect_url;
                         }
                     } else {
-                        // Fallback: redirigir siempre al panel de administración
-                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+                        // Fallback: redirigir al catálogo
+                        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
                     }
                 }, 2000);
             } else {
@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (result.redirect_url) {
                         window.location.href = 'https://districarnes-83qm.onrender.com' + result.redirect_url;
                     } else {
-                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+                        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
                     }
                 }, 2000);
 
@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     setTimeout(() => {
-                        window.location.href = 'https://districarnes-83qm.onrender.com/admin/admin_dashboard.html';
+                        window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
                     }, 3000);
                 }
             });

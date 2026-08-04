@@ -343,7 +343,8 @@ include __DIR__ . '/includes/header.php';
             <div class="md:w-1/2 relative flex items-center justify-center">
                 <img id="heroImg" alt="Man in white uniform holding meat cleaver in butcher shop with blurred background lights "
                     class="w-full max-h-[600px] object-contain rounded-md ml-2 mr-4 mt--2 mb-4 "
-                    src="./static/images/carnicero_navarro.png " />
+                    src="./static/images/carnicero_navarro.png "
+                    fetchpriority="high" decoding="async" />
 
                 <!-- Contenedor de elementos de usuario logueado al lado de la imagen -->
                 <div id="userLoggedButtonsHero" style="display: none;">

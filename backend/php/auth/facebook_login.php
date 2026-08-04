@@ -55,9 +55,11 @@ try {
         $_SESSION['user_id'] = $user['id_usuario'];
         $_SESSION['user_rol'] = $user['rol'];
         $_SESSION['logged_in'] = true;
+        if (function_exists('session_regenerate_id')) { session_regenerate_id(true); }
 
         $base = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
-        $redirect_url = $base . '/admin/admin_dashboard.html';
+        $isAdmin = is_string($user['rol'] ?? '') && strtolower($user['rol']) === 'admin';
+        $redirect_url = $base . ($isAdmin ? '/admin/admin_dashboard.html' : '/index.php');
 
         $response = [
             'success' => true,
@@ -90,8 +92,10 @@ try {
             $_SESSION['user_id'] = $new_user_id;
             $_SESSION['user_rol'] = $rol;
             $_SESSION['logged_in'] = true;
+            if (function_exists('session_regenerate_id')) { session_regenerate_id(true); }
 
-            $redirect_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/admin/admin_dashboard.html';
+            $base = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost');
+            $redirect_url = $base . '/index.php'; // nuevos usuarios van al catálogo
 
             $response = [
                 'success' => true,

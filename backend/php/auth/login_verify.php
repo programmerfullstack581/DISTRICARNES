@@ -8,6 +8,7 @@ header('Content-Type: application/json; charset=utf-8');
 include_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/email_config.php';
 require_once __DIR__ . '/../core/smtp_mailer.php';
+require_once __DIR__ . '/../core/rate_limit.php';
 
 function dc_mail_provider_login(): string {
     $prov = null;
@@ -64,6 +65,36 @@ if (empty($identifier) || empty($password)) {
     exit;
 }
 
+// =========================================
+// RATE LIMIT - Evitar fuerza bruta
+// =========================================
+$rlIdKey = 'login:id:' . strtolower(trim($identifier));
+$rlIpKey = 'login:ip:' . dc_client_ip();
+
+// Bloqueo rápido sin consumir intentos si ya está bloqueado
+$peekIp = dc_rate_limit_peek($rlIpKey, 15, 900);
+if (!$peekIp['allowed']) {
+    $mins = (int)ceil($peekIp['retry_after'] / 60);
+    echo json_encode(['success' => false, 'message' => 'Demasiados intentos fallidos. Intenta de nuevo en ' . $mins . ' minuto(s).']);
+    exit;
+}
+$peekId = dc_rate_limit_peek($rlIdKey, 5, 900);
+if (!$peekId['allowed']) {
+    $mins = (int)ceil($peekId['retry_after'] / 60);
+    echo json_encode(['success' => false, 'message' => 'Demasiados intentos para esta cuenta. Intenta de nuevo en ' . $mins . ' minuto(s).']);
+    exit;
+}
+
+// Registrar el intento (IP + identificador) antes de validar credenciales
+$rlIp = dc_rate_limit_consume($rlIpKey, 15, 900);
+$rlId = dc_rate_limit_consume($rlIdKey, 5, 900);
+if (!$rlIp['allowed'] || !$rlId['allowed']) {
+    $retry = max($rlIp['retry_after'], $rlId['retry_after']);
+    $mins = (int)ceil($retry / 60);
+    echo json_encode(['success' => false, 'message' => 'Demasiados intentos fallidos. Intenta de nuevo en ' . $mins . ' minuto(s).']);
+    exit;
+}
+
 try {
     try { $conexion->exec("ALTER TABLE usuario ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT FALSE"); } catch (Throwable $_) {}
     try { $conexion->exec("ALTER TABLE usuario ADD COLUMN IF NOT EXISTS email_verified_at TIMESTAMP NULL"); } catch (Throwable $_) {}
@@ -113,7 +144,13 @@ try {
 
     if ($user) {
         if (!password_verify($password, $user['contrasena'])) {
-            echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas. Verifica tu correo y contraseña.']);
+            $rlRemaining = dc_rate_limit_peek($rlIdKey, 5, 900)['count'];
+            $left = max(0, 5 - $rlRemaining);
+            $msg = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+            if ($left > 0 && $left <= 2) {
+                $msg .= ' Te quedan ' . $left . ' intento(s).';
+            }
+            echo json_encode(['success' => false, 'message' => $msg]);
             $stmt->closeCursor();
             exit;
         }
@@ -164,9 +201,17 @@ try {
         $_SESSION['rol'] = $user['rol'];
         $_SESSION['logged_in'] = true;
 
-        // Redirigir siempre al panel de administración
+        // Prevenir fijación de sesión
+        session_regenerate_id(true);
+
+        // Limpiar contadores de intentos fallidos
+        dc_rate_limit_reset($rlIdKey);
+        dc_rate_limit_reset($rlIpKey);
+
+        // Redirigir según el rol: admin al panel, clientes al catálogo
+        $isAdmin = is_string($role) && strtolower($role) === 'admin';
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $redirect_url = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/admin/admin_dashboard.html';
+        $redirect_url = $scheme . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . ($isAdmin ? '/admin/admin_dashboard.html' : '/index.php');
 
         // Respuesta exitosa con información del usuario
         echo json_encode([

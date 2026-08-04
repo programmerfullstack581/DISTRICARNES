@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../core/conexion.php'; // $conexion es un PDO (PostgreSQL)
 require_once __DIR__ . '/../core/mail_sender.php';
+require_once __DIR__ . '/../core/rate_limit.php';
 
 function dc_ensure_user_verification_cols(PDO $db): void {
   try { $db->exec("ALTER TABLE usuario ADD COLUMN IF NOT EXISTS email_verified BOOLEAN NOT NULL DEFAULT FALSE"); } catch (Throwable $_) {}
@@ -89,6 +90,21 @@ if (!$nombre || !$cedula || !$direccion || !$celular || !$correo || !$clave) {
 }
 if (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
   echo json_encode(['success' => false, 'message' => 'Correo electrónico inválido']);
+  exit;
+}
+
+// =========================================
+// RATE LIMIT - Evitar registro masivo (spam/bots)
+// =========================================
+$rlRegIpKey = 'reg:ip:' . dc_client_ip();
+$rlRegPeek = dc_rate_limit_peek($rlRegIpKey, 5, 900);
+if (!$rlRegPeek['allowed']) {
+  echo json_encode(['success' => false, 'message' => 'Demasiados registros desde tu conexión. Intenta de nuevo en unos minutos.']);
+  exit;
+}
+$rlReg = dc_rate_limit_consume($rlRegIpKey, 5, 900);
+if (!$rlReg['allowed']) {
+  echo json_encode(['success' => false, 'message' => 'Demasiados registros desde tu conexión. Intenta de nuevo en unos minutos.']);
   exit;
 }
 

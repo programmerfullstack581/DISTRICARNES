@@ -1144,7 +1144,7 @@ endif; ?>
                     Vista 3D
                 </button>
             </div>
-            <img id="productImage" src="<?php echo htmlspecialchars($imagen_producto); ?>" class="product-image-large" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+            <img id="productImage" src="<?php echo htmlspecialchars($imagen_producto); ?>" class="product-image-large" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" loading="lazy" decoding="async">
             <?php if ($model_glb_url): ?>
             <model-viewer id="productModel"
                           class="product-model"

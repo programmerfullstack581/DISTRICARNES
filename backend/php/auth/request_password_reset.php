@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/email_config.php';
 require_once __DIR__ . '/../core/smtp_mailer.php';
+require_once __DIR__ . '/../core/rate_limit.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   echo json_encode(['success' => false, 'message' => 'Método no permitido']);
@@ -15,6 +16,26 @@ $debugMode = getenv('DC_DEBUG') === '1';
 $email = trim($_POST['email'] ?? '');
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
   echo json_encode(['success' => false, 'message' => 'Correo electrónico inválido']);
+  exit;
+}
+
+// =========================================
+// RATE LIMIT - Evitar inundación de correos / fuerza bruta
+// =========================================
+$rlEmailKey = 'reset:email:' . strtolower($email);
+$rlIpKey    = 'reset:ip:' . dc_client_ip();
+
+$peekEmail = dc_rate_limit_peek($rlEmailKey, 3, 900);
+$peekIp    = dc_rate_limit_peek($rlIpKey, 5, 900);
+if (!$peekEmail['allowed'] || !$peekIp['allowed']) {
+  echo json_encode(['success' => false, 'message' => 'Has solicitado demasiados enlaces. Intenta de nuevo en unos minutos.']);
+  exit;
+}
+// Consumir antes de validar si el correo existe (evita enumeración por respuesta distinta)
+$rlEmail = dc_rate_limit_consume($rlEmailKey, 3, 900);
+$rlIp    = dc_rate_limit_consume($rlIpKey, 5, 900);
+if (!$rlEmail['allowed'] || !$rlIp['allowed']) {
+  echo json_encode(['success' => false, 'message' => 'Has solicitado demasiados enlaces. Intenta de nuevo en unos minutos.']);
   exit;
 }
 

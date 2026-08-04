@@ -170,31 +170,86 @@
 
         function exportSalesExcel(){
             try {
-                const wb = XLSX.utils.table_to_book(document.getElementById('salesTable'), { sheet: "Ventas" });
+                const rows = currentFilteredSales();
+                if(!rows.length){ Swal.fire('Sin datos','No hay ventas para exportar','info'); return; }
+                const data = rows.map(s => ({
+                    ID: s.id,
+                    Fecha: s.created_at || '',
+                    Cliente: s.customer_name || '',
+                    Email: s.customer_email || '',
+                    Productos: s.items_count || 0,
+                    Total: Number(s.total || 0),
+                    Estado: statusLabel(s.status),
+                    'Metodo de pago': s.pay_method || ''
+                }));
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Ventas');
                 XLSX.writeFile(wb, `ventas-${new Date().toISOString().split('T')[0]}.xlsx`);
-                Swal.fire({ icon:'success', title:'Exportado', text:'Excel generado', timer:2000, showConfirmButton:false });
+                Swal.fire({ icon:'success', title:'Exportado', text:`${rows.length} ventas exportadas`, timer:2000, showConfirmButton:false });
             } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a Excel','error'); }
         }
         function exportSalesCSV(){
             try {
-                const ws = XLSX.utils.table_to_sheet(document.getElementById('salesTable'));
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Ventas");
-                XLSX.writeFile(wb, `ventas-${new Date().toISOString().split('T')[0]}.csv`);
-                Swal.fire({ icon:'success', title:'Exportado', text:'CSV generado', timer:2000, showConfirmButton:false });
+                const rows = currentFilteredSales();
+                if(!rows.length){ Swal.fire('Sin datos','No hay ventas para exportar','info'); return; }
+                const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+                const header = ['ID','Fecha','Cliente','Email','Productos','Total','Estado','Metodo de pago'];
+                const lines = [header.join(';')];
+                rows.forEach(s => {
+                    lines.push([
+                        s.id,
+                        s.created_at || '',
+                        s.customer_name || '',
+                        s.customer_email || '',
+                        s.items_count || 0,
+                        Number(s.total || 0).toFixed(2),
+                        statusLabel(s.status),
+                        s.pay_method || ''
+                    ].map(esc).join(';'));
+                });
+                const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `ventas-${new Date().toISOString().split('T')[0]}.csv`;
+                document.body.appendChild(a); a.click(); a.remove();
+                Swal.fire({ icon:'success', title:'Exportado', text:`${rows.length} ventas exportadas`, timer:2000, showConfirmButton:false });
             } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a CSV','error'); }
         }
         function exportSalesPDF(){
             try {
+                const rows = currentFilteredSales();
+                if(!rows.length){ Swal.fire('Sin datos','No hay ventas para exportar','info'); return; }
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 doc.setFontSize(18);
                 doc.text("Ventas - DistriCarnes", 14, 18);
                 doc.setFontSize(12);
-                doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 14, 26);
-                doc.autoTable({ html: '#salesTable', startY: 32, theme: 'grid' });
+                doc.text(`Fecha: ${new Date().toLocaleDateString()} - ${rows.length} registros`, 14, 26);
+                doc.autoTable({
+                    head: [['ID','Fecha','Cliente','Productos','Total','Estado']],
+                    body: rows.map(s => [s.id, (s.created_at||'').slice(0,10), s.customer_name || '', s.items_count || 0, Number(s.total || 0).toFixed(2), statusLabel(s.status)]),
+                    startY: 32,
+                    theme: 'grid'
+                });
                 doc.save(`ventas-${new Date().toISOString().split('T')[0]}.pdf`);
+                Swal.fire({ icon:'success', title:'Exportado', text:`${rows.length} ventas exportadas`, timer:2000, showConfirmButton:false });
             } catch(e){ console.error(e); Swal.fire('Error','No se pudo exportar a PDF','error'); }
+        }
+
+        function statusLabel(st){
+            const map = { COMPLETED:'Completado', PENDING:'Pendiente', PROCESSING:'En proceso', PREPARANDO:'En proceso', SHIPPED:'Enviado', DELIVERED:'Entregado', CANCELLED:'Cancelado' };
+            return map[String(st||'').toUpperCase()] || st || '-';
+        }
+
+        function currentFilteredSales(){
+            const term = (searchInput.value || '').toLowerCase().trim();
+            return SalesCache.filter(s => {
+                const idStr = (`#${s.id||''}`).toLowerCase();
+                const name  = (s.customer_name || '').toLowerCase();
+                const email = (s.customer_email || '').toLowerCase();
+                return !term || idStr.includes(term) || name.includes(term) || email.includes(term);
+            });
         }
         
         // Carga dinámica de ventas desde la BD
@@ -255,27 +310,24 @@
         }
 
         function renderSales(){
-            const term = (searchInput.value || '').toLowerCase().trim();
-            const filtered = SalesCache.filter(s => {
-                const idStr = (`#${s.id||''}`).toLowerCase();
-                const name  = (s.customer_name || '').toLowerCase();
-                const email = (s.customer_email || '').toLowerCase();
-                return !term || idStr.includes(term) || name.includes(term) || email.includes(term);
-            });
+            const filtered = currentFilteredSales();
             const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
             if (CurrentPage > totalPages) CurrentPage = totalPages;
             const start = (CurrentPage - 1) * PAGE_SIZE;
             const slice = filtered.slice(start, start + PAGE_SIZE);
-            salesBody.innerHTML = slice.map(s => `
+            salesBody.innerHTML = slice.map(s => {
+                const st = String(s.status||'').toUpperCase();
+                const color = { COMPLETED:'#22c55e', DELIVERED:'#22c55e', PENDING:'#f59e0b', PROCESSING:'#3b82f6', PREPARANDO:'#3b82f6', SHIPPED:'#8b5cf6', ENVIADO:'#8b5cf6', CANCELLED:'#ef4444' }[st] || '#9ca3af';
+                return `
                 <tr>
-                    <td>${new Date(s.created_at).toLocaleDateString('es-CO')}</td>
+                    <td>${s.created_at ? new Date(s.created_at).toLocaleDateString('es-CO') : '-'}</td>
                     <td>#${s.id}</td>
                     <td>${s.customer_name || '-'}</td>
                     <td>${Number(s.items_count||0)}</td>
                     <td>${formatMoney(s.total)}</td>
-                    <td>${(s.status||'').toUpperCase()}</td>
-                </tr>
-            `).join('') || '<tr><td colspan="6">Sin resultados</td></tr>';
+                    <td><span style="display:inline-block;padding:3px 10px;border-radius:999px;background:${color}22;color:${color};border:1px solid ${color}44;font-weight:600;">${statusLabel(s.status)}</span></td>
+                </tr>`;
+            }).join('') || '<tr><td colspan="6">Sin resultados</td></tr>';
             renderPagination(totalPages);
         }
 

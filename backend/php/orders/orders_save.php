@@ -12,6 +12,19 @@ if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON'])
 
 $items    = $input['items'] ?? [];
 
+// Validar que el carrito tenga productos con cantidades válidas
+if (!is_array($items) || count($items) === 0) {
+  echo json_encode(['ok'=>false, 'error'=>'No hay productos en tu carrito', 'code'=>'empty_cart']);
+  exit;
+}
+foreach ($items as $it) {
+  $q = intval($it['qty'] ?? ($it['quantity'] ?? 1));
+  if ($q < 1 || $q > 99) {
+    echo json_encode(['ok'=>false, 'error'=>'Cantidad inválida en tu carrito', 'code'=>'invalid_qty']);
+    exit;
+  }
+}
+
 // Validar que ningún producto del carrito esté vencido
 if (is_array($items)) {
   foreach ($items as $it) {

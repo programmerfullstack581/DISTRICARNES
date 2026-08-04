@@ -187,6 +187,62 @@ include __DIR__ . '/includes/header.php';
                         orders = PurchaseHistoryStore.all();
                     }
 
+                    // Utilidades de visualización
+                    function formatCOP(v){
+                        try { return Number(v||0).toLocaleString('es-CO', { style:'currency', currency:'COP', maximumFractionDigits:0 }); }
+                        catch(e){ return '$' + Number(v||0).toLocaleString('es-CO'); }
+                    }
+                    function formatDate(v){
+                        if (!v) return '';
+                        try {
+                            const d = new Date(v);
+                            if (isNaN(d.getTime())) return v;
+                            return d.toLocaleDateString('es-CO', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                        } catch(e){ return v; }
+                    }
+                    function orderStatus(st){
+                        const map = {
+                            PENDING:'Pendiente', PENDIENTE:'Pendiente',
+                            PROCESSING:'En proceso', PREPARANDO:'En proceso',
+                            SHIPPED:'Enviado', ENVIADO:'Enviado',
+                            DELIVERED:'Entregado', ENTREGADO:'Entregado',
+                            COMPLETED:'Completado', COMPLETADO:'Completado',
+                            CANCELLED:'Cancelado', CANCELADO:'Cancelado'
+                        };
+                        const colors = { Pendiente:'#f59e0b', 'En proceso':'#3b82f6', Enviado:'#8b5cf6', Entregado:'#22c55e', Completado:'#22c55e', Cancelado:'#ef4444' };
+                        const key = map[String(st||'').toUpperCase()] || st || 'Desconocido';
+                        return [key, colors[key] || '#9ca3af'];
+                    }
+                    function statusTimeline(st){
+                        const norm = {
+                            PENDING:'PENDING', PENDIENTE:'PENDING',
+                            PROCESSING:'PROCESSING', PREPARANDO:'PROCESSING',
+                            SHIPPED:'SHIPPED', ENVIADO:'SHIPPED',
+                            DELIVERED:'DELIVERED', ENTREGADO:'DELIVERED',
+                            COMPLETED:'COMPLETED', COMPLETADO:'COMPLETED'
+                        }[String(st||'').toUpperCase()];
+                        if (String(st||'').toUpperCase() === 'CANCELLED' || String(st||'').toUpperCase() === 'CANCELADO') {
+                            return '<div style="padding:8px;color:#ef4444;font-weight:700;font-size:.85rem;background:#ef444410;border:1px solid #ef444433;border-radius:8px;">Este pedido fue cancelado</div>';
+                        }
+                        if (!norm) return '';
+                        const steps = [
+                            { key:'PENDING', label:'Pedido recibido' },
+                            { key:'PROCESSING', label:'Preparando tu pedido' },
+                            { key:'SHIPPED', label:'En camino' },
+                            { key:'DELIVERED', label:'Entregado' },
+                            { key:'COMPLETED', label:'Completado' }
+                        ];
+                        const currentIdx = steps.findIndex(s => s.key === norm);
+                        if (currentIdx < 0) return '';
+                        return '<div style="margin:6px 0 2px;padding:8px 4px;">' + steps.map((s, i) => {
+                            const done = i <= currentIdx;
+                            return `<div style="display:flex;align-items:flex-start;gap:10px;padding:3px 0;">
+                                <span style="width:18px;height:18px;border-radius:50%;flex:0 0 18px;margin-top:2px;background:${done ? '#ff0000' : '#2a2a2a'};color:#fff;font-size:.65rem;display:flex;align-items:center;justify-content:center;">${done ? '&#10003;' : (i + 1)}</span>
+                                <span style="color:${done ? '#fff' : '#777'};font-weight:${done ? '700' : '400'};font-size:.85rem;">${s.label}</span>
+                            </div>`;
+                        }).join('') + '</div>';
+                    }
+
                     if (!orders.length) {
                         container.innerHTML = `
                             <div style="text-align:center;padding:40px;background:#0b0b0b;border:1px solid #222;border-radius:12px;">
@@ -198,27 +254,35 @@ include __DIR__ . '/includes/header.php';
                         `;
                         return;
                     }
-                    container.innerHTML = orders.map(order => `
+                    container.innerHTML = orders.map(order => {
+                        const [stLabel, stColor] = orderStatus(order.status);
+                        return `
         <div class="card" style="background:#0b0b0b;border:1px solid #222;border-radius:10px;padding:12px;">
-          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
             <strong>Orden #${order.id || ''}</strong>
-            <span class="date" style="opacity:.7;">${order.created_at ? new Date(order.created_at).toLocaleString() : (order.date ? new Date(order.date).toLocaleString() : '')}</span>
+            <span style="display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="display:inline-block;padding:3px 10px;border-radius:999px;background:${stColor}22;color:${stColor};border:1px solid ${stColor}55;font-weight:700;font-size:.75rem;">${stLabel}</span>
+              <span class="date" style="opacity:.7;">${formatDate(order.created_at || order.date)}</span>
+            </span>
           </div>
           <div class="card-body" style="display:grid;gap:6px;">
             ${(order.items || []).map(i => `
               <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;">
                 <span>${i.title || i.name || 'Producto'}</span>
                 <span>x${i.qty || i.quantity || 1}</span>
-                <span>$${(Number(i.price || 0)).toFixed(2)}</span>
+                <span>${formatCOP(i.price)}</span>
               </div>
             `).join('')}
           </div>
-          <div class="card-footer" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;">
-            <div><strong>Total:</strong> $${(Number(order.total || 0)).toFixed(2)}</div>
-            ${order.id ? `<a href="backend/php/orders/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid #444;border-radius:6px;">Ver factura</a>` : ''}
+          ${statusTimeline(order.status)}
+          <div class="card-footer" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div><strong>Total:</strong> ${formatCOP(order.total)}</div>
+            <div style="display:flex;gap:8px;">
+              ${order.id ? `<a href="backend/php/orders/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid #444;border-radius:6px;color:#fff;text-decoration:none;">Ver factura</a>` : ''}
+            </div>
           </div>
-        </div>
-      `).join('');
+        </div>`;
+                    }).join('');
     });
     </script>
     <!-- CHAT BOT -->

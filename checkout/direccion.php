@@ -1930,6 +1930,19 @@
                     });
                     return;
                 }
+                const cartItems = getCart();
+                if (!cartItems.length) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tu carrito está vacío',
+                        text: 'Agrega productos antes de finalizar la compra.',
+                        confirmButtonText: 'Ver productos',
+                        confirmButtonColor: '#ff0000'
+                    }).then(() => {
+                        window.location.href = '../productos.php';
+                    });
+                    return;
+                }
                 if (!CheckoutState.payMethod) {
                     Swal.fire({
                         icon: 'info',

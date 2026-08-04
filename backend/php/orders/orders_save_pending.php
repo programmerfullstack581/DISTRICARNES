@@ -17,6 +17,18 @@ $items    = $input['items'] ?? [];
 $user     = $input['user'] ?? [];
 $pay      = $input['pay'] ?? null;
 
+if (!is_array($items) || count($items) === 0) {
+  echo json_encode(['ok'=>false, 'error'=>'No hay productos en tu carrito', 'code'=>'empty_cart']);
+  exit;
+}
+foreach ($items as $it) {
+  $q = intval($it['qty'] ?? ($it['quantity'] ?? 1));
+  if ($q < 1 || $q > 99) {
+    echo json_encode(['ok'=>false, 'error'=>'Cantidad inválida en tu carrito', 'code'=>'invalid_qty']);
+    exit;
+  }
+}
+
 // Recalcular total usando precios reales de la BD (anti-manipulación)
 $verifiedPrices = [];
 if (is_array($items)) {
