@@ -14,16 +14,16 @@ $bp = $basePath;
     <header class="header ">
         <style>
             .header{background:#000; border-bottom:none !important; box-shadow:none !important}
-            .mobile-header{display:none;align-items:center;justify-content:space-between;background:#000;border-bottom:none;padding:.4rem .5rem;position:sticky;top:0;z-index:2000;min-height:50px}
-            .mh-left,.mh-right{display:flex;align-items:center;gap:10px}
+            .mobile-header{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;background:#000;border-bottom:none;padding:.4rem .5rem;gap:12px;width:100%;box-sizing:border-box;position:sticky;top:0;z-index:2000;min-height:50px}
+            .mh-left,.mh-right{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:nowrap}
             .mh-left{padding-left:.25rem}
-            .mh-right{padding-right:.25rem}
+            .mh-right{padding-right:.25rem;justify-content:flex-end}
             .mh-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:#111;border:1px solid #222}
             .mh-icon i{font-size:1.2rem}
             .mh-cart{position:relative}
             .mh-badge{position:absolute;top:-4px;right:-4px;background:#ff0000;color:#fff;border-radius:999px;font-size:.65rem;padding:2px 6px;line-height:1}
             @media (max-width:992px){
-                .mobile-header{display:flex}
+                .mobile-header{display:grid}
                 .ml-search{display:none}
                 #quickLinks{display:none}
                 #userLoggedButtons{display:none !important}
@@ -40,8 +40,15 @@ $bp = $basePath;
         </style>
         <div class="mobile-header" id="mobileHeader">
             <style>
-                .mh-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center}
-                .mh-center img{height:26px;max-width:120px}
+                .mh-center{display:flex;align-items:center;justify-content:center;min-width:0}
+                .mh-center a{display:inline-flex;align-items:center;justify-content:center}
+                .mh-center img{display:block;height:26px;max-width:120px}
+                @media (max-width:360px){
+                    .mobile-header{gap:8px;padding-left:.35rem;padding-right:.35rem}
+                    .mh-left,.mh-right{gap:6px}
+                    .mh-icon{width:34px;height:34px}
+                    .mh-center img{max-width:96px}
+                }
             </style>
             <div class="mh-left">
                 <button class="mh-icon" aria-label="Menú" onclick="(function(){document.body.classList.add('drawer-open');})()">
