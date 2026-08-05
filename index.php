@@ -995,7 +995,7 @@ include __DIR__ . '/includes/header.php';
                     style="width:100%; height:350px; border-radius:8px;">
                 </div>
             </div>
-            <div
+            <div class="ubicanos-card"
                 style="flex:1 1 320px; min-width:280px; background:#0b0b0b; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px; color:#fff;">
                 <h3 style="margin:0 0 8px; color:#ff0000; font-weight:800;">Ubícanos</h3>
                 <div

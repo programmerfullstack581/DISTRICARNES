@@ -7,6 +7,8 @@
   <title>Recuperar contraseña | Districarnes</title>
   <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
   <link rel="stylesheet" href="./css/login.css" />
+  <link rel="stylesheet" href="../static/css/theme.css" />
+  <script src="../static/js/theme.js"></script>
   <link rel="stylesheet" href="../static/css/responsive.css" />
   <link rel="stylesheet" href="../static/css/base.css" />
   <script src="../static/js/header_actions.js"></script>

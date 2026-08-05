@@ -16,6 +16,8 @@
     <!-- Google GSI -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="../static/css/responsive.css" />
+    <link rel="stylesheet" href="../static/css/theme.css" />
+    <script src="../static/js/theme.js"></script>
 </head>
 
 <body>

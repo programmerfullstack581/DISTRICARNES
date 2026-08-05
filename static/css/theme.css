@@ -1,9 +1,10 @@
 /* ============================================================
    TEMA CLARO (predeterminado) + TEMA OSCURO — DISTRICARNES
-   Se carga AL FINAL del <head> en todas las páginas de la tienda.
+   Se carga AL FINAL del <head> en todas las páginas.
    - Por defecto la página es CLARA (blanco como color principal).
    - [data-theme="dark"] (aplicado por static/js/theme.js) usa oscuro.
-   - El HEADER y el drawer móvil se mantienen NEGROS en ambos temas.
+   - Header, drawer móvil, banners y dropdown se ADAPTAN al tema:
+     blancos con texto oscuro en modo claro; negros en modo oscuro.
    - El footer pasa a claro en modo claro y a negro en modo oscuro.
    ============================================================ */
 
@@ -47,7 +48,9 @@ html[data-theme="dark"] body.bg-black { background: #000000 !important; }
 html[data-theme="dark"] body.text-white { color: #ffffff !important; }
 
 /* ============================================================
-   HEADER Y DRAWER MÓVIL SIEMPRE NEGROS (marca de la casa)
+   HEADER, DRAWER MÓVIL Y BANNERS: ADAPTATIVOS AL TEMA
+   (en modo claro se vuelven blancos con texto oscuro;
+    en modo oscuro permanecen negros con texto claro)
    ============================================================ */
 html[data-theme="light"] .header,
 html[data-theme="light"] .mobile-header,
@@ -55,9 +58,14 @@ html[data-theme="light"] .mobile-drawer,
 html[data-theme="light"] .mobile-drawer .drawer-header,
 html[data-theme="light"] .search-modal,
 html[data-theme="light"] .ml-promo-pill {
-    background-color: #000000 !important;
-    color: #ffffff;
+    background-color: #ffffff !important;
+    color: #111827;
 }
+html[data-theme="light"] .header {
+    border-bottom: 1px solid #e5e7eb !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .header .nav-menu,
 html[data-theme="light"] .header .nav-menu a,
 html[data-theme="light"] .ml-icon-btn,
 html[data-theme="light"] .ml-action-link,
@@ -65,16 +73,98 @@ html[data-theme="light"] #cartButton .ml-label,
 html[data-theme="light"] .menu-button,
 html[data-theme="light"] .menu-button .user-name,
 html[data-theme="light"] .menu-button .dropdown-arrow,
-html[data-theme="light"] .mh-icon,
 html[data-theme="light"] .mobile-toggle,
-html[data-theme="light"] .search-toggle,
-html[data-theme="light"] .mobile-drawer a {
-    color: #ffffff !important;
+html[data-theme="light"] .search-toggle {
+    color: #111827 !important;
 }
-html[data-theme="light"] .ml-search form { background: #111111 !important; border-color: #ff0000 !important; }
-html[data-theme="light"] .ml-search input,
-html[data-theme="light"] .ml-search input::placeholder { color: #ffffff !important; }
-html[data-theme="light"] .search-modal input[type="search"] { background: #0f0f0f; border-color: #333333; color: #ffffff; }
+html[data-theme="light"] .mobile-drawer a,
+html[data-theme="light"] .mobile-drawer .drawer-nav a {
+    color: #111827 !important;
+}
+html[data-theme="light"] .mobile-drawer .nav-menu a.active,
+html[data-theme="light"] .mobile-drawer .nav-menu a:hover,
+html[data-theme="light"] .mobile-drawer .drawer-nav a.active,
+html[data-theme="light"] .mobile-drawer .drawer-nav a:hover {
+    background: #f3f4f6 !important;
+    color: #ff0000 !important;
+}
+html[data-theme="light"] .header .nav-menu a.active,
+html[data-theme="light"] .header .nav-menu a:hover { color: #ff0000 !important; }
+
+/* Contenedor de navegación del header (tenía fondo negro) */
+html[data-theme="light"] .header .nav-menu {
+    background: #ffffff !important;
+    border-top-color: #e5e7eb !important;
+    border-bottom-color: #e5e7eb !important;
+}
+
+/* Buscador */
+html[data-theme="light"] .ml-search form { background: #f3f4f6 !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .ml-search input { color: #111827 !important; }
+html[data-theme="light"] .ml-search input::placeholder { color: #9ca3af !important; }
+html[data-theme="light"] .search-modal { border-color: #e5e7eb !important; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important; }
+html[data-theme="light"] .search-modal h3 { color: #111827 !important; }
+html[data-theme="light"] .search-modal input[type="search"] { background: #ffffff !important; border-color: #d1d5db !important; color: #111827 !important; }
+html[data-theme="light"] .search-modal .btn-secondary { background: #f3f4f6 !important; border-color: #d1d5db !important; color: #111827 !important; }
+
+/* Iconos y drawer móvil (antes fondo #111) */
+html[data-theme="light"] .mh-icon {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .mobile-drawer .drawer-header { border-bottom-color: #e5e7eb !important; }
+html[data-theme="light"] .mobile-drawer .drawer-header span { color: #111827 !important; }
+html[data-theme="light"] .mobile-drawer .drawer-header .drawer-close {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] .drawer-nav a {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] .drawer-nav a.active {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+}
+html[data-theme="light"] #drawerUserLogged a {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] #drawerUserLogged a i { color: #ff0000 !important; }
+html[data-theme="light"] #drawerAuthButtons a { background: #ff0000 !important; color: #ffffff !important; border-color: #ff0000 !important; }
+
+/* Dropdown del usuario (antes gradiente oscuro) */
+html[data-theme="light"] #userLoggedButtons {
+    background: transparent !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.12) !important;
+}
+html[data-theme="light"] .user-dropdown {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+}
+html[data-theme="light"] .menu-button {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] .menu-button:hover { border-color: #ff0000 !important; }
+html[data-theme="light"] .user-info-dropdown { border-bottom-color: #e5e7eb !important; }
+html[data-theme="light"] .user-details h4 { color: #111827 !important; }
+html[data-theme="light"] .user-details p { color: #4b5563 !important; }
+html[data-theme="light"] .menu-item { color: #111827 !important; }
+html[data-theme="light"] .menu-item:hover { background: #f3f4f6 !important; color: #111827 !important; }
+html[data-theme="light"] .menu-item.logout,
+html[data-theme="light"] .menu-item.logout i { color: #dc2626 !important; }
+html[data-theme="light"] .menu-divider { background: #e5e7eb !important; }
+
+/* Pill promocional */
+html[data-theme="light"] .ml-promo-pill { background: #ffffff !important; border-color: #ff0000 !important; color: #111827 !important; }
+html[data-theme="light"] .ml-promo-pill:hover { background: #f9fafb !important; }
+
+/* Modo oscuro: mantener header negro y legible */
 html[data-theme="dark"] .header .nav-menu a,
 html[data-theme="dark"] .ml-icon-btn { color: #ffffff !important; }
 
@@ -384,4 +474,296 @@ html[data-theme="dark"] .dc-theme-toggle { background: #1a1a1a; border-color: #3
 @media (max-width: 992px) {
     .dc-theme-toggle { width: 36px; height: 36px; }
     .dc-theme-menu { min-width: 190px; }
+}
+
+/* ---------- Botón toggle y menú de tema: variante clara ---------- */
+html[data-theme="light"] .dc-theme-toggle {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .dc-theme-toggle:hover { border-color: #ff0000 !important; color: #ff0000 !important; }
+html[data-theme="light"] .dc-theme-menu {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+html[data-theme="light"] .dc-theme-menu-label { color: #6b7280 !important; }
+html[data-theme="light"] .dc-theme-option { color: #111827 !important; }
+html[data-theme="light"] .dc-theme-option i { color: #6b7280 !important; }
+html[data-theme="light"] .dc-theme-option:hover { background: #f3f4f6 !important; color: #111827 !important; }
+html[data-theme="light"] .dc-theme-option.active { background: #f3f4f6 !important; color: #111827 !important; }
+html[data-theme="light"] .dc-theme-option.active i { color: #ff0000 !important; }
+html[data-theme="light"] .dc-theme-option.active::after { color: #ff0000 !important; }
+
+/* ============================================================
+   PÁGINAS AUTÓNOMAS: LOGIN, REGISTRO Y LEGALES
+   (no usan el header de la tienda; banner + contenido adaptativos)
+   ============================================================ */
+html[data-theme="light"] body {
+    background: #f5f6f8 !important;
+    color: #111827 !important;
+    text-shadow: none !important;
+}
+
+/* Banner superior (login-header / register-header) */
+html[data-theme="light"] .login-header,
+html[data-theme="light"] .register-header {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #111827 !important;
+    border-bottom: 3px solid #ff0000 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .login-header h1,
+html[data-theme="light"] .register-header h1 { color: #111827 !important; }
+html[data-theme="light"] .login-header h1 .bi,
+html[data-theme="light"] .register-header h1 .bi { color: #ff0000 !important; }
+html[data-theme="light"] .login-header p.lead,
+html[data-theme="light"] .register-header p.lead { color: #4b5563 !important; }
+
+/* Tarjetas de formulario */
+html[data-theme="light"] .login-form-card,
+html[data-theme="light"] .register-form-card {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+html[data-theme="light"] .login-form-card .form-title,
+html[data-theme="light"] .register-form-card .form-title-main { color: #111827 !important; }
+html[data-theme="light"] .login-form-card .form-title .highlight,
+html[data-theme="light"] .register-form-card .form-title-main .highlight { color: #ff0000 !important; }
+html[data-theme="light"] .login-form-card .form-subtitle,
+html[data-theme="light"] .register-form-card .form-subtitle-main { color: #6b7280 !important; }
+html[data-theme="light"] .login-form-card .form-label,
+html[data-theme="light"] .register-form-card .form-label { color: #111827 !important; }
+html[data-theme="light"] .login-form-card .input-group-text,
+html[data-theme="light"] .register-form-card .input-group-text { background-color: #f3f4f6 !important; }
+
+/* Inputs (incluso con style inline negro) */
+html[data-theme="light"] .login-form-card .form-control,
+html[data-theme="light"] .register-form-card .form-control {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+}
+
+/* Otros textos y enlaces de login/registro */
+html[data-theme="light"] .register-prompt { color: #111827 !important; }
+html[data-theme="light"] .toggle-password { color: #111827 !important; fill: #111827 !important; }
+html[data-theme="light"] .form-txt-links a { color: #111827 !important; }
+html[data-theme="light"] .login-links { color: #111827 !important; }
+
+/* Botones secundarios */
+html[data-theme="light"] .btn-admin-custom { background-color: #ffffff !important; color: #111827 !important; }
+html[data-theme="light"] .btn-login-link-custom { background-color: #ffffff !important; color: #111827 !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .btn-phone-custom { background-color: #ffffff !important; color: #111827 !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .btn-login-custom:hover { background-color: #cc0000 !important; color: #ffffff !important; }
+html[data-theme="light"] .btn-login-link-custom:hover { background-color: #f3f4f6 !important; }
+
+/* Logo (decorativo): caja del logotipo con borde suave */
+html[data-theme="light"] .logo-container img {
+    background-color: #0f0f0f !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px;
+}
+
+/* Cambiar / restablecer contraseña (estilos inline con #000) */
+html[data-theme="light"] .container:has(.input-wrap) { box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10) !important; }
+html[data-theme="light"] .title { color: #ff0000 !important; }
+html[data-theme="light"] .title span { color: #111827 !important; }
+html[data-theme="light"] label { color: #111827 !important; }
+html[data-theme="light"] .input-wrap { background: #ffffff !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .input-wrap input { background-color: #ffffff !important; color: #111827 !important; }
+html[data-theme="light"] .link-back { color: #0a74b7 !important; }
+
+/* Páginas legales */
+html[data-theme="light"] .content-section {
+    background-color: #ffffff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .content-section h2 { color: #ff0000 !important; }
+html[data-theme="light"] .content-section h3 { color: #111827 !important; }
+html[data-theme="light"] .content-section p,
+html[data-theme="light"] .content-section li { color: #374151 !important; }
+html[data-theme="light"] .last-updated { color: #6b7280 !important; }
+html[data-theme="light"] .highlight-box {
+    background-color: #fef2f2 !important;
+    color: #111827 !important;
+    border-left-color: #ff0000 !important;
+}
+html[data-theme="light"] .highlight-box strong { color: #ff0000 !important; }
+html[data-theme="light"] .contact-box {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .contact-box h3 { color: #ff0000 !important; }
+html[data-theme="light"] .acceptance-section {
+    background-color: #f0fdf4 !important;
+    color: #111827 !important;
+    border-left-color: #00b341 !important;
+}
+html[data-theme="light"] .acceptance-section h3 { color: #059669 !important; }
+html[data-theme="light"] footer,
+html[data-theme="light"] .site-footer { color: #6b7280 !important; border-top-color: #e5e7eb !important; }
+html[data-theme="light"] .btn-back { background-color: #ff0000 !important; color: #ffffff !important; }
+html[data-theme="light"] .btn-back:hover { background-color: #cc0000 !important; }
+
+/* ============================================================
+   AUDITORÍA: componentes oscuros restantes (modo claro)
+   ============================================================ */
+
+/* ---------- Chatbot ---------- */
+html[data-theme="light"] .chatbot-container,
+html[data-theme="light"] .chatbot-input {
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html[data-theme="light"] .chatbot-messages { background: #f3f4f6 !important; }
+html[data-theme="light"] .chat-input {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .chat-input::placeholder { color: #9ca3af !important; }
+html[data-theme="light"] .message-timestamp { color: #6b7280 !important; }
+
+/* ---------- Modal de bienvenida (inicio) ---------- */
+html[data-theme="light"] #welcomeModal .modal {
+    background: #ffffff !important;
+    color: #111827 !important;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22) !important;
+}
+html[data-theme="light"] #welcomeModal .modal-header,
+html[data-theme="light"] #welcomeModal .modal-text { color: #111827 !important; }
+html[data-theme="light"] #welcomeModal .modal-close { color: #111827 !important; }
+
+/* ---------- Marquee de marcas (inicio) ---------- */
+html[data-theme="light"] .brand-marquee {
+    background: #ffffff !important;
+    border-top-color: #e5e7eb !important;
+    border-bottom-color: #e5e7eb !important;
+}
+html[data-theme="light"] .brand-marquee__fade.left {
+    background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%) !important;
+}
+html[data-theme="light"] .brand-marquee__fade.right {
+    background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%) !important;
+}
+html[data-theme="light"] .brand-item { color: #111827 !important; }
+
+/* ---------- Tarjeta "Ubícanos" (inicio) ---------- */
+html[data-theme="light"] .ubicanos-card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05) !important;
+}
+html[data-theme="light"] .ubicanos-card a[href^="tel:"] { color: #111827 !important; }
+
+/* ---------- Promociones: ofertas ---------- */
+html[data-theme="light"] .ofertas-especiales { background: #ffffff !important; }
+html[data-theme="light"] .oferta-item {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .product-meta span {
+    background: #f3f4f6 !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .offer-card {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme="light"] .offer-card-skeleton { background: #f3f4f6 !important; }
+html[data-theme="light"] .offer-name { color: #111827 !important; }
+html[data-theme="light"] .offer-desc,
+html[data-theme="light"] .offer-price-old,
+html[data-theme="light"] .section-subtitle { color: #6b7280 !important; }
+html[data-theme="light"] .offer-btn.offer-btn-info {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}
+html[data-theme="light"] .why-us-section { background-color: #ffffff !important; }
+html[data-theme="light"] .feature-item,
+html[data-theme="light"] .testimonial-card {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    color: #111827 !important;
+}
+
+/* ---------- Checkout: formulario de nuevo domicilio ---------- */
+html[data-theme="light"] #newAddressForm {
+    background: #ffffff !important;
+    border-color: #e5e7eb !important;
+}
+html[data-theme="light"] #newAddressForm > header {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-bottom-color: #e5e7eb !important;
+}
+html[data-theme="light"] #newAddressForm .content { background: #ffffff !important; }
+html[data-theme="light"] #newAddressForm .actions {
+    background: #ffffff !important;
+    border-top-color: #e5e7eb !important;
+}
+html[data-theme="light"] #newAddressForm .content input {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+html[data-theme="light"] #newAddressForm .content input::placeholder { color: #9ca3af !important; }
+html[data-theme="light"] #backToStep1,
+html[data-theme="light"] #cancelNewAddress {
+    background: #f3f4f6 !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+
+/* ---------- Scrollbars de productos ---------- */
+html[data-theme="light"] .sidebar-scroll::-webkit-scrollbar-track,
+html[data-theme="light"] .products-grid::-webkit-scrollbar-track { background: #e5e7eb !important; }
+html[data-theme="light"] .sidebar-scroll::-webkit-scrollbar-thumb,
+html[data-theme="light"] .products-grid::-webkit-scrollbar-thumb { background: #d1d5db !important; }
+
+/* ---------- Alertas SweetAlert2 ---------- */
+html[data-theme="light"] .swal2-container { background: rgba(0, 0, 0, 0.45) !important; }
+html[data-theme="light"] .swal2-popup.swal2-modal,
+html[data-theme="light"] .swal2-popup.swal2-toast {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #e5e7eb !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18) !important;
+}
+html[data-theme="light"] .swal2-title,
+html[data-theme="light"] .swal2-toast .swal2-title { color: #111827 !important; }
+html[data-theme="light"] .swal2-html-container,
+html[data-theme="light"] .swal2-toast .swal2-html-container { color: #374151 !important; }
+html[data-theme="light"] .swal2-close { color: #111827 !important; }
+html[data-theme="light"] .swal2-cancel {
+    background: #e5e7eb !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+html[data-theme="light"] .swal2-cancel:hover { background: #d1d5db !important; }
+html[data-theme="light"] .swal2-input,
+html[data-theme="light"] .swal2-textarea,
+html[data-theme="light"] .swal2-select {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border-color: #d1d5db !important;
+}
+html[data-theme="light"] .swal2-input::placeholder,
+html[data-theme="light"] .swal2-textarea::placeholder { color: #9ca3af !important; }
+html[data-theme="light"] .swal2-confirm {
+    background: #ff0000 !important;
+    color: #ffffff !important;
+    border-color: #ff0000 !important;
 }

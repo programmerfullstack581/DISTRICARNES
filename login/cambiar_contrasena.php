@@ -35,6 +35,8 @@ else {
   <title>Cambiar contraseña | Districarnes</title>
   <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
   <link rel="stylesheet" href="./css/login.css" />
+  <link rel="stylesheet" href="../static/css/theme.css" />
+  <script src="../static/js/theme.js"></script>
   <style>
     /* Tema negro/rojo alineado con restablecer_contrasena.php */
     :root {

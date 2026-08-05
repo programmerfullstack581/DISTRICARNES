@@ -15,6 +15,8 @@
     <link rel="stylesheet " href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css ">
     <link rel="stylesheet" href="../static/css/responsive.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
+    <link rel="stylesheet" href="../static/css/theme.css" />
+    <script src="../static/js/theme.js"></script>
     <script src="../static/js/header_actions.js"></script>
     <script src="../static/js/auth_modal.js"></script>
 </head>
