@@ -89,7 +89,26 @@ html[data-theme="light"] .mobile-drawer .drawer-nav a:hover {
     color: #ff0000 !important;
 }
 html[data-theme="light"] .header .nav-menu a.active,
-html[data-theme="light"] .header .nav-menu a:hover { color: #ff0000 !important; }
+html[data-theme="light"] .header .nav-menu a:hover {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    color: #ff0000 !important;
+}
+html[data-theme="light"] .header .nav-menu a.active::after,
+html[data-theme="light"] .header .nav-menu a:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 2px;
+    background: #ff0000 !important;
+    border-radius: 1px;
+}
+html[data-theme="light"] .menu-button .user-name { color: #ff0000 !important; }
+html[data-theme="light"] .menu-button .dropdown-arrow { color: #ff0000 !important; }
 
 /* Contenedor de navegación del header (tenía fondo negro) */
 html[data-theme="light"] .header .nav-menu {
