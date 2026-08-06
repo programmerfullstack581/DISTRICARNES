@@ -6,23 +6,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DISTRICARNES - Contacto</title>
-    <link rel="stylesheet" href="./static/css/nav_pills.css" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/nav_pills.css'); ?>" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="shortcut icon" href="./assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
-    <link rel="stylesheet" href="./static/css/header_en_general.css" />
-    <link rel="stylesheet" href="./static/css/contacto.css" />
-    <link rel="stylesheet" href="./static/css/base.css" />
-    <link rel="stylesheet" href="./static/css/chatbot.css" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/header_en_general.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/contacto.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/base.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/chatbot.css'); ?>" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="./static/css/responsive.css" />
-    <link rel="stylesheet" href="./static/css/tailwind.css" />
-    <link rel="stylesheet" href="./static/css/theme.css" />
-    <script src="./static/js/theme.js"></script>
-    <script src="./static/js/auth_utils.js"></script>
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/responsive.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/tailwind.css'); ?>" />
+    <link rel="stylesheet" href="<?php echo asset_url('static/css/theme.css'); ?>" />
+    <script src="<?php echo asset_url('static/js/theme.js'); ?>"></script>
+    <script src="<?php echo asset_url('static/js/auth_utils.js'); ?>"></script>
 
 </head>
 

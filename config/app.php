@@ -45,6 +45,18 @@ function asset($path) {
     return BASE_PATH . '/' . $path;
 }
 
+/**
+ * asset_url() — igual que asset() pero con cache-busting por filemtime.
+ * Cada cambio en el archivo genera una URL nueva (?v=timestamp), evitando
+ * que el navegador sirva versiones viejas cacheadas de CSS/JS.
+ */
+function asset_url($path) {
+    $path = ltrim($path, '/');
+    $file = dirname(__DIR__) . '/' . $path;
+    $v = is_file($file) ? filemtime($file) : '';
+    return BASE_PATH . '/' . $path . ($v !== '' ? '?v=' . $v : '');
+}
+
 function url($path = '') {
     $path = ltrim($path, '/');
     return BASE_PATH . '/' . $path;
