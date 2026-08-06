@@ -19,6 +19,18 @@
     var scriptLoaded = false;
     var initQueue = [];
     var isInitializing = false;
+    var authFailed = false;
+
+    // Google Maps dispara gm_authFailure cuando rechaza la API key:
+    // key inválida, referrer no permitido, API no habilitada o sin billing.
+    // En vez del cuadro de error gris, degradamos al mapa embebido.
+    if (window.gm_authFailure === undefined) {
+        window.gm_authFailure = function () {
+            authFailed = true;
+            console.error('[DistriCarnes Maps] Google Maps API rechazó la autenticación. Verifica GOOGLE_MAPS_API_KEY: que la API "Maps JavaScript API" esté habilitada, el billing activo y que la restricción de referrer incluya el dominio actual (' + window.location.host + ').');
+            loadFallbackIframe();
+        };
+    }
 
     function getApiKey() {
         var cfg = window.DISTRICARNES_CONFIG;
@@ -47,7 +59,8 @@
             setTimeout(function () {
                 clearInterval(checkInterval);
                 if (typeof google === 'undefined' || !google.maps || !google.maps.Map) {
-                    handleError('Google Maps API no se inicializó a tiempo');
+                    console.error('[DistriCarnes Maps] Google Maps API no se inicializó a tiempo. Usando mapa embebido.');
+                    loadFallbackIframe();
                 }
             }, 15000);
             return;
@@ -73,11 +86,16 @@
         script.defer = true;
 
         script.onerror = function () {
-            handleError('No se pudo cargar el script de Google Maps API');
+            console.error('[DistriCarnes Maps] No se pudo cargar el script de Google Maps API. Usando mapa embebido.');
+            loadFallbackIframe();
         };
 
         window.initDistricarnesMap = function () {
             scriptLoaded = true;
+            if (authFailed) {
+                loadFallbackIframe();
+                return;
+            }
             callback();
         };
 
@@ -224,7 +242,7 @@
             mapInstance = new google.maps.Map(container, mapOptions);
         } catch (e) {
             console.error('[DistriCarnes Maps] Error al crear el mapa:', e);
-            handleError('Error al inicializar el mapa');
+            loadFallbackIframe();
             return;
         }
 
@@ -356,6 +374,8 @@
             loadFallbackIframe();
             return;
         }
+
+        console.info('[DistriCarnes Maps] API key configurada (' + apiKey.length + ' chars, ' + apiKey.slice(0, 4) + '...' + apiKey.slice(-4) + '). Inicializando mapa.');
 
         if (isInitializing) {
             initQueue.push(function () { bootstrap(); });
