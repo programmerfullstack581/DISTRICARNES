@@ -233,6 +233,8 @@ html[data-theme="light"] .bg-\[\#1f1f1f\] {
     background-color: #ffffff !important;
 }
 html[data-theme="light"] .text-white { color: #111827 !important; }
+html[data-theme="light"] button.text-white,
+html[data-theme="light"] button .text-white { color: #ffffff !important; }
 html[data-theme="light"] .typed-caret { background: #111827 !important; }
 /* Textos del hero de inicio (imagen + overlay oscuro): se mantienen blancos */
 html[data-theme="light"] .hero1section,
