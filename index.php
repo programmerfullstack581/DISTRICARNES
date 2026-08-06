@@ -437,6 +437,11 @@ include __DIR__ . '/includes/header.php';
             color: #1f2937 !important;
         }
 
+        html[data-theme="light"] .hero1section button.text-white,
+        html[data-theme="light"] .hero1section button .text-white {
+            color: #ffffff !important;
+        }
+
         html[data-theme="light"] .hero1section .typed-caret {
             background: #1f2937 !important;
         }
