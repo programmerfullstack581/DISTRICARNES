@@ -1018,7 +1018,7 @@ include __DIR__ . '/includes/header.php';
                         lo que necesites.
                     </p>
                     <button
-                        onclick="window.open('https://wa.me/573108392866?text=Hola%2C%20quiero%20hacer%20un%20pedido%20de%20la%20carnicer%C3%ADa', '_blank')"
+                        onclick="window.open('https://wa.me/573015210177?text=Hola%2C%20quiero%20hacer%20un%20pedido%20de%20la%20carnicer%C3%ADa', '_blank')"
                         style="background-color: red;"
                         class="bg-red-700 hover:bg-red-800 transition flex items-center space-x-2 text-white font-semibold px-4 py-2 rounded w-max">
                         <i class="fab fa-whatsapp"></i>
