@@ -67,6 +67,7 @@
      bottom: 95px;
      right: 25px;
      width: 320px;
+     max-width: calc(100vw - 40px);
      max-height: 520px;
      background: #222;
      border-radius: 15px;

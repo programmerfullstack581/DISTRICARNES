@@ -41,7 +41,7 @@ include __DIR__ . '/includes/header.php';
     <div class="contact-section">
         <div class="contact-info">
 
-            <h1 class="text-white font-extrabold text-lg mb-4 " style="font-size: 2rem; color: red; ">
+            <h1 class="text-white font-extrabold text-lg mb-4 contact-title" style="color: red; ">
                 CONTÁCTENOS</h1>
 
             <p>En <strong>Carnicería La Noble Carne</strong>, nos apasiona ofrecer cortes de carne frescos, selectos y de máxima calidad. Desde hace más de 15 años, servimos a familias y chefs con productos que cumplen con los más altos estándares de sabor,
@@ -61,137 +61,7 @@ include __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <div class="contact-form" style="max-width:560px; width:100%;">
-            <style>
-                /* Improved styling for contact form to increase padding and avoid placeholders touching borders */
-                
-                .contact-form {
-                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-                    padding: 1.75rem;
-                    border-radius: 14px;
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-                    font-family: 'Montserrat', sans-serif;
-                    margin-left: auto;
-                }
-                
-                .contact-form h2 {
-                    color: #fff;
-                    margin: 0 0 0.75rem 0;
-                    font-size: 1.125rem;
-                    font-weight: 700;
-                }
-                
-                .contact-form .form-group {
-                    margin-bottom: 0.95rem;
-                }
-                
-                .contact-form label {
-                    display: block;
-                    margin-bottom: 0.4rem;
-                    color: rgba(255, 255, 255, 0.9);
-                    font-weight: 600;
-                    font-size: 0.88rem;
-                }
-                
-                .contact-form input[type="text"],
-                .contact-form input[type="email"],
-                .contact-form textarea {
-                    width: 100%;
-                    padding: 0.9rem 1rem;
-                    /* bigger padding so placeholder doesn't touch edges */
-                    border-radius: 10px;
-                    border: 1px solid rgba(255, 255, 255, 0.12);
-                    background: rgba(255, 255, 255, 0.02);
-                    color: #fff;
-                    font-size: 0.95rem;
-                    line-height: 1.25;
-                    box-sizing: border-box;
-                    transition: all .18s ease-in-out;
-                    outline: none;
-                }
-                /* Clearer placeholder color and spacing */
-                
-                .contact-form input::placeholder,
-                .contact-form textarea::placeholder {
-                    color: rgba(255, 255, 255, 0.5);
-                }
-                /* Focus styles: clear contrast and subtle shadow */
-                
-                .contact-form input:focus,
-                .contact-form textarea:focus {
-                    border-color: rgba(255, 0, 0, 0.95);
-                    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.12);
-                    background: rgba(0, 0, 0, 0.55);
-                }
-                
-                .contact-form textarea {
-                    min-height: 140px;
-                    resize: vertical;
-                }
-                
-                .contact-form .form-actions {
-                    display: flex;
-                    gap: 0.6rem;
-                    align-items: center;
-                    justify-content: flex-start;
-                    margin-top: 0.6rem;
-                }
-                
-                .contact-form .btn-submit {
-                    padding: 0.75rem 1.25rem;
-                    background: linear-gradient(90deg, #ff0000 0%, #b30000 100%);
-                    color: #fff;
-                    border: none;
-                    border-radius: 999px;
-                    cursor: pointer;
-                    font-weight: 700;
-                    box-shadow: 0 10px 30px rgba(255, 0, 0, 0.18);
-                    transition: all .16s ease;
-                }
-                
-                .contact-form .btn-submit:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 14px 40px rgba(255, 0, 0, 0.22);
-                }
-                /* Small screen handling */
-                
-                @media (max-width: 768px) {
-                    .contact-form {
-                        padding: 1rem;
-                        border-radius: 10px;
-                    }
-                    .contact-form .form-actions {
-                        justify-content: center;
-                    }
-                }
-                @media (max-width: 992px) {
-                    .contact-section {
-                        flex-direction: column;
-                        gap: 1.25rem;
-                        padding: 20px 16px;
-                    }
-                    .contact-info {
-                        padding-right: 0;
-                    }
-                    .contact-form {
-                        margin-left: 0;
-                        max-width: 100%;
-                    }
-                }
-                @media (max-width: 576px) {
-                    .contact-info h1 {
-                        font-size: 1.8rem;
-                    }
-                    .contact-info p {
-                        font-size: 0.95rem;
-                    }
-                    .contact-form .btn-submit {
-                        width: 100%;
-                    }
-                }
-            </style>
-
+        <div class="contact-form">
             <h2>Envíanos un mensaje</h2>
 
             <form id="contactForm" action="https://formspree.io/f/mnjbandn" method="POST" autocomplete="on">
