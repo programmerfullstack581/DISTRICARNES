@@ -143,6 +143,13 @@ Estados sugeridos: `PENDING`, `PROCESSING`, `SHIPPED`, `DELIVERED`, `COMPLETED`,
 - Variables de entorno usadas por [paypal_config.php](file:///c:/Users/progr/DISTRICARNES/backend/php/core/paypal_config.php):
   - `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET`, `PAYPAL_ENV` (`sandbox`/`live`), `PAYPAL_CURRENCY` (ej. `USD`/`COP`), `PAYPAL_SKIP_SSL_VERIFY` (`1` en entornos locales si el certificado no está disponible).
 
+### Webhook de PayPal (confirmación fiable de pagos)
+- Endpoint: [paypal_webhook.php](file:///c:/Users/progr/DISTRICARNES/backend/php/payments/paypal_webhook.php)
+  - URL pública a registrar en PayPal (Developer > Webhooks): `https://districarnes-83qm.onrender.com/backend/php/payments/paypal_webhook.php`
+  - Eventos: `PAYMENT.CAPTURE.COMPLETED` y `CHECKOUT.ORDER.COMPLETED` marcan la orden local como `COMPLETED` + `payment_confirmed` (busca por `paypal_id`).
+  - Verifica la firma real con `POST /v1/notifications/verify-webhook-signature` (no confía en los headers), con rate limiting por IP e idempotencia por `event_id`.
+  - Variable requerida: `PAYPAL_WEBHOOK_ID` (el ID del webhook del panel de PayPal).
+
 ### SMTP/Email
 - Variables de [email_config.php](file:///c:/Users/progr/DISTRICARNES/backend/php/core/email_config.php):
   - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE` (`tls`/`ssl`), `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`, `MAIL_FROM_NAME`.

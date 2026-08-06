@@ -14,11 +14,16 @@ if (!defined('PAYPAL_ENV')) {
 if (!defined('PAYPAL_CURRENCY')) {
   define('PAYPAL_CURRENCY', getenv('PAYPAL_CURRENCY') ?: 'COP');
 }
+// ID del webhook configurado en el panel de PayPal (Developer > Webhooks)
+if (!defined('PAYPAL_WEBHOOK_ID')) {
+  define('PAYPAL_WEBHOOK_ID', getenv('PAYPAL_WEBHOOK_ID') ?: '');
+}
 
 $PAYPAL_CONFIG = [
   'client_id' => PAYPAL_CLIENT_ID,// Usa la constante definida anteriormente para mayor seguridad
   'secret'    => PAYPAL_SECRET, // Usa la constante definida anteriormente para mayor seguridad
   'env'       => PAYPAL_ENV, // 'live' para producción
+  'webhook_id'=> PAYPAL_WEBHOOK_ID, // ID del webhook para verificar firmas
 ];
 
 $PAYPAL_BASE_URL = ($PAYPAL_CONFIG['env'] === 'live')
