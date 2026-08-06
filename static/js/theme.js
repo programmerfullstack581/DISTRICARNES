@@ -39,11 +39,27 @@
     }
   }
 
+  // Cambio automático del logo según el tema:
+  //   Modo claro  -> "DISTRICARNES FONDO MODO CLARO.png" (logo oficial para fondo claro)
+  //   Modo oscuro -> "LOGO-DISTRICARNES.png" (logo original)
+  function updateLogos() {
+    var dark = current() === 'dark';
+    var imgs = document.querySelectorAll('img[src*="LOGO-DISTRICARNES.png"]');
+    for (var i = 0; i < imgs.length; i++) {
+      var src = imgs[i].getAttribute('src') || '';
+      var m = src.match(/^(.*\/)LOGO-DISTRICARNES\.png$/i);
+      if (!m) continue;
+      var target = (dark ? 'LOGO-DISTRICARNES.png' : 'DISTRICARNES FONDO MODO CLARO.png');
+      if (m[1] + target !== src) imgs[i].src = m[1] + target;
+    }
+  }
+
   function apply(theme) {
     var t = theme === 'dark' ? 'dark' : 'light';
     root.setAttribute('data-theme', t);
     try { localStorage.setItem(KEY, t); } catch (e) {}
     updateButtons();
+    updateLogos();
     try { window.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: t } })); } catch (e) {}
   }
 
@@ -100,6 +116,7 @@
     var mh = document.querySelector('.mobile-header .mh-right');
     if (mh) mh.insertBefore(makeButton(), mh.firstChild);
     updateButtons();
+    updateLogos();
   }
 
   // Aplicar antes del primer paint para evitar el parpadeo claro/oscuro
@@ -121,5 +138,25 @@
     document.addEventListener('DOMContentLoaded', inject);
   } else {
     inject();
+  }
+
+  // El modal de login/registro (auth_modal.js) inyecta su logo después de cargar,
+  // así que observamos el DOM para intercambiarlo también.
+  if (window.MutationObserver) {
+    var logoObs = new MutationObserver(function (mutations) {
+      var need = false;
+      for (var mi = 0; mi < mutations.length; mi++) {
+        var added = mutations[mi].addedNodes;
+        for (var aj = 0; aj < added.length; aj++) {
+          var node = added[aj];
+          if (node.nodeType !== 1) continue;
+          if (node.matches && node.matches('img[src*="LOGO-DISTRICARNES.png"]')) { need = true; break; }
+          if (node.querySelector && node.querySelector('img[src*="LOGO-DISTRICARNES.png"]')) { need = true; break; }
+        }
+        if (need) break;
+      }
+      if (need) updateLogos();
+    });
+    if (document.body) logoObs.observe(document.body, { childList: true, subtree: true });
   }
 })();

@@ -414,6 +414,46 @@ include __DIR__ . '/includes/header.php';
             background: rgba(0, 0, 0, 0.6);
             z-index: -1;
         }
+
+        /* --- Adaptación de la esfera y el hero al modo claro --- */
+        html[data-theme="light"] #anime-bg {
+            background: radial-gradient(ellipse at bottom, #fff0ef 0%, #ffffff 100%) !important;
+        }
+
+        html[data-theme="light"] .hero-overlay {
+            background:
+                radial-gradient(ellipse at 30% 50%, rgba(204, 0, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 70%, rgba(255, 51, 51, 0.06) 0%, transparent 50%);
+        }
+
+        html[data-theme="light"] .hero1section::before {
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        html[data-theme="light"] .hero1section h1,
+        html[data-theme="light"] .hero1section p,
+        html[data-theme="light"] .hero1section .text-white,
+        html[data-theme="light"] .hero1section .text-gray-300 {
+            color: #1f2937 !important;
+        }
+
+        html[data-theme="light"] .hero1section .typed-caret {
+            background: #1f2937 !important;
+        }
+
+        html[data-theme="light"] #userLoggedButtonsHero .user-welcome-hero {
+            color: #111827;
+        }
+
+        html[data-theme="light"] #userLoggedButtonsHero .nav-links-hero a {
+            color: #111827;
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        html[data-theme="light"] #userLoggedButtonsHero .nav-links-hero a:hover {
+            background: rgba(255, 0, 0, 0.12);
+            border-color: rgba(255, 0, 0, 0.5);
+        }
     </style>
     <script>
         (function () {
@@ -437,6 +477,34 @@ include __DIR__ . '/includes/header.php';
           var px = [], py = [], scale = [];
 
           function random(min, max) { return min + Math.random() * (max - min); }
+
+          // Paleta de colores de la esfera según el tema (se relee cada frame,
+          // así el cambio claro/oscuro se refleja al instante sin recargar).
+          function isDarkTheme() {
+            return document.documentElement.getAttribute('data-theme') === 'dark';
+          }
+
+          function palette() {
+            return isDarkTheme() ? {
+              glow: [255, 51, 51],
+              glowMid: [220, 20, 60],
+              line: [255, 45, 45],
+              point: [255, 120, 120],
+              glint: [255, 255, 255],
+              ring: [255, 80, 80]
+            } : {
+              glow: [220, 38, 38],
+              glowMid: [153, 27, 27],
+              line: [200, 35, 35],
+              point: [239, 68, 68],
+              glint: [127, 29, 29],
+              ring: [190, 30, 30]
+            };
+          }
+
+          function rgbaC(c, a) {
+            return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a.toFixed(3) + ')';
+          }
 
           function buildSphere() {
             // Distribución uniforme de puntos sobre la esfera (espiral de Fibonacci)
@@ -599,10 +667,11 @@ include __DIR__ . '/includes/header.php';
           }
 
           function glow(x, y, r, alpha) {
+            var pal = palette();
             var g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
-            g.addColorStop(0, 'rgba(255,51,51,' + alpha + ')');
-            g.addColorStop(0.45, 'rgba(220,20,60,' + alpha * 0.45 + ')');
-            g.addColorStop(1, 'rgba(220,20,60,0)');
+            g.addColorStop(0, rgbaC(pal.glow, alpha));
+            g.addColorStop(0.45, rgbaC(pal.glowMid, alpha * 0.45));
+            g.addColorStop(1, rgbaC(pal.glowMid, 0));
             ctx.fillStyle = g;
             ctx.beginPath();
             ctx.arc(x, y, r * 4, 0, Math.PI * 2);
@@ -610,11 +679,12 @@ include __DIR__ . '/includes/header.php';
           }
 
           function draw() {
+            var pal = palette();
             var time = performance.now() * 0.001;
             ctx.clearRect(0, 0, W, H);
 
             // Halo central suave
-            glow(W / 2, H / 2, Math.min(W, H) * 0.32, 0.05);
+            glow(W / 2, H / 2, Math.min(W, H) * 0.32, isDarkTheme() ? 0.05 : 0.028);
 
             var eBoost = 0.55 + 0.45 * energy;
 
@@ -627,7 +697,7 @@ include __DIR__ . '/includes/header.php';
               var depthF = 0.5 + 0.5 * (((az + bz) / 2) + 1) / 2;
               var alpha = (1 - ed.d / THRESH) * 0.75 * depthF * eBoost;
               if (alpha < 0.03) continue;
-              ctx.strokeStyle = 'rgba(255,45,45,' + alpha.toFixed(3) + ')';
+              ctx.strokeStyle = rgbaC(pal.line, alpha);
               ctx.lineWidth = 0.7 * depthF;
               ctx.beginPath();
               ctx.moveTo(px[a], py[a]);
@@ -644,12 +714,12 @@ include __DIR__ . '/includes/header.php';
               var size = pts[i].size * s * (0.7 + 0.5 * depth2);
               var alpha = (0.25 + 0.75 * depth2) * (0.65 + 0.35 * tw) * (0.75 + 0.25 * energy);
               glow(px[i], py[i], size, alpha * 0.4);
-              ctx.fillStyle = 'rgba(255,120,120,' + alpha.toFixed(3) + ')';
+              ctx.fillStyle = rgbaC(pal.point, alpha);
               ctx.beginPath();
               ctx.arc(px[i], py[i], size, 0, Math.PI * 2);
               ctx.fill();
               if (z > 0) {
-                ctx.fillStyle = 'rgba(255,255,255,' + (alpha * 0.8 * depth2).toFixed(3) + ')';
+                ctx.fillStyle = rgbaC(pal.glint, alpha * 0.8 * depth2);
                 ctx.beginPath();
                 ctx.arc(px[i] - size * 0.3, py[i] - size * 0.3, size * 0.35, 0, Math.PI * 2);
                 ctx.fill();
@@ -659,7 +729,7 @@ include __DIR__ . '/includes/header.php';
             // Anillos expansivos
             for (var r = 0; r < rings.length; r++) {
               var rg = rings[r];
-              ctx.strokeStyle = 'rgba(255,80,80,' + rg.alpha.toFixed(3) + ')';
+              ctx.strokeStyle = rgbaC(pal.ring, rg.alpha);
               ctx.lineWidth = rg.lineW * rg.alpha;
               ctx.beginPath();
               ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
