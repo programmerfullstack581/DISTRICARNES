@@ -98,7 +98,7 @@ include __DIR__ . '/includes/header.php';
     <!-- SweetAlert2 para confirmación y feedback de cierre de sesión -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="./static/js/header_actions.js"></script>
-    <script src="./static/js/auth_modal.js"></script>
+    <script src="./static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/static/js/auth_modal.js') ?>"></script>
     <script src="./js/auth.js"></script>
     <script src="./static/js/history_favorites.js"></script>
     <script src="./static/js/cart_badge.js"></script>

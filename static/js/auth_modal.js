@@ -74,8 +74,8 @@
         '</div>' +
         '<form id="dcAmLogin" class="dcAmPanel is-active" novalidate>' +
           '<div class="dcAmField">' +
-            '<label for="dcAmEmail">Correo electrónico</label>' +
-            '<input id="dcAmEmail" name="email" type="email" autocomplete="email" placeholder="tu.correo@example.com" required>' +
+            '<label for="dcAmEmail">Correo, Nombre de Usuario o Cédula</label>' +
+            '<input id="dcAmEmail" name="email" type="text" autocomplete="username" placeholder="tu.correo@example.com, tu_usuario o cédula" required>' +
           '</div>' +
           '<div class="dcAmField">' +
             '<label for="dcAmPass">Contraseña</label>' +

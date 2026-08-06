@@ -123,7 +123,7 @@
 
 </body>
 <script src="../login/js/login.js"></script>
-<script src="../static/js/auth_modal.js"></script>
+<script src="../static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/../static/js/auth_modal.js') ?>"></script>
 <script src="../static/js/loader.js" defer></script>
 <script src="../static/js/network_guard.js" defer></script>
 

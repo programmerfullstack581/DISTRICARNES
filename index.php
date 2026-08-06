@@ -1428,7 +1428,7 @@ include __DIR__ . '/includes/header.php';
         };
     </script>
     <script src="./static/js/header_actions.js"></script>
-    <script src="./static/js/auth_modal.js"></script>
+    <script src="./static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/static/js/auth_modal.js') ?>"></script>
     <script src="./static/js/index.js"></script>
     <script src="./static/js/google-maps.js"></script>
     <script src="./static/js/chatbot.js"></script>

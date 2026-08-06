@@ -1542,7 +1542,7 @@ endif; ?>
 
     <!-- Scripts Esenciales -->
     <script src="./static/js/header_actions.js"></script>
-    <script src="./static/js/auth_modal.js"></script>
+    <script src="./static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/static/js/auth_modal.js') ?>"></script>
     <script src="./js/auth.js"></script>
     <script src="./static/js/cart_badge.js"></script>
     <script src="./static/js/auth_utils.js"></script>

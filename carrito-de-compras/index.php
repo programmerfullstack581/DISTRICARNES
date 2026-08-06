@@ -819,7 +819,7 @@
     <script src="../static/js/cart_page.js"></script>
     <!-- Scripts del header -->
     <script src="../static/js/header_actions.js"></script>
-    <script src="../static/js/auth_modal.js"></script>
+    <script src="../static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/../static/js/auth_modal.js') ?>"></script>
     <script src="../js/auth.js"></script>
     <script src="../static/js/index.js"></script>
     <script src="../static/js/chatbot.js"></script>

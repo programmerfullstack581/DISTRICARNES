@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../static/css/theme.css" />
     <script src="../static/js/theme.js"></script>
     <script src="../static/js/header_actions.js"></script>
-    <script src="../static/js/auth_modal.js"></script>
+    <script src="../static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/../static/js/auth_modal.js') ?>"></script>
 </head>
 
 <body style="background-color: black; color: white; text-shadow: 0 0 2px rgba(255,255,255,0.5);">

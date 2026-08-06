@@ -123,6 +123,12 @@ try {
         $params[] = $identifier;
     }
 
+    // Nombre de usuario (columna usuario_usuario)
+    if (in_array('usuario_usuario', $cols)) {
+        $whereParts[] = "LOWER(TRIM(usuario_usuario)) = LOWER(TRIM(?))";
+        $params[] = $identifier;
+    }
+
     if (in_array('cedula', $cols)) {
         $whereParts[] = "CAST(cedula AS TEXT) = ?";
         $params[] = trim($identifier);
