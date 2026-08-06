@@ -12,7 +12,7 @@ async function loadPayPalSdk() {
   try {
     const conf = await fetchPayPalConfig();
     const clientId = conf.client_id;
-    const currency = conf.currency || 'USD';
+    const currency = conf.currency || 'COP';
     const components = conf.components || 'buttons';
     const funding = conf.enable_funding || 'card,venmo,paylater';
     const params = new URLSearchParams({

@@ -21,6 +21,10 @@ if (!headers_sent()) {
     header('X-XSS-Protection: 1; mode=block');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+    // Content-Security-Policy (allowlist de CDNs realmente usados por el sitio)
+    $nonce = base64_encode(random_bytes(16));
+    $_SESSION['dc_csp_nonce'] = $nonce;
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{$nonce}' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com https://connect.facebook.net https://www.paypal.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https://images.unsplash.com https://connect.facebook.net https://api.qrserver.com https://maps.google.com https://www.google.com; connect-src 'self' https://www.paypal.com https://api-m.paypal.com https://api-m.sandbox.paypal.com https://api-sandbox.factus.com.co https://api.brevo.com https://api.resend.com https://api.sendgrid.com https://api.openai.com https://oauth2.googleapis.com https://accounts.google.com https://formspree.io; frame-src 'self' https://www.paypal.com https://maps.google.com https://www.google.com https://player.vimeo.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://wa.me https://www.paypal.com https://accounts.google.com");
     // Strict-Transport-Security solo tiene sentido sobre HTTPS; no forzarlo en HTTP (localhost/dev)
     if ($isHttps) {
         header('Strict-Transport-Security: max-age=31536000; includeSubDomains');

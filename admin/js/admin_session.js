@@ -51,5 +51,14 @@
     return fetch(path, o);
   };
 
+  // Cargar cliente CSRF (inyecta el header X-CSRF-Token en escrituras).
+  (function () {
+    if (window.__DcCsrfLoaded) return;
+    var s = document.createElement('script');
+    s.src = '../static/js/csrf_client.js';
+    s.async = false;
+    document.head.appendChild(s);
+  })();
+
   window.__AdminSessionRestored = true;
 })();

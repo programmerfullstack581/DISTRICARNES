@@ -3,12 +3,23 @@ header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
 require_once __DIR__ . '/../core/conexion.php';     // PDO
 require_once __DIR__ . '/../core/mail_sender.php';
+require_once __DIR__ . '/../core/csrf.php';
+require_once __DIR__ . '/../core/rate_limit.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 $orderId = isset($input['order_id']) ? intval($input['order_id']) : 0;
 $toEmail = isset($input['to']) ? trim($input['to']) : null;
 if($orderId <= 0){ echo json_encode(['ok'=>false,'error'=>'order_id is required']); exit; }
+
+dc_csrf_require();
+
+$rl = dc_rate_limit_consume('invoice_email:' . dc_client_ip(), 5, 3600);
+if (!$rl['allowed']) {
+  http_response_code(429);
+  echo json_encode(['ok'=>false, 'error'=>'Has enviado demasiados correos. Intenta de nuevo más tarde.', 'code'=>'rate_limited']);
+  exit;
+}
 
 try {
   // Cargar orden desde orders_pg primero; fallback a orders

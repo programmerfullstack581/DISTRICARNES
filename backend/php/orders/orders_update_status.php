@@ -4,11 +4,14 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/orders_schema.php';
+require_once __DIR__ . '/../core/csrf.php';
 require_once __DIR__ . '/../sales/sales_utils.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON']); exit; }
+
+dc_csrf_require();
 
 $orderId = isset($input['order_id']) ? intval($input['order_id']) : 0;
 $status  = isset($input['status']) ? strtolower(trim($input['status'])) : '';
@@ -19,9 +22,9 @@ if ($orderId <= 0 || $status === '') {
 }
 
 // Normalizar y validar estado
-$map = ['pending'=>'PENDING','processing'=>'PROCESSING','completed'=>'COMPLETED','cancelled'=>'CANCELLED'];
+$map = ['pending'=>'PENDING','processing'=>'PROCESSING','paid'=>'PAID','completed'=>'COMPLETED','cancelled'=>'CANCELLED'];
 $statusNorm = $map[$status] ?? strtoupper($status);
-if (!in_array($statusNorm, ['PENDING','PROCESSING','COMPLETED','CANCELLED'], true)) {
+if (!in_array($statusNorm, ['PENDING','PROCESSING','PAID','COMPLETED','CANCELLED'], true)) {
   echo json_encode(['ok'=>false,'error'=>'invalid status']);
   exit;
 }
@@ -29,8 +32,14 @@ if (!in_array($statusNorm, ['PENDING','PROCESSING','COMPLETED','CANCELLED'], tru
 // Asegurar esquema antes de cualquier operación
 ensure_orders_schema($conexion);
 
-$stmt = $conexion->prepare("UPDATE orders_pg SET status = ? WHERE id = ?");
-$stmt->execute([$statusNorm, $orderId]);
+if ($statusNorm === 'PAID') {
+  // Confirmar pago: se conserva el estado operativo (PENDING) pero el pago queda confirmado
+  $stmt = $conexion->prepare("UPDATE orders_pg SET payment_confirmed = TRUE, payment_confirmed_at = CURRENT_TIMESTAMP, status = ? WHERE id = ?");
+  $stmt->execute([$statusNorm, $orderId]);
+} else {
+  $stmt = $conexion->prepare("UPDATE orders_pg SET status = ? WHERE id = ?");
+  $stmt->execute([$statusNorm, $orderId]);
+}
 $ok = $stmt->rowCount() > 0;
 
 $sale = null;

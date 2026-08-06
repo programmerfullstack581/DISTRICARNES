@@ -3,10 +3,22 @@ header('Content-Type: application/json; charset=utf-8');
 define('BYPASS_SECURITY', true);
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/orders_schema.php';
+require_once __DIR__ . '/../core/csrf.php';
+require_once __DIR__ . '/../core/rate_limit.php';
+require_once __DIR__ . '/../core/whatsapp_sender.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON']); exit; }
+
+dc_csrf_require();
+
+$rl = dc_rate_limit_consume('order:' . dc_client_ip(), 10, 600);
+if (!$rl['allowed']) {
+  http_response_code(429);
+  echo json_encode(['ok'=>false, 'error'=>'Demasiados pedidos. Espera unos minutos e inténtalo de nuevo.', 'code'=>'rate_limited']);
+  exit;
+}
 
 $status   = 'PENDING';
 $total    = isset($input['total']) ? floatval($input['total']) : 0.0;
@@ -16,6 +28,7 @@ $schedule = $input['schedule'] ?? [];
 $items    = $input['items'] ?? [];
 $user     = $input['user'] ?? [];
 $pay      = $input['pay'] ?? null;
+$nequiPhone = isset($input['nequi_phone']) ? trim((string)$input['nequi_phone']) : '';
 
 if (!is_array($items) || count($items) === 0) {
   echo json_encode(['ok'=>false, 'error'=>'No hay productos en tu carrito', 'code'=>'empty_cart']);
@@ -100,35 +113,46 @@ try {
   // Garantizar esquema completo y consistente (creado por cualquier otro endpoint)
   ensure_orders_schema($conexion);
 
-  $stmt = $conexion->prepare('
-    INSERT INTO orders_pg (user_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
-    VALUES (?,?,?,?,?,?,?,?::jsonb,?::jsonb)
-    RETURNING id
-  ');
-  $stmt->execute([$userId ?: null, $userEmail, $userName, $status, $total, $delivery, $pay, json_encode($address), json_encode($schedule)]);
-  $orderId = intval($stmt->fetchColumn());
+  // Transacción: orden + items + descuento de stock deben ser atómicos.
+  $conexion->beginTransaction();
+  try {
+    $stmt = $conexion->prepare('
+      INSERT INTO orders_pg (user_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
+      VALUES (?,?,?,?,?,?,?,?::jsonb,?::jsonb)
+      RETURNING id
+    ');
+    $stmt->execute([$userId ?: null, $userEmail, $userName, $status, $total, $delivery, $pay, json_encode($address), json_encode($schedule)]);
+    $orderId = intval($stmt->fetchColumn());
+    $stmt->closeCursor();
 
-  if (is_array($items)) {
-    $ins = $conexion->prepare('INSERT INTO order_items_pg (order_id, title, price, qty, image) VALUES (?,?,?,?,?)');
-    foreach ($items as $it) {
-      $title = $it['title'] ?? ($it['name'] ?? 'Producto');
-      $productId = isset($it['id']) ? intval($it['id']) : 0;
-      $price = ($productId > 0 && isset($verifiedPrices[$productId])) ? $verifiedPrices[$productId] : 0;
-      $qty   = intval($it['qty'] ?? ($it['quantity'] ?? 1));
-      $img   = $it['image'] ?? ($it['img'] ?? null);
-      $ins->execute([$orderId, $title, $price, $qty, $img]);
-      
-      // Disminuir el stock del producto
-      if ($productId > 0) {
-        try {
-          $stockStmt = $conexion->prepare("UPDATE producto SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
+    if (is_array($items)) {
+      $ins = $conexion->prepare('INSERT INTO order_items_pg (order_id, title, price, qty, image) VALUES (?,?,?,?,?)');
+      $stockStmt = $conexion->prepare("UPDATE producto SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
+      foreach ($items as $it) {
+        $title = $it['title'] ?? ($it['name'] ?? 'Producto');
+        $productId = isset($it['id']) ? intval($it['id']) : 0;
+        $price = ($productId > 0 && isset($verifiedPrices[$productId])) ? $verifiedPrices[$productId] : 0;
+        $qty   = intval($it['qty'] ?? ($it['quantity'] ?? 1));
+        $img   = $it['image'] ?? ($it['img'] ?? null);
+        $ins->execute([$orderId, $title, $price, $qty, $img]);
+
+        // Disminuir el stock del producto (fail-closed: si no hay stock, se revierte todo)
+        if ($productId > 0) {
           $stockStmt->execute([$qty, $productId, $qty]);
-        } catch (Throwable $e) {
-          // Ignorar errores de stock, continuar con la compra
+          if ($stockStmt->rowCount() < 1) {
+            throw new RuntimeException('Sin stock suficiente para el producto ' . $productId);
+          }
         }
       }
     }
+    $conexion->commit();
+  } catch (Throwable $e) {
+    if ($conexion->inTransaction()) {
+      $conexion->rollBack();
+    }
+    throw $e;
   }
+
   cache_respuesta_invalidar();
 
   // Registrar notificación de admin
@@ -145,9 +169,21 @@ try {
     cache_respuesta_invalidar();
   } catch (Throwable $_) {}
 
+  // Notificación por WhatsApp al administrador (best-effort, no bloquea el pedido)
+  try {
+    dc_notify_new_order($orderId, (string)$userEmail, (float)$total, (string)$pay, $nequiPhone);
+  } catch (Throwable $_) {}
+
   echo json_encode(['ok'=>true,'order_id'=>$orderId]);
 } catch (Throwable $e) {
   error_log('orders_save_pending.php: ' . $e->getMessage());
-  echo json_encode(['ok'=>false,'error'=>'No se pudo registrar el pedido. Intenta más tarde.']);
+  $isStock = (strpos($e->getMessage(), 'Sin stock suficiente') !== false);
+  echo json_encode([
+    'ok' => false,
+    'error' => $isStock
+      ? 'El stock cambió mientras finalizabas tu compra. Actualiza tu carrito e inténtalo de nuevo.'
+      : 'No se pudo registrar el pedido. Intenta más tarde.',
+    'code' => $isStock ? 'stock_changed' : 'save_error'
+  ]);
 }
 ?> 

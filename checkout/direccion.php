@@ -23,6 +23,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Carga dinámica del SDK de PayPal (se inyecta al elegir PayPal) -->
     <script src="../static/js/paypal_loader.js"></script>
+    <script src="../static/js/csrf_client.js"></script>
     <script src="../static/js/theme.js"></script>
 </head>
 
@@ -1003,6 +1004,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="payment-method" id="efectivoMethod">
+                    <input type="radio" name="pay" value="efectivo" id="payEfectivo" />
+                    <i class="fas fa-money-bill-wave" style="font-size:22px; margin-right:8px; color:#008000;"></i>
+                    <div style="flex:1">
+                        <div class="title">Efectivo en punto de entrega</div>
+                        <small class="muted" style="display:block;color:#666">Paga al recoger tu pedido</small>
+                        <div id="efectivoPanel" class="hidden" style="margin-top:8px;">
+                            <small style="display:block; color:#666; margin-top:6px;">Recuerda llevar el comprobante de tu
+                                pedido al punto de entrega.</small>
+                        </div>
+                    </div>
+                </div>
+                <div id="proofPanel" class="hidden" style="margin-top:14px; padding:12px; border:1px dashed #ccc; border-radius:10px;">
+                    <div style="font-weight:700; margin-bottom:6px; color:#333;">Comprobante de pago</div>
+                    <input type="file" id="paymentProofInput" accept="image/jpeg,image/png,image/webp,application/pdf" style="display:block; width:100%;" />
+                    <small style="display:block; color:#666; margin-top:6px;">Sube la captura de la transferencia o del pago realizado (JPG, PNG, WEBP o PDF, máx. 4MB).</small>
+                    <div id="proofPreview" style="display:none; margin-top:8px;"></div>
+                </div>
             </div>
             <div class="actions">
                 <button class="btn" id="backToStep4" style="background:#333; color:#fff;">Atrás</button>
@@ -1153,7 +1172,9 @@
                 fecha: 'calculando...'
             },
             payMethod: null,
-            orderTotal: 0
+            orderTotal: 0,
+            paymentProof: null,
+            paymentProofMime: null
         };
 
         // Navegación de pasos
@@ -1366,7 +1387,7 @@
                 const confRes = await fetch('../backend/php/payments/get_paypal_client.php');
                 const conf = await confRes.json();
                 const clientId = conf.client_id;
-                const currency = conf.currency || 'USD';
+                const currency = conf.currency || 'COP';
                 const components = conf.components || 'buttons';
                 const funding = conf.enable_funding || 'card,venmo,paylater';
                 const script = document.createElement('script');
@@ -1416,7 +1437,7 @@
                         }
                     })()
                 };
-                const res = await fetch('../backend/php/orders/orders_save.php', {
+                const res = await window.dcFetchJson('../backend/php/orders/orders_save.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -1516,7 +1537,7 @@
                                     const u = raw && raw.user ? raw.user : raw;
                                     const email = (u && (u.correo_electronico || u.email)) || null;
                                     if (orderId && email) {
-                                        await fetch('../backend/php/orders/send_invoice_email.php', {
+                                        await window.dcFetchJson('../backend/php/orders/send_invoice_email.php', {
                                             method: 'POST',
                                             headers: {
                                                 'Content-Type': 'application/json'
@@ -1554,7 +1575,7 @@
                                         const u = raw && raw.user ? raw.user : raw;
                                         const email = (u && (u.correo_electronico || u.email)) || null;
                                         if (email) {
-                                            await fetch('../backend/php/orders/send_invoice_email.php', {
+                                            await window.dcFetchJson('../backend/php/orders/send_invoice_email.php', {
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json'
@@ -1717,7 +1738,7 @@
                     const raw = rawStr ? JSON.parse(rawStr) : null;
                     const u = raw && raw.user ? raw.user : raw;
                     const userEmail = (u && (u.correo_electronico || u.email)) || '';
-                    const res = await fetch('../backend/php/orders/address_upsert.php', {
+                    const res = await window.dcFetchJson('../backend/php/orders/address_upsert.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -1879,8 +1900,70 @@
                             nequiPanel.classList.add('hidden');
                         }
                     }
+                    const efectivoPanel = document.getElementById('efectivoPanel');
+                    if (efectivoPanel) {
+                        if (r.value === 'efectivo') {
+                            efectivoPanel.classList.remove('hidden');
+                        } else {
+                            efectivoPanel.classList.add('hidden');
+                        }
+                    }
+                    const proofPanel = document.getElementById('proofPanel');
+                    if (proofPanel) {
+                        if (r.value === 'nequi' || r.value === 'efectivo') {
+                            proofPanel.classList.remove('hidden');
+                        } else {
+                            proofPanel.classList.add('hidden');
+                        }
+                    }
                 });
             });
+            const proofInput = document.getElementById('paymentProofInput');
+            if (proofInput) {
+                proofInput.addEventListener('change', () => {
+                    const file = proofInput.files && proofInput.files[0];
+                    if (!file) {
+                        CheckoutState.paymentProof = null;
+                        CheckoutState.paymentProofMime = null;
+                        const pv = document.getElementById('proofPreview');
+                        if (pv) { pv.style.display = 'none'; pv.innerHTML = ''; }
+                        return;
+                    }
+                    const allowedMime = ['image/jpeg','image/png','image/webp','application/pdf'];
+                    if (allowedMime.indexOf(file.type) === -1) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Formato no permitido',
+                            text: 'Usa JPG, PNG, WEBP o PDF.'
+                        });
+                        proofInput.value = '';
+                        return;
+                    }
+                    if (file.size > 4 * 1024 * 1024) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Archivo muy grande',
+                            text: 'El comprobante debe pesar máximo 4MB.'
+                        });
+                        proofInput.value = '';
+                        return;
+                    }
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const b64 = String(reader.result || '').split(',')[1] || '';
+                        CheckoutState.paymentProof = b64;
+                        CheckoutState.paymentProofMime = file.type;
+                        const pv = document.getElementById('proofPreview');
+                        if (pv) {
+                            pv.style.display = 'block';
+                            pv.innerHTML = file.type === 'application/pdf'
+                                ? '<small style="color:#008000;">PDF cargado correctamente.</small>'
+                                : '<img src="' + reader.result + '" style="max-width:180px; max-height:140px; border-radius:8px; border:1px solid #ddd;" alt="Comprobante" />';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
             const nequiSendBtn = document.getElementById('nequiSend');
             if (nequiSendBtn) {
                 nequiSendBtn.addEventListener('click', () => {
@@ -1950,7 +2033,7 @@
                     });
                     return;
                 }
-                if (CheckoutState.delivery !== 'punto' && CheckoutState.payMethod === 'efecty') {
+                if (CheckoutState.delivery !== 'punto' && (CheckoutState.payMethod === 'efecty' || CheckoutState.payMethod === 'efectivo')) {
                     Swal.fire({
                         icon: 'info',
                         title: 'Efectivo solo en punto de entrega'
@@ -1965,7 +2048,7 @@
                     });
                     try {
                         const items = getCart();
-                        const res = await fetch('../backend/php/orders/orders_save_pending.php', {
+                        const res = await window.dcFetchJson('../backend/php/orders/orders_save_pending.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -1996,6 +2079,24 @@
                         });
                         const out = await res.json();
                         if (out && out.ok && out.order_id) {
+                            // Subir comprobante de pago si el cliente adjuntó uno
+                            if (CheckoutState.paymentProof && CheckoutState.paymentProofMime) {
+                                try {
+                                    await window.dcFetchJson('../backend/php/orders/payment_proof_upload.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            order_id: out.order_id,
+                                            file_base64: CheckoutState.paymentProof,
+                                            mime: CheckoutState.paymentProofMime
+                                        })
+                                    });
+                                } catch (e) {
+                                    /* opcional: el pedido ya quedó registrado */
+                                }
+                            }
                             // Enviar factura por correo también en métodos no‑PayPal
                             try {
                                 const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
@@ -2003,7 +2104,7 @@
                                 const u = raw && raw.user ? raw.user : raw;
                                 const email = (u && (u.correo_electronico || u.email)) || null;
                                 if (email) {
-                                    await fetch('../backend/php/orders/send_invoice_email.php', {
+                                    await window.dcFetchJson('../backend/php/orders/send_invoice_email.php', {
                                         method: 'POST',
                                         headers: {
                                             'Content-Type': 'application/json'
@@ -2034,8 +2135,10 @@
                             
                             Swal.fire({
                                 icon: 'success',
-                                title: '¡Compra Exitosa!',
-                                text: 'Tu pedido ha sido procesado correctamente y tu factura fue enviada al correo.',
+                                title: '¡Pedido Registrado!',
+                                text: CheckoutState.payMethod === 'paypal'
+                                    ? 'Tu pedido ha sido procesado correctamente y tu factura fue enviada al correo.'
+                                    : 'Tu pedido quedó registrado. Confirmaremos tu pago con el comprobante y te avisaremos.',
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: '#ff0000',
                                 allowOutsideClick: false

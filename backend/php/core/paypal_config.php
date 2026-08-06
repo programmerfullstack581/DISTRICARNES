@@ -12,7 +12,7 @@ if (!defined('PAYPAL_ENV')) {
   define('PAYPAL_ENV', getenv('PAYPAL_ENV') ?: 'sandbox'); // 'live' para producción
 }
 if (!defined('PAYPAL_CURRENCY')) {
-  define('PAYPAL_CURRENCY', getenv('PAYPAL_CURRENCY') ?: 'USD');
+  define('PAYPAL_CURRENCY', getenv('PAYPAL_CURRENCY') ?: 'COP');
 }
 
 $PAYPAL_CONFIG = [

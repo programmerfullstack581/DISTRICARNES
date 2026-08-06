@@ -106,8 +106,9 @@ try {
     $syncUsers = table_exists($conexion, 'usuario');
     if ($syncUsers) {
         $userDateCol = col_exists($conexion, 'usuario', 'created_at') ? 'created_at' : (
-            col_exists($conexion, 'usuario', 'fecha_registro') ? 'fecha_registro' :
-            col_exists($conexion, 'usuario', 'created_at') ? 'created_at' : 'created_at'
+            col_exists($conexion, 'usuario', 'fecha_registro') ? 'fecha_registro' : (
+                col_exists($conexion, 'usuario', 'created_at') ? 'created_at' : 'created_at'
+            )
         );
 
         $stmt = $conexion->prepare("
@@ -143,8 +144,9 @@ try {
     // 3. Alerta de stock bajo (computado en tiempo real)
     if (table_exists($conexion, 'producto')) {
         $stockCol = col_exists($conexion, 'producto', 'stock') ? 'stock' : (
-            col_exists($conexion, 'producto', 'existencias') ? 'existencias' :
-            col_exists($conexion, 'producto', 'cantidad') ? 'cantidad' : null
+            col_exists($conexion, 'producto', 'existencias') ? 'existencias' : (
+                col_exists($conexion, 'producto', 'cantidad') ? 'cantidad' : null
+            )
         );
         if ($stockCol) {
             $stmt = $conexion->prepare(

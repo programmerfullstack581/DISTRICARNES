@@ -6,9 +6,22 @@ require_once __DIR__ . '/../core/producto_caducidad.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
 require_once __DIR__ . '/../core/orders_schema.php';
 
+require_once __DIR__ . '/../core/csrf.php';
+require_once __DIR__ . '/../core/rate_limit.php';
+require_once __DIR__ . '/../core/whatsapp_sender.php';
+
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'Invalid JSON']); exit; }
+
+dc_csrf_require();
+
+$rl = dc_rate_limit_consume('order:' . dc_client_ip(), 10, 600);
+if (!$rl['allowed']) {
+  http_response_code(429);
+  echo json_encode(['ok'=>false, 'error'=>'Demasiados pedidos. Espera unos minutos e inténtalo de nuevo.', 'code'=>'rate_limited']);
+  exit;
+}
 
 $items    = $input['items'] ?? [];
 
@@ -117,35 +130,44 @@ $items    = $input['items'] ?? [];
   // Garantizar esquema completo y consistente (creado por cualquier otro endpoint)
   ensure_orders_schema($conexion);
 
-  $stmt = $conexion->prepare("
-    INSERT INTO orders_pg (user_id, paypal_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
-    VALUES (?,?,?,?,?,?,?,?,?::jsonb,?::jsonb)
-    RETURNING id
-  ");
-  $stmt->execute([$userId ?: null, $paypalId, $userEmail, $userName, $status, $total, $delivery, $payMethod, json_encode($address), json_encode($schedule)]);
-  $orderId = intval($stmt->fetchColumn());
-  $stmt->closeCursor();
+  // Transacción: orden + items + descuento de stock deben ser atómicos.
+  $conexion->beginTransaction();
+  try {
+    $stmt = $conexion->prepare("
+      INSERT INTO orders_pg (user_id, paypal_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json)
+      VALUES (?,?,?,?,?,?,?,?,?::jsonb,?::jsonb)
+      RETURNING id
+    ");
+    $stmt->execute([$userId ?: null, $paypalId, $userEmail, $userName, $status, $total, $delivery, $payMethod, json_encode($address), json_encode($schedule)]);
+    $orderId = intval($stmt->fetchColumn());
+    $stmt->closeCursor();
 
-  if (is_array($items)) {
-    $ins = $conexion->prepare('INSERT INTO order_items_pg (order_id, title, price, qty, image) VALUES (?,?,?,?,?)');
-    foreach ($items as $it) {
-      $title = $it['title'] ?? ($it['name'] ?? 'Producto');
-      $productId = isset($it['id']) ? intval($it['id']) : 0;
-      $price = ($productId > 0 && isset($verifiedPrices[$productId])) ? $verifiedPrices[$productId] : 0;
-      $qty   = intval($it['qty'] ?? ($it['quantity'] ?? 1));
-      $img   = $it['image'] ?? ($it['img'] ?? null);
-      $ins->execute([$orderId, $title, $price, $qty, $img]);
-      
-      // Disminuir el stock del producto
-      if ($productId > 0) {
-        try {
-          $stockStmt = $conexion->prepare("UPDATE producto SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
+    if (is_array($items)) {
+      $ins = $conexion->prepare('INSERT INTO order_items_pg (order_id, title, price, qty, image) VALUES (?,?,?,?,?)');
+      $stockStmt = $conexion->prepare("UPDATE producto SET stock = stock - ? WHERE id_producto = ? AND stock >= ?");
+      foreach ($items as $it) {
+        $title = $it['title'] ?? ($it['name'] ?? 'Producto');
+        $productId = isset($it['id']) ? intval($it['id']) : 0;
+        $price = ($productId > 0 && isset($verifiedPrices[$productId])) ? $verifiedPrices[$productId] : 0;
+        $qty   = intval($it['qty'] ?? ($it['quantity'] ?? 1));
+        $img   = $it['image'] ?? ($it['img'] ?? null);
+        $ins->execute([$orderId, $title, $price, $qty, $img]);
+
+        // Disminuir el stock del producto (fail-closed: si no hay stock, se revierte todo)
+        if ($productId > 0) {
           $stockStmt->execute([$qty, $productId, $qty]);
-        } catch (Throwable $e) {
-          // Ignorar errores de stock, continuar con la compra
+          if ($stockStmt->rowCount() < 1) {
+            throw new RuntimeException('Sin stock suficiente para el producto ' . $productId);
+          }
         }
       }
     }
+    $conexion->commit();
+  } catch (Throwable $e) {
+    if ($conexion->inTransaction()) {
+      $conexion->rollBack();
+    }
+    throw $e;
   }
 
   cache_respuesta_invalidar();
@@ -174,6 +196,11 @@ $items    = $input['items'] ?? [];
       );
     }
     cache_respuesta_invalidar();
+  } catch (Throwable $_) {}
+
+  // Notificación por WhatsApp al administrador (best-effort, no bloquea el pedido)
+  try {
+    dc_notify_new_order($orderId, (string)$userEmail, (float)$total, (string)$payMethod);
   } catch (Throwable $_) {}
 
   echo json_encode(['ok'=>true, 'order_id'=>$orderId]);

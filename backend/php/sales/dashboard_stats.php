@@ -106,6 +106,7 @@ function safe_active_customers(PDO $db): int {
   
   return $cnt;
 }
+}
 
 $resp = [
   'ok' => true,

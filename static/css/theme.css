@@ -767,3 +767,139 @@ html[data-theme="light"] .swal2-confirm {
     color: #ffffff !important;
     border-color: #ff0000 !important;
 }
+
+/* ============================================================
+   MODO OSCURO POR DEFECTO
+   Sobreescrituras para componentes con colores fijos (checkout,
+   formularios, resumen, etc.) que no usan variables CSS.
+   ============================================================ */
+html[data-theme="dark"] { color-scheme: dark; }
+:root { color-scheme: light; }
+
+/* ---------- Checkout (Estilo_direccion_compra.css) ---------- */
+html[data-theme="dark"] .checkout-page .card,
+html[data-theme="dark"] .container .card,
+html[data-theme="dark"] .card.step,
+html[data-theme="dark"] #newAddressForm {
+    background: #111111 !important;
+    border-color: #2a2a2a !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}
+html[data-theme="dark"] .card.step header,
+html[data-theme="dark"] #newAddressForm > header {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border-bottom-color: #2a2a2a !important;
+}
+html[data-theme="dark"] .card.step .content,
+html[data-theme="dark"] #newAddressForm .content { background: #111111 !important; color: #e5e7eb !important; }
+html[data-theme="dark"] .card.step .actions,
+html[data-theme="dark"] #newAddressForm .actions { background: #111111 !important; border-top-color: #2a2a2a !important; }
+html[data-theme="dark"] .option,
+html[data-theme="dark"] .schedule-item,
+html[data-theme="dark"] .address-list .address {
+    background: #171717 !important;
+    border-color: #2a2a2a !important;
+    color: #e5e7eb !important;
+}
+html[data-theme="dark"] .option .title,
+html[data-theme="dark"] .schedule-item strong,
+html[data-theme="dark"] .address strong { color: #ffffff !important; }
+html[data-theme="dark"] .option .desc,
+html[data-theme="dark"] .schedule-item small { color: #9ca3af !important; }
+html[data-theme="dark"] .summary {
+    background: #111111 !important;
+    border-color: #2a2a2a !important;
+    color: #e5e7eb !important;
+}
+html[data-theme="dark"] .summary h3 { color: #ffffff !important; }
+html[data-theme="dark"] .summary-row { border-bottom-color: #2a2a2a !important; color: #e5e7eb !important; }
+html[data-theme="dark"] .summary-row span { color: inherit !important; }
+html[data-theme="dark"] .payment-method {
+    background: #171717 !important;
+    border-color: #2a2a2a !important;
+}
+html[data-theme="dark"] .payment-method:hover { border-color: #ff0000 !important; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important; }
+html[data-theme="dark"] .payment-method .title { color: #ffffff !important; }
+html[data-theme="dark"] .payment-method small.muted,
+html[data-theme="dark"] .muted,
+html[data-theme="dark"] .muted-link { color: #9ca3af !important; }
+html[data-theme="dark"] #paypalButtons {
+    background: #171717 !important;
+    border-color: #2a2a2a !important;
+}
+html[data-theme="dark"] #nequiPanel input,
+html[data-theme="dark"] #newAddressForm .content input {
+    background: #0f0f0f !important;
+    color: #ffffff !important;
+    border-color: #2a2a2a !important;
+}
+html[data-theme="dark"] #nequiPanel input::placeholder,
+html[data-theme="dark"] #newAddressForm .content input::placeholder { color: #6b7280 !important; }
+html[data-theme="dark"] .card.step .btn:not(.btn-primary),
+html[data-theme="dark"] #backToStep1,
+html[data-theme="dark"] #cancelNewAddress,
+html[data-theme="dark"] .actions .btn:not(.btn-primary) {
+    background: #2a2a2a !important;
+    color: #ffffff !important;
+    border-color: #3a3a3a !important;
+}
+html[data-theme="dark"] .checkout-page,
+html[data-theme="dark"] body.checkout-body { color: #e5e7eb !important; }
+
+/* ---------- SweetAlert2 en oscuro ---------- */
+html[data-theme="dark"] .swal2-container { background: rgba(0, 0, 0, 0.7) !important; }
+html[data-theme="dark"] .swal2-popup.swal2-modal,
+html[data-theme="dark"] .swal2-popup.swal2-toast {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid #2a2a2a !important;
+}
+html[data-theme="dark"] .swal2-title { color: #ffffff !important; }
+html[data-theme="dark"] .swal2-html-container { color: #d1d5db !important; }
+html[data-theme="dark"] .swal2-close { color: #ffffff !important; }
+html[data-theme="dark"] .swal2-input,
+html[data-theme="dark"] .swal2-textarea,
+html[data-theme="dark"] .swal2-select {
+    background: #0f0f0f !important;
+    color: #ffffff !important;
+    border-color: #2a2a2a !important;
+}
+
+/* ---------- Scrollbars en oscuro ---------- */
+html[data-theme="dark"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+html[data-theme="dark"] ::-webkit-scrollbar-track { background: #0f0f0f !important; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #333333 !important; border-radius: 5px; }
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: #ff0000 !important; }
+
+/* ---------- Sidebar de filtros (productos.php) ---------- */
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .sidebar-fixed-top,
+html[data-theme="dark"] .filter-section,
+html[data-theme="dark"] .filter-group,
+html[data-theme="dark"] .filter-group label,
+html[data-theme="dark"] .search-box,
+html[data-theme="dark"] .search-box input {
+    color: #ffffff !important;
+}
+html[data-theme="dark"] .filter-section h3 { color: #d1d5db !important; }
+html[data-theme="dark"] .search-box input,
+html[data-theme="dark"] #site-search-sidebar {
+    background: #0f0f0f !important;
+    border-color: #2a2a2a !important;
+    color: #ffffff !important;
+}
+html[data-theme="light"] .sidebar,
+html[data-theme="light"] .sidebar-fixed-top,
+html[data-theme="light"] .filter-section,
+html[data-theme="light"] .filter-group,
+html[data-theme="light"] .filter-group label,
+html[data-theme="light"] .search-box,
+html[data-theme="light"] .search-box input { color: #111827 !important; }
+html[data-theme="light"] .filter-section h3 { color: #6b7280 !important; }
+html[data-theme="light"] .search-box input,
+html[data-theme="light"] #site-search-sidebar {
+    background: #ffffff !important;
+    border-color: #d1d5db !important;
+    color: #111827 !important;
+}

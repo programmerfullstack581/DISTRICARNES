@@ -28,6 +28,9 @@ if (!function_exists('ensure_orders_schema')) {
                     factus_number VARCHAR(255) NULL,
                     factus_status VARCHAR(32) NULL,
                     factus_pdf_url TEXT NULL,
+                    payment_proof TEXT NULL,
+                    payment_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+                    payment_confirmed_at TIMESTAMP NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             ");
@@ -51,6 +54,9 @@ if (!function_exists('ensure_orders_schema')) {
             'factus_number'    => 'VARCHAR(255) NULL',
             'factus_status'    => 'VARCHAR(32) NULL',
             'factus_pdf_url'   => 'TEXT NULL',
+            'payment_proof'    => 'TEXT NULL',
+            'payment_confirmed'=> 'BOOLEAN NOT NULL DEFAULT FALSE',
+            'payment_confirmed_at' => 'TIMESTAMP NULL',
             'created_at'       => 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
         ];
 

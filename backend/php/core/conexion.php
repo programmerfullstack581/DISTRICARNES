@@ -14,7 +14,7 @@ if (!defined('BYPASS_SECURITY')) {
 date_default_timezone_set('America/Bogota');
 
 $host = getenv('HOST') ?: '';
-$port = getenv('DB_PORT') ?: '6543';
+$port = getenv('DB_PORT') ?: '';
 $database = getenv('DB_NAME') ?: '';
 $username = getenv('DB_USER') ?: '';
 $password = getenv('DB_PASSWORD') ?: '';
@@ -111,6 +111,6 @@ try {
     exit();
 }
 
-// Si llegamos aquí, la conexión fue exitosa
-// Puedes agregar aquí tu código para consultar productos
+// conexion exitosa a la base de datos districarnes que se encuentra en supabase 
+
 ?>

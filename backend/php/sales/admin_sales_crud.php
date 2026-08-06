@@ -4,8 +4,13 @@ require_once __DIR__ . '/../core/admin_auth.php';
 require_once __DIR__ . '/../core/conexion.php';
 require_once __DIR__ . '/../core/orders_schema.php';
 require_once __DIR__ . '/../core/cache_respuesta.php';
+require_once __DIR__ . '/../core/csrf.php';
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : 'list');
+
+if ($action !== 'list' && $action !== '') {
+    dc_csrf_require();
+}
 
 // Garantizar esquema completo y consistente de orders_pg / order_items_pg
 ensure_orders_schema($conexion);

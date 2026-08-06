@@ -1,10 +1,13 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../core/conexion.php'; // PDO PostgreSQL
+require_once __DIR__ . '/../core/csrf.php';
 
 $raw = file_get_contents('php://input');
 $input = json_decode($raw, true);
 if (!is_array($input)) { echo json_encode(['ok'=>false,'error'=>'JSON inválido']); exit; }
+
+dc_csrf_require();
 
 $email = trim($input['user_email'] ?? '');
 $id    = isset($input['id']) ? intval($input['id']) : null;

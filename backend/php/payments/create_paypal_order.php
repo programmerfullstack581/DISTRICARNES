@@ -10,10 +10,11 @@ if ($amount === '0.00'){
 $token = paypal_get_access_token($PAYPAL_CONFIG, $PAYPAL_BASE_URL);
 if (!$token){ json_response(['error' => 'Unable to authenticate with PayPal'], 500); }
 
+$currency = defined('PAYPAL_CURRENCY') ? PAYPAL_CURRENCY : 'COP';
 $body = [
   'intent' => 'CAPTURE',
   'purchase_units' => [[
-    'amount' => [ 'currency_code' => 'USD', 'value' => $amount ],
+    'amount' => [ 'currency_code' => $currency, 'value' => $amount ],
   ]],
 ];
 

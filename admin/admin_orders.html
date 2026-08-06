@@ -457,6 +457,25 @@
             border: 1px solid rgba(245, 101, 101, 0.3);
         }
 
+        .status-paid {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .proof-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 4px;
+        }
+        .proof-badge.has-proof { background: rgba(72, 187, 120, 0.15); color: #48bb78; }
+        .proof-badge.no-proof { background: rgba(237, 137, 54, 0.15); color: #ed8936; }
+
         .order-actions {
             display: flex;
             gap: 8px;
@@ -909,6 +928,7 @@
                 <option value="">Todos los estados</option>
                 <option value="pending">Pendientes</option>
                 <option value="processing">En Proceso</option>
+                <option value="paid">Pagados</option>
                 <option value="completed">Completados</option>
                 <option value="cancelled">Cancelados</option>
             </select>
@@ -994,6 +1014,7 @@
                         <select class="detail-value" id="orderStatusSelect" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); padding: 8px 12px; border-radius: 6px; color: white; font-weight: 500;">
                             <option value="pending">Pendiente</option>
                             <option value="processing">En Proceso</option>
+                            <option value="paid">Pagado</option>
                             <option value="completed">Completado</option>
                             <option value="cancelled">Cancelado</option>
                         </select>
@@ -1002,9 +1023,13 @@
                         <span class="detail-label">Método de Pago:</span>
                         <span class="detail-value" id="paymentMethod">-</span>
                     </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Comprobante:</span>
+                        <span class="detail-value" id="paymentProofCell">-</span>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="order-items-list">
                 <h4>Productos del Pedido</h4>
                 <div id="orderItemsList">
@@ -1036,6 +1061,7 @@
             
             <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="confirmPaymentBtn" onclick="confirmPayment()" style="display: none; background:#a855f7; border-color:#a855f7;">Confirmar Pago</button>
                 <button type="button" class="btn btn-primary" id="saveStatusBtn" onclick="saveOrderStatus()" style="display: none;">Guardar Cambios</button>
             </div>
         </div>
@@ -1185,6 +1211,10 @@
                     <div class="order-total">$${Number(order.total||0).toLocaleString('es-CO')}</div>
                     <div class="order-delivery">${order.delivery_method === 'punto' ? 'Retiro en punto' : 'Entrega a domicilio'}</div>
                     <div class="order-status status-${(order.status||'').toLowerCase()}">${order.status || ''}</div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-start; gap:2px;">
+                        <small style="opacity:.75; text-transform:capitalize;">${order.pay_method || ''}</small>
+                        <span class="proof-badge ${order.payment_proof ? 'has-proof' : 'no-proof'}">${order.payment_proof ? 'Con comprobante' : (order.payment_confirmed ? 'Pago OK' : 'Sin comprobante')}</span>
+                    </div>
                     <div class="order-actions">
                         <button class="btn btn-sm btn-view" onclick="viewOrder(${order.id})"><i class="fas fa-eye"></i></button>
                         <button class="btn btn-sm btn-edit" onclick="updateOrderStatus(${order.id})"><i class="fas fa-edit"></i></button>
@@ -1244,7 +1274,8 @@
             const statusSelect = document.getElementById('orderStatusSelect');
             statusSelect.value = order.status ? order.status.toLowerCase() : 'pending';
             
-            document.getElementById('paymentMethod').textContent = 'PayPal';
+            document.getElementById('paymentMethod').textContent = (order.pay_method || '').toUpperCase() || 'PayPal';
+            populatePaymentProof(order);
             document.getElementById('orderSubtotal').textContent = `$${subtotal.toLocaleString('es-CO')}`;
             document.getElementById('orderShipping').textContent = '$0';
             document.getElementById('orderTax').textContent = '$0';
@@ -1263,7 +1294,82 @@
             `).join('');
 
             document.getElementById('saveStatusBtn').style.display = 'inline-flex';
+            const isCashMethod = (order.pay_method || '').toLowerCase() !== 'paypal';
+            document.getElementById('confirmPaymentBtn').style.display = (isCashMethod && !order.payment_confirmed) ? 'inline-flex' : 'none';
             document.getElementById('orderModal').style.display = 'block';
+        }
+
+        function populatePaymentProof(order) {
+            const cell = document.getElementById('paymentProofCell');
+            if (!cell) return;
+            const proof = order.payment_proof;
+            const confirmed = !!order.payment_confirmed;
+            if (proof) {
+                const isPdf = /\.pdf$/i.test(proof);
+                cell.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        ${isPdf
+                            ? `<a href="${proof}" target="_blank" style="color:#48bb78;">Ver PDF del comprobante</a>`
+                            : `<a href="${proof}" target="_blank" style="color:#48bb78;">Ver comprobante</a>
+                               <img src="${proof}" alt="Comprobante" style="max-width:200px; max-height:150px; border-radius:8px; border:1px solid rgba(255,255,255,.2);" />`}
+                        ${confirmed
+                            ? '<span class="proof-badge has-proof" style="align-self:flex-start;">Pago confirmado</span>'
+                            : '<span class="proof-badge no-proof" style="align-self:flex-start;">Pago pendiente de confirmar</span>'}
+                    </div>`;
+            } else {
+                cell.textContent = confirmed ? 'Pago confirmado' : 'Sin comprobante adjunto';
+            }
+        }
+
+        async function confirmPayment() {
+            const orderId = document.getElementById('currentEditOrderId').value;
+            if (!orderId) return;
+            const confirmed = await Swal.fire({
+                icon: 'question',
+                title: '¿Confirmar pago?',
+                text: 'Marca este pedido como pagado tras verificar el comprobante.',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, confirmar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#a855f7',
+                background: '#1a1a1a',
+                color: '#ffffff'
+            });
+            if (!confirmed.isConfirmed) return;
+            try {
+                const response = await window.dcFetchJson(`${BASE_PATH}/backend/php/orders/orders_update_status.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ order_id: Number(orderId), status: 'paid' })
+                });
+                const resp = await response.json();
+                if (!resp || !resp.ok) throw new Error(resp.error || 'No se pudo confirmar el pago');
+                const idx = AdminOrdersCache.findIndex(o => Number(o.id) === Number(orderId));
+                if (idx >= 0) {
+                    AdminOrdersCache[idx].status = 'PAID';
+                    AdminOrdersCache[idx].payment_confirmed = true;
+                }
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Pago confirmado!',
+                    text: 'El pedido quedó marcado como pagado.',
+                    background: '#1a1a1a',
+                    color: '#ffffff',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                closeModal();
+                applyFiltersSort();
+                renderPage(CurrentPage);
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message || 'Error de red al confirmar el pago.',
+                    background: '#1a1a1a',
+                    color: '#ffffff'
+                });
+            }
         }
 
         async function saveOrderStatus() {
@@ -1282,7 +1388,7 @@
             }
 
             try {
-                const response = await fetch(`${BASE_PATH}/backend/php/orders/orders_update_status.php`, {
+                const response = await window.dcFetchJson(`${BASE_PATH}/backend/php/orders/orders_update_status.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ order_id: Number(orderId), status: newStatus })
@@ -1367,7 +1473,8 @@
             statusSelect.value = order.status ? order.status.toLowerCase() : 'pending';
             statusSelect.disabled = true;
             
-            document.getElementById('paymentMethod').textContent = 'PayPal';
+            document.getElementById('paymentMethod').textContent = (order.pay_method || '').toUpperCase() || 'PayPal';
+            populatePaymentProof(order);
             document.getElementById('orderSubtotal').textContent = `$${subtotal.toLocaleString('es-CO')}`;
             document.getElementById('orderShipping').textContent = '$0';
             document.getElementById('orderTax').textContent = '$0';
@@ -1386,6 +1493,7 @@
             `).join('');
 
             document.getElementById('saveStatusBtn').style.display = 'none';
+            document.getElementById('confirmPaymentBtn').style.display = 'none';
             document.getElementById('orderModal').style.display = 'block';
         }
 

@@ -1,4 +1,4 @@
-name: CI - Sintaxis PHP
+name: CI - Sintaxis PHP y pruebas
 
 on:
   push:
@@ -36,3 +36,22 @@ jobs:
             exit 1
           fi
           echo "Todos los archivos PHP tienen sintaxis correcta."
+
+  phpunit:
+    name: Pruebas unitarias (PHPUnit)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+
+      - name: Instalar dependencias (composer)
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Ejecutar PHPUnit
+        run: vendor/bin/phpunit

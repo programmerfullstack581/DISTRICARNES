@@ -12,7 +12,14 @@
     "require": {
         "league/oauth2-client": "^2.8",
         "league/oauth2-facebook": "^2.2",
-        "google/apiclient": "^2.18",
-        "twilio/sdk": "^8.8"
+        "google/apiclient": "^2.18"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DistriCarnes\\Tests\\": "tests/"
+        }
     }
 }

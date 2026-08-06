@@ -1054,7 +1054,7 @@
             <div class="alerts-header">
                 <h2>
                     <i class="fas fa-bell"></i>
-                    Alertas de Stock Bajo
+                    Alertas de Inventario
                 </h2>
                 <button class="btn btn-sm btn-secondary" onclick="dismissAllAlerts()">
                     Marcar todas como leídas
@@ -1478,30 +1478,64 @@
 
         function renderAlerts(products){
             const alerts = products.filter(p => p.stock >= 5 && p.stock < 10);
+            const expiring = [];
+            const now = new Date();
+            now.setHours(0,0,0,0);
+            const in7 = new Date(now.getTime() + 7*24*60*60*1000);
+            (products || []).forEach(p => {
+                (p.lotes || []).forEach(l => {
+                    if (l.vencido || !l.fecha_caducidad) return;
+                    const d = new Date(l.fecha_caducidad);
+                    if (isNaN(d.getTime())) return;
+                    d.setHours(0,0,0,0);
+                    if (d >= now && d <= in7) {
+                        expiring.push({
+                            producto: p.nombre || 'Producto',
+                            id: p.id,
+                            numero: l.numero_lote || 'Sin nro.',
+                            qty: l.cantidad,
+                            exp: l.fecha_caducidad
+                        });
+                    }
+                });
+            });
             const section = document.getElementById('alertsSection');
             const container = document.getElementById('alertsContainer');
             if(!section || !container) return;
-            if(alerts.length === 0){ section.style.display = 'none'; return; }
+            const hasLow = alerts.length > 0;
+            const hasExp = expiring.length > 0;
+            if(!hasLow && !hasExp){ section.style.display = 'none'; return; }
             section.style.display = '';
             container.innerHTML = '';
-            alerts.forEach(a => {
+            const mkRow = (icon, title, html, actionHtml) => {
                 const div = document.createElement('div');
                 div.className = 'alert-item';
                 div.innerHTML = `
                     <div class="alert-info">
-                        <div class="alert-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="alert-icon"><i class="fas ${icon}"></i></div>
                         <div class="alert-details">
-                            <h4>${escapeHtml(a.nombre)}</h4>
-                            <p>Stock actual: ${a.stock} unidades</p>
+                            <h4>${escapeHtml(title)}</h4>
+                            <p>${html}</p>
                         </div>
                     </div>
-                    <div class="alert-actions">
-                        <button class="btn btn-sm btn-warning" onclick="restockProduct('${a.id}')">
-                            <i class="fas fa-plus"></i>
-                            Reabastecer
-                        </button>
-                    </div>`;
-                container.appendChild(div);
+                    <div class="alert-actions">${actionHtml}</div>`;
+                return div;
+            };
+            alerts.forEach(a => {
+                container.appendChild(mkRow(
+                    'fa-exclamation-triangle',
+                    a.nombre,
+                    `Stock actual: ${a.stock} unidades`,
+                    `<button class="btn btn-sm btn-warning" onclick="restockProduct('${a.id}')"><i class="fas fa-plus"></i> Reabastecer</button>`
+                ));
+            });
+            expiring.forEach(l => {
+                container.appendChild(mkRow(
+                    'fa-clock',
+                    l.producto,
+                    `Lote ${l.numero} (${l.qty} uds) vence el ${escapeHtml(l.exp)}`,
+                    `<button class="btn btn-sm btn-secondary" onclick="location.href='../admin/admin_inventory.html'"><i class="fas fa-eye"></i> Ver</button>`
+                ));
             });
         }
 

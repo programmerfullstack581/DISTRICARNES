@@ -12,7 +12,7 @@ $status = isset($_GET['status']) ? trim($_GET['status']) : '';
 $from = isset($_GET['from']) ? trim($_GET['from']) : '';
 $to = isset($_GET['to']) ? trim($_GET['to']) : '';
 
-$query = "SELECT id, paypal_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json, created_at FROM orders_pg";
+$query = "SELECT id, paypal_id, user_email, user_name, status, total, delivery_method, pay_method, address_json, schedule_json, payment_proof, payment_confirmed, created_at FROM orders_pg";
 $where = [];
 $params = [];
 
@@ -44,6 +44,8 @@ while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
     'total' => floatval($row['total']),
     'delivery_method' => $row['delivery_method'],
     'pay_method' => $row['pay_method'],
+    'payment_proof' => $row['payment_proof'],
+    'payment_confirmed' => !empty($row['payment_confirmed']),
     'created_at' => $row['created_at'],
     'address' => $addr,
     'schedule' => $sched,
