@@ -12,14 +12,19 @@
 :root {
     --primary-color: #ff0000;
     --secondary-color: #ff0000;
-    --text-color: #111827;
-    --light-text-color: #6b7280;
-    --background-color: #f5f6f8;
+    --text-color: #2b2620;
+    --light-text-color: #6f675c;
+    --background-color: #faf6f0;
     --card-background: #ffffff;
-    --border-color: #e5e7eb;
-    --shadow-color: rgba(0, 0, 0, 0.08);
-    --gradient-primary: linear-gradient(135deg, #ff0000, #e60000);
-    --gradient-card: linear-gradient(145deg, #ffffff, #fafafa);
+    --border-color: #e9dfd1;
+    --shadow-color: rgba(201, 151, 43, 0.10);
+    --gradient-primary: linear-gradient(135deg, #ff5a2a, #ff0000);
+    --gradient-card: linear-gradient(145deg, #ffffff, #fffaf2);
+    --accent-coral: #ff6a3d;
+    --accent-gold: #c9972b;
+    --bg-cream: #faf6f0;
+    --card-warm: #fffdf8;
+    --border-warm: #e9dfd1;
 }
 
 /* ---------- Variables: OSCURO ---------- */
@@ -42,8 +47,8 @@ body {
     color: var(--text-color);
     transition: background-color .3s ease, color .3s ease;
 }
-html[data-theme="light"] body.bg-black { background: #f5f6f8 !important; }
-html[data-theme="light"] body.text-white { color: #111827 !important; }
+html[data-theme="light"] body.bg-black { background: #faf6f0 !important; }
+html[data-theme="light"] body.text-white { color: #2b2620 !important; }
 html[data-theme="dark"] body.bg-black { background: #000000 !important; }
 html[data-theme="dark"] body.text-white { color: #ffffff !important; }
 
@@ -1162,3 +1167,216 @@ body.header-search-open { overflow: hidden; }
     .header-search-modal { padding: 62px .75rem 0; }
     .header-search-modal-box { max-width: none; }
 }
+
+/* ============================================================
+   MODO CLARO PREMIUM CÁLIDO — DISTRICARNES
+   Paleta cálida: crema + coral + dorado sobre rojo de marca.
+   (Al final del archivo para ganar la cascada en modo claro;
+    el modo oscuro NO se modifica.)
+   ============================================================ */
+
+/* Fondo de página y textos cálidos */
+html[data-theme="light"] body,
+html[data-theme="light"] body.bg-black { background: #faf6f0 !important; }
+html[data-theme="light"] body.text-white { color: #2b2620 !important; }
+
+/* Header con vidrio cálido y borde arena */
+html[data-theme="light"] .header,
+html[data-theme="light"] .mobile-header {
+    background: rgba(255, 250, 242, 0.85) !important;
+    border-bottom: 1px solid #eadfcf !important;
+    box-shadow: 0 4px 24px rgba(120, 90, 40, 0.10) !important;
+}
+html[data-theme="light"] .header .nav-menu,
+html[data-theme="light"] .header .nav-menu a,
+html[data-theme="light"] .ml-icon-btn,
+html[data-theme="light"] .ml-action-link,
+html[data-theme="light"] #cartButton .ml-label,
+html[data-theme="light"] .mobile-toggle { color: #2b2620 !important; }
+html[data-theme="light"] .header .nav-menu a.active,
+html[data-theme="light"] .header .nav-menu a:hover {
+    background: linear-gradient(135deg, #ff5a2a, #ff0000) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 14px rgba(255, 90, 42, 0.30) !important;
+}
+html[data-theme="light"] .header .nav-menu {
+    background: transparent !important;
+    border-color: transparent !important;
+}
+
+/* Iconos del header y barra móvil cálidos */
+html[data-theme="light"] .mh-icon,
+html[data-theme="light"] .header-search-toggle,
+html[data-theme="light"] .dc-theme-toggle {
+    background: #fffdf8 !important;
+    border-color: #e2d6c3 !important;
+    color: #2b2620 !important;
+}
+html[data-theme="light"] .mh-icon:hover,
+html[data-theme="light"] .header-search-toggle:hover { border-color: #ff6a3d !important; color: #ff6a3d !important; }
+html[data-theme="light"] .dc-theme-toggle:hover { border-color: #c9972b !important; color: #c9972b !important; }
+
+/* Drawer móvil cálido */
+html[data-theme="light"] .mobile-drawer,
+html[data-theme="light"] .mobile-drawer .drawer-header { background: #fffdf8 !important; }
+html[data-theme="light"] .drawer-nav a,
+html[data-theme="light"] #drawerUserLogged a {
+    background: #faf5ee !important;
+    border-color: #e9dfd1 !important;
+    color: #2b2620 !important;
+}
+html[data-theme="light"] .drawer-nav a.active,
+html[data-theme="light"] .drawer-nav a:hover {
+    background: linear-gradient(135deg, #ff5a2a, #ff0000) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+/* Botones de acceso: degradado coral → rojo */
+html[data-theme="light"] #authButtons button,
+html[data-theme="light"] #drawerAuthButtons a {
+    background: linear-gradient(135deg, #ff5a2a, #ff0000) !important;
+    border-color: #ff0000 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(255, 90, 42, 0.25) !important;
+}
+html[data-theme="light"] #authButtons button:hover,
+html[data-theme="light"] #drawerAuthButtons a:hover {
+    background: linear-gradient(135deg, #c9972b, #ff5a2a) !important;
+    border-color: #c9972b !important;
+    color: #ffffff !important;
+}
+
+/* Tarjetas y contenedores: blancas sobre crema con sombra cálida */
+html[data-theme="light"] .product-card,
+html[data-theme="light"] .promo-card,
+html[data-theme="light"] .related-card,
+html[data-theme="light"] .offer-card,
+html[data-theme="light"] .card,
+html[data-theme="light"] main .card,
+html[data-theme="light"] .overview-card,
+html[data-theme="light"] .profile-card,
+html[data-theme="light"] .fav-card,
+html[data-theme="light"] .hist-card,
+html[data-theme="light"] .order-card,
+html[data-theme="light"] .testimonial-card,
+html[data-theme="light"] .feature-item,
+html[data-theme="light"] .ubicanos-card,
+html[data-theme="light"] .oferta-item,
+html[data-theme="light"] .review-card {
+    background: #ffffff !important;
+    border-color: #eadfcf !important;
+    box-shadow: 0 10px 26px rgba(120, 90, 40, 0.08) !important;
+}
+
+/* Secciones grandes alternadas en crema */
+html[data-theme="light"] .brand-marquee,
+html[data-theme="light"] .ofertas-especiales,
+html[data-theme="light"] .why-us-section,
+html[data-theme="light"] .values-section-pro,
+html[data-theme="light"] .history-section-pro,
+html[data-theme="light"] .advantages-section-pro,
+html[data-theme="light"] .team-section,
+html[data-theme="light"] .experience-section-ultra,
+html[data-theme="light"] .cta-section,
+html[data-theme="light"] .promociones-section,
+html[data-theme="light"] main.main-content { background-color: #faf6f0 !important; }
+
+/* Títulos y textos cálidos */
+html[data-theme="light"] .product-name,
+html[data-theme="light"] .product-title,
+html[data-theme="light"] .promo-title,
+html[data-theme="light"] .card-title,
+html[data-theme="light"] .card-title a,
+html[data-theme="light"] .card-header h2,
+html[data-theme="light"] .card-header h3,
+html[data-theme="light"] .section-title,
+html[data-theme="light"] .section-title-promo,
+html[data-theme="light"] .page-title,
+html[data-theme="light"] .product-title-large,
+html[data-theme="light"] .products-count,
+html[data-theme="light"] .products-header,
+html[data-theme="light"] .related-title,
+html[data-theme="light"] .offer-name,
+html[data-theme="light"] .product-description-full,
+html[data-theme="light"] .product-model { color: #2b2620 !important; }
+html[data-theme="light"] .product-description,
+html[data-theme="light"] .promo-desc,
+html[data-theme="light"] .card-body,
+html[data-theme="light"] .card-text,
+html[data-theme="light"] .card-footer,
+html[data-theme="light"] .product-meta,
+html[data-theme="light"] .product-rating,
+html[data-theme="light"] .offer-desc,
+html[data-theme="light"] .section-subtitle { color: #6f675c !important; }
+
+/* Precios: terracota / dorado */
+html[data-theme="light"] .product-price,
+html[data-theme="light"] .related-price,
+html[data-theme="light"] .offer-price-new,
+html[data-theme="light"] .price-tag { color: #d9481f !important; }
+html[data-theme="light"] .offer-price-old { color: #b9ab93 !important; }
+
+/* Formularios cálidos */
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select,
+html[data-theme="light"] .form-control,
+html[data-theme="light"] .search-box input,
+html[data-theme="light"] #site-search-sidebar {
+    background-color: #fffdf8 !important;
+    border-color: #ddd2bf !important;
+    color: #2b2620 !important;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder { color: #a89f93 !important; }
+html[data-theme="light"] input:focus,
+html[data-theme="light"] textarea:focus,
+html[data-theme="light"] select:focus {
+    border-color: #ff6a3d !important;
+    box-shadow: 0 0 0 3px rgba(255, 106, 61, 0.16) !important;
+}
+
+/* Footer cálido */
+html[data-theme="light"] .footer,
+html[data-theme="light"] .footer::before { background: #fffdf8 !important; }
+html[data-theme="light"] .footer-column,
+html[data-theme="light"] .footer-column:hover {
+    background: #faf6f0 !important;
+    border-color: #e9dfd1 !important;
+    box-shadow: 0 6px 18px rgba(120, 90, 40, 0.06) !important;
+}
+html[data-theme="light"] .footer-column p,
+html[data-theme="light"] .footer-column li { color: #6f675c !important; }
+html[data-theme="light"] .social-icons a {
+    background: linear-gradient(135deg, #ff5a2a, #ff0000) !important;
+    border-color: #ff0000 !important;
+    color: #ffffff !important;
+}
+html[data-theme="light"] .social-icons a:hover {
+    background: #c9972b !important;
+    border-color: #c9972b !important;
+}
+
+/* Modales y paneles flotantes blancos con bordes arena */
+html[data-theme="light"] #welcomeModal .modal,
+html[data-theme="light"] .chatbot-container,
+html[data-theme="light"] .login-form-card,
+html[data-theme="light"] .register-form-card,
+html[data-theme="light"] .content-section,
+html[data-theme="light"] .swal2-popup.swal2-modal {
+    background: #ffffff !important;
+    border-color: #eadfcf !important;
+}
+html[data-theme="light"] #welcomeModal .modal-header,
+html[data-theme="light"] #welcomeModal .modal-text { color: #2b2620 !important; }
+
+/* Buscador modal cálido */
+html[data-theme="light"] .header-search-modal-form { background: #fffdf8 !important; border-color: #ff5a2a !important; }
+html[data-theme="light"] .header-search-modal-form input { color: #2b2620 !important; }
+
+/* Scrollbar cálido */
+html[data-theme="light"] ::-webkit-scrollbar-track { background: #f0e9dd !important; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #d9c8a8 !important; border-radius: 6px; }
+html[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #c9972b !important; }
