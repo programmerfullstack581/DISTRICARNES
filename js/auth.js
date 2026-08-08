@@ -109,7 +109,7 @@
         }
         try {
             const mhLink = document.getElementById('mhUserLink');
-            if (mhLink) mhLink.href = './perfil.php';
+            if (mhLink) mhLink.href = '/perfil.php';
         } catch (e) {}
 
         // Mostrar mensaje de bienvenida
@@ -242,7 +242,7 @@
             const mhLink = document.getElementById('mhUserLink');
             const mhUserIcon = document.getElementById('mhUserIcon');
             if (mhLink) {
-                mhLink.href = './login/login.php';
+                mhLink.href = '/login/login.php';
                 mhLink.style.backgroundImage = '';
                 mhLink.classList.remove('has-photo');
             }

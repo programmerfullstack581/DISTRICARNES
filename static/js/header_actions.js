@@ -22,6 +22,12 @@
         const opts = (typeof options === 'string') ? { title: options } : (options || {});
         if (!shouldUseModal(opts)) {
           // Evitar recursión infinita llamando a originalFire directamente
+          const toastBgByIcon = {
+            success: '#15803d',
+            error: '#b91c1c',
+            warning: '#b45309',
+            info: '#111827'
+          };
           const mergedOptions = Object.assign({
             toast: true,
             position: opts.position || 'top-end',
@@ -29,7 +35,7 @@
             timerProgressBar: true,
             showConfirmButton: false
           }, opts, {
-            background: '#000000',
+            background: (opts.icon && toastBgByIcon[opts.icon]) ? toastBgByIcon[opts.icon] : '#000000',
             color: '#ffffff'
           });
           return originalFire(mergedOptions);
