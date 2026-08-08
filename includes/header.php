@@ -61,6 +61,11 @@ $bp = $basePath;
                 </a>
             </div>
             <div class="mh-right">
+                <div class="header-search-wrap">
+                    <button type="button" class="header-search-toggle mh-icon" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <a href="<?php echo $bp; ?>/carrito-de-compras/index.php" class="mh-icon mh-cart" aria-label="Carrito">
                     <i class="bi bi-cart"></i>
                     <span class="mh-badge" id="mhCartCount">0</span>
@@ -119,6 +124,11 @@ $bp = $basePath;
 
             <!-- Enlaces rápidos + botón de carrito (siempre visibles) -->
             <div id="quickLinks" class="ml-actions">
+                <div class="header-search-wrap">
+                    <button type="button" class="header-search-toggle" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
                 <a id="cartButton" class="ml-icon-btn ml-icon-bounce" href="<?php echo $bp; ?>/carrito-de-compras/index.php"
                     aria-label="Carrito">
                     <i class="bi bi-cart"></i>
@@ -497,6 +507,18 @@ $bp = $basePath;
         </div>
     <?php echo $headerExtra; ?>
     </header>
+    <!-- Modal de búsqueda: aparece encima del header, alineado donde iba el buscador -->
+    <div class="header-search-modal" id="headerSearchModal" role="dialog" aria-modal="true" aria-label="Buscar productos">
+        <div class="header-search-modal-backdrop" data-search-close></div>
+        <div class="header-search-modal-box">
+            <button type="button" class="header-search-modal-close" data-search-close aria-label="Cerrar búsqueda">&times;</button>
+            <form action="<?php echo $bp; ?>/productos.php" method="get" class="header-search-modal-form">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" name="q" id="headerSearchInput" placeholder="Buscar productos, marcas y más…" autocomplete="off" />
+                <button type="submit" aria-label="Buscar"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
     <!-- Espaciador que compensa el header fijo (altura ajustada por JS) -->
     <div class="header-spacer" aria-hidden="true"></div>
     <script>
@@ -527,6 +549,50 @@ $bp = $basePath;
                 for (var i = 0; i < headerEls.length; i++) {
                     obs.observe(headerEls[i], { childList: true, subtree: true, attributes: true });
                 }
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            function openSearchModal() {
+                var modal = document.getElementById('headerSearchModal');
+                if (!modal) return;
+                modal.classList.add('open');
+                document.body.classList.add('header-search-open');
+                var input = document.getElementById('headerSearchInput');
+                if (input) setTimeout(function () { input.focus(); }, 60);
+                var toggles = document.querySelectorAll('.header-search-toggle');
+                for (var i = 0; i < toggles.length; i++) toggles[i].setAttribute('aria-expanded', 'true');
+            }
+            function closeSearchModal() {
+                var modal = document.getElementById('headerSearchModal');
+                if (!modal) return;
+                modal.classList.remove('open');
+                document.body.classList.remove('header-search-open');
+                var toggles = document.querySelectorAll('.header-search-toggle');
+                for (var i = 0; i < toggles.length; i++) toggles[i].setAttribute('aria-expanded', 'false');
+            }
+            function initSearchModal() {
+                var toggles = document.querySelectorAll('.header-search-toggle');
+                for (var i = 0; i < toggles.length; i++) {
+                    toggles[i].addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openSearchModal();
+                    });
+                }
+                var closeEls = document.querySelectorAll('[data-search-close]');
+                for (var j = 0; j < closeEls.length; j++) {
+                    closeEls[j].addEventListener('click', function () { closeSearchModal(); });
+                }
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') closeSearchModal();
+                });
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initSearchModal);
+            } else {
+                initSearchModal();
             }
         })();
     </script>

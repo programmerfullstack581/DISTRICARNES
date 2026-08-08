@@ -838,7 +838,7 @@ html[data-theme="dark"] .payment-method .title { color: #ffffff !important; }
 html[data-theme="dark"] .payment-method small.muted,
 html[data-theme="dark"] .muted,
 html[data-theme="dark"] .muted-link { color: #9ca3af !important; }
-html[data-theme="dark"] #paypalButtons {
+html[data-theme="dark"] #payuButtons {
     background: #171717 !important;
     border-color: #2a2a2a !important;
 }
@@ -1002,4 +1002,144 @@ html[data-theme="light"] .header .ml-search form {
 html[data-theme="light"] .mh-icon {
     background: rgba(0, 0, 0, 0.05) !important;
     border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ============================================================
+   BUSCADOR TIPO LUPA + MODAL DE BÚSQUEDA
+   La barra central (.ml-search) queda oculta; la lupa está junto
+   al botón de tema (escritorio) y en la barra móvil. Al pulsarla
+   se abre un modal encima del header, alineado donde estaba el
+   buscador central.
+   ============================================================ */
+.ml-search { display: none !important; }
+
+.header-search-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.header-search-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #111111;
+    border: 1px solid #2a2a2a;
+    color: #ffffff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform .2s ease, color .2s ease, border-color .2s ease, background-color .2s ease;
+}
+.header-search-toggle:hover { border-color: #ff0000; color: #ff0000; transform: scale(1.06); }
+.header-search-toggle i { font-size: 1.05rem; line-height: 1; }
+html[data-theme="dark"] .header-search-toggle { background: #1a1a1a; border-color: #333333; color: #ffffff; }
+html[data-theme="light"] .header-search-toggle { background: #ffffff !important; border-color: #d1d5db !important; color: #111827 !important; }
+html[data-theme="light"] .header-search-toggle:hover { border-color: #ff0000 !important; color: #ff0000 !important; }
+/* En la barra móvil toma el estilo de los iconos mh */
+.mobile-header .header-search-toggle.mh-icon { margin: 0; }
+
+/* ---- Modal encima del header ---- */
+.header-search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 76px 1rem 0;
+}
+.header-search-modal.open { display: flex; }
+.header-search-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+.header-search-modal-box {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    animation: dcSearchIn .18s ease;
+}
+@keyframes dcSearchIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.header-search-modal-close {
+    position: absolute;
+    top: -14px;
+    right: -8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #333333;
+    background: #111111;
+    color: #ffffff;
+    font-size: 1.15rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: border-color .2s ease, color .2s ease;
+}
+.header-search-modal-close:hover { border-color: #ff0000; color: #ff0000; }
+html[data-theme="light"] .header-search-modal-close { background: #ffffff !important; border-color: #d1d5db !important; color: #111827 !important; }
+html[data-theme="light"] .header-search-modal-close:hover { border-color: #ff0000 !important; color: #ff0000 !important; }
+
+.header-search-modal-form {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    background: #111111;
+    border: 2px solid #ff0000;
+    border-radius: 999px;
+    padding: 0 .5rem 0 1rem;
+    height: 52px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .6);
+    box-sizing: border-box;
+}
+.header-search-modal-form > i { color: #9ca3af; font-size: 1rem; flex-shrink: 0; }
+.header-search-modal-form input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: .5rem .25rem;
+    outline: none;
+}
+.header-search-modal-form input::placeholder { color: #9ca3af; }
+.header-search-modal-form button {
+    background: #ff0000;
+    color: #ffffff;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+.header-search-modal-form button:hover { background: #cc0000; }
+html[data-theme="dark"] .header-search-modal-form { background: #0d0d0d; border-color: #ff0000; }
+html[data-theme="light"] .header-search-modal-form { background: #ffffff !important; border-color: #ff0000 !important; }
+html[data-theme="light"] .header-search-modal-form input { color: #111827 !important; }
+html[data-theme="light"] .header-search-modal-form input::placeholder { color: #9ca3af !important; }
+
+body.header-search-open { overflow: hidden; }
+
+@media (max-width: 992px) {
+    .header-search-toggle { width: 36px; height: 36px; }
+    .header-search-modal { padding: 62px .75rem 0; }
+    .header-search-modal-box { max-width: none; }
 }
