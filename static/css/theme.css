@@ -956,10 +956,13 @@ html[data-theme="light"] #site-search-sidebar {
     .header-spacer { min-height: 52px; }
 }
 
-/* En móvil solo debe verse la barra móvil: ocultamos el header de
-   escritorio (hasta ahora quedaba como una franja negra vacía). */
+/* En móvil solo debe verse la barra móvil: ocultamos el contenido de
+   escritorio pero NO el .header contenedor, porque dentro vive la barra
+   móvil (.mobile-header). Si se oculta el padre, se pierde el header en
+   móvil. El .header sigue fijo (position: fixed) en todas las pantallas. */
 @media (max-width: 992px) {
-    .header { display: none !important; }
+    .header { display: block !important; }
+    .header .header-content { display: none !important; }
 }
 
 /* ---------- Variante OSCURA ---------- */
