@@ -1041,6 +1041,25 @@ html[data-theme="light"] .header-search-toggle:hover { border-color: #ff0000 !im
 /* En la barra móvil toma el estilo de los iconos mh */
 .mobile-header .header-search-toggle.mh-icon { margin: 0; }
 
+/* ---- Grupo de iconos dentro de la fila del menú (junto a las etiquetas) ---- */
+.nav-icons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+}
+.nav-icons .header-search-toggle {
+    text-decoration: none;
+    padding: 0;
+    box-sizing: border-box;
+}
+.nav-icons a::after { content: none !important; }
+/* En el drawer móvil no se repiten (la barra móvil ya los muestra) */
+.mobile-drawer .nav-icons { display: none !important; }
+@media (min-width: 993px) {
+    .nav-icons .header-search-toggle { margin-left: .25rem; }
+}
+
 /* ---- Modal encima del header ---- */
 .header-search-modal {
     position: fixed;

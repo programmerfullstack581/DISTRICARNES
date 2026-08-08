@@ -124,11 +124,6 @@ $bp = $basePath;
 
             <!-- Enlaces rápidos + botón de carrito (siempre visibles) -->
             <div id="quickLinks" class="ml-actions">
-                <div class="header-search-wrap">
-                    <button type="button" class="header-search-toggle" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
                 <a id="cartButton" class="ml-icon-btn ml-icon-bounce" href="<?php echo $bp; ?>/carrito-de-compras/index.php"
                     aria-label="Carrito">
                     <i class="bi bi-cart"></i>
@@ -293,6 +288,13 @@ $bp = $basePath;
                 <a href="<?php echo $bp; ?>/promociones.php" <?php echo $activeNav === 'ofertas' ? 'class="active"' : ''; ?>>Ofertas</a>
                 <a href="<?php echo $bp; ?>/contacto.php" <?php echo $activeNav === 'contacto' ? 'class="active"' : ''; ?>>Contacto</a>
                 <a href="<?php echo $bp; ?>/sobre_nosotros.php" <?php echo $activeNav === 'nosotros' ? 'class="active"' : ''; ?>>Quienes Somos</a>
+
+                <!-- Lupa + botón de tema claro/oscuro junto a las etiquetas -->
+                <div class="nav-icons">
+                    <a href="<?php echo $bp; ?>/productos.php" class="header-search-toggle" role="button" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
 
 
 
@@ -572,27 +574,27 @@ $bp = $basePath;
                 var toggles = document.querySelectorAll('.header-search-toggle');
                 for (var i = 0; i < toggles.length; i++) toggles[i].setAttribute('aria-expanded', 'false');
             }
-            function initSearchModal() {
-                var toggles = document.querySelectorAll('.header-search-toggle');
-                for (var i = 0; i < toggles.length; i++) {
-                    toggles[i].addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        openSearchModal();
-                    });
+            function handleClick(e) {
+                var toggle = e.target.closest ? e.target.closest('.header-search-toggle') : null;
+                if (toggle) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSearchModal();
+                    return;
                 }
-                var closeEls = document.querySelectorAll('[data-search-close]');
-                for (var j = 0; j < closeEls.length; j++) {
-                    closeEls[j].addEventListener('click', function () { closeSearchModal(); });
+                var close = e.target.closest ? e.target.closest('[data-search-close]') : null;
+                if (close) {
+                    closeSearchModal();
+                    return;
                 }
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') closeSearchModal();
-                });
+                var modal = document.getElementById('headerSearchModal');
+                if (modal && modal.classList.contains('open') && !modal.contains(e.target)) {
+                    closeSearchModal();
+                }
             }
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initSearchModal);
-            } else {
-                initSearchModal();
-            }
+            document.addEventListener('click', handleClick);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeSearchModal();
+            });
         })();
     </script>

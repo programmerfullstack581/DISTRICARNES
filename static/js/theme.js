@@ -110,7 +110,8 @@
   }
 
   function inject() {
-    var desktop = document.getElementById('quickLinks');
+    var navIcons = document.querySelector('.nav-icons');
+    var desktop = navIcons || document.getElementById('quickLinks');
     if (desktop) {
       desktop.insertBefore(makeButton(), desktop.firstChild);
     } else {
