@@ -37,6 +37,26 @@ $bp = $basePath;
             @media (min-width:993px){
                 .mobile-drawer,.mobile-drawer-overlay{display:none !important}
             }
+            /* Escritorio: logo, etiquetas de navegacion y boton de acceso en una sola fila alineada */
+            @media (min-width:993px){
+                .header .header-content{flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:1.5rem}
+                .header .logo{order:1;flex:0 0 auto}
+                .header .nav-menu{order:2;flex:1 1 auto;justify-content:center;align-items:center;flex-wrap:nowrap;width:auto;max-width:none;margin:0;gap:2.75rem;padding:0 1rem;border:none;border-radius:0;background:transparent !important}
+                #quickLinks,#authButtons,.header #userLoggedButtons{order:3;flex:0 0 auto}
+                @media (max-width:1200px){
+                    .header .header-content{gap:0.75rem}
+                    .header .nav-menu{gap:0.75rem}
+                    .header .logo{height:48px}
+                    .header .nav-menu a{padding:0.25rem 0.4rem;font-size:0.95rem}
+                    #authButtons button{padding:0.375rem 0.75rem !important;font-size:0.8rem}
+                }
+                @media (max-width:1100px){
+                    .header .nav-menu{gap:0.5rem}
+                    .header .nav-menu a{padding:0.2rem 0.3rem;font-size:0.9rem}
+                    #authButtons button{padding:0.3rem 0.5rem !important;font-size:0.75rem}
+                    #authButtons button i{font-size:1.1rem}
+                }
+            }
         </style>
         <div class="mobile-header" id="mobileHeader">
             <style>

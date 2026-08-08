@@ -107,7 +107,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userLoggedButtons && userLoggedButtons.parentElement !== drawerContent) drawerContent.appendChild(userLoggedButtons);
       };
       const moveToHeader = () => {
-        if (navMenu && navMenu.parentElement !== header) header.appendChild(navMenu);
+        // El nav de escritorio vive dentro de .header-content para quedar en la
+        // misma fila alineada que el logo y los botones de acceso.
+        if (navMenu && navMenu.parentElement !== headerContent) headerContent.appendChild(navMenu);
         // authButtons y userLoggedButtons viven en header-content originalmente
         if (authButtons && authButtons.parentElement !== headerContent) headerContent.appendChild(authButtons);
         if (userLoggedButtons && userLoggedButtons.parentElement !== headerContent) headerContent.appendChild(userLoggedButtons);
