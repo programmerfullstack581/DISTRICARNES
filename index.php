@@ -1117,38 +1117,13 @@ include __DIR__ . '/includes/header.php';
                     grid-template-columns: 1.1fr 1fr;
                     gap: 24px;
                     align-items: start;
+                    min-width: 0;
                 }
 
                 .contact-info {
                     color: #fff;
                     padding-right: 24px;
                     min-width: 0;
-                }
-
-                @media (max-width: 992px) {
-                    .contact-section {
-                        grid-template-columns: 1fr;
-                    }
-
-                    .contact-form {
-                        margin-left: 0;
-                        margin-right: 0;
-                        max-width: 720px;
-                        width: 100%;
-                    }
-                }
-
-                @media (max-width: 768px) {
-                    .contact-info {
-                        padding-right: 0;
-                        margin-bottom: 1rem;
-                    }
-
-                    .contact-form {
-                        margin: 0 auto;
-                        max-width: 100%;
-                        width: 100%;
-                    }
                 }
 
                 .contact-form {
@@ -1161,6 +1136,7 @@ include __DIR__ . '/includes/header.php';
                     margin-left: auto;
                     max-width: 520px;
                     width: 100%;
+                    box-sizing: border-box;
                 }
 
                 .contact-form h2 {
@@ -1245,10 +1221,37 @@ include __DIR__ . '/includes/header.php';
                     box-shadow: 0 14px 40px rgba(255, 0, 0, 0.22);
                 }
 
-                /* Small screen handling */
+                /* ============================================================
+                   Responsividad del formulario de contacto.
+                   IMPORTANTE: los breakpoints van AL FINAL del bloque para que
+                   (misma especificidad) puedan sobrescribir las reglas base del
+                   formulario que están más arriba.
+                   ============================================================ */
+
+                /* Tablets y pantallas medianas: una sola columna y el formulario
+                   centrado, sin desbordar el ancho disponible. */
+                @media (max-width: 992px) {
+                    .contact-section {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .contact-info {
+                        padding-right: 0;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .contact-form {
+                        margin: 0 auto;
+                        max-width: 640px;
+                        width: 100%;
+                    }
+                }
 
                 @media (max-width: 768px) {
                     .contact-form {
+                        margin: 0 auto;
+                        max-width: 100%;
+                        width: 100%;
                         padding: 1rem;
                         border-radius: 10px;
                     }
