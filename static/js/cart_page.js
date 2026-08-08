@@ -329,7 +329,7 @@
     const btnCheckout = document.getElementById('btnCheckout');
     const btnClear = document.getElementById('btnClear');
     const btnClearHead = document.getElementById('btnClearHead');
-    const btnPayPalQuick = document.getElementById('btnPayPalQuick');
+    const btnPayUQuick = document.getElementById('btnPayUQuick');
     const applyPromoBtn = document.getElementById('applyPromo');
     const promoInput = document.getElementById('promoInput');
     const promoStatus = document.getElementById('promoStatus');
@@ -351,8 +351,8 @@
     if(btnClear) btnClear.addEventListener('click', askClear);
     if(btnClearHead) btnClearHead.addEventListener('click', askClear);
 
-    if (btnPayPalQuick) btnPayPalQuick.addEventListener('click', ()=>{
-      sessionStorage.setItem('preferredPay','paypal');
+    if (btnPayUQuick) btnPayUQuick.addEventListener('click', ()=>{
+      sessionStorage.setItem('preferredPay','payu');
       goCheckout();
     });
     if (applyPromoBtn) applyPromoBtn.addEventListener('click', applyPromoHandler);

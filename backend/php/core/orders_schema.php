@@ -16,6 +16,8 @@ if (!function_exists('ensure_orders_schema')) {
                     id SERIAL PRIMARY KEY,
                     user_id INT NULL,
                     paypal_id VARCHAR(255) NULL,
+                    reference_code VARCHAR(100) NULL,
+                    transaction_id VARCHAR(255) NULL,
                     user_email VARCHAR(255) NULL,
                     user_name VARCHAR(255) NULL,
                     status VARCHAR(32) NOT NULL,
@@ -42,6 +44,8 @@ if (!function_exists('ensure_orders_schema')) {
         $columns = [
             'user_id'          => 'INT NULL',
             'paypal_id'        => 'VARCHAR(255) NULL',
+            'reference_code'   => 'VARCHAR(100) NULL',
+            'transaction_id'   => 'VARCHAR(255) NULL',
             'user_email'       => 'VARCHAR(255) NULL',
             'user_name'        => 'VARCHAR(255) NULL',
             'status'           => "VARCHAR(32) NOT NULL DEFAULT 'PENDING'",

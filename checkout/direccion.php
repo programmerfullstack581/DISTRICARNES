@@ -21,8 +21,6 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Carga dinámica del SDK de PayPal (se inyecta al elegir PayPal) -->
-    <script src="../static/js/paypal_loader.js"></script>
     <script src="../static/js/csrf_client.js"></script>
     <script src="../static/js/theme.js"></script>
 </head>
@@ -986,14 +984,21 @@
             <header style="color: #000000;">Elige cómo pagar</header>
             <div style="color: #000000;" class="content">
                 <div style="font-weight:700; margin:8px 0 6px 0;">Pago instantáneo</div>
-                
+
                 <div class="payment-method">
-                    <input type="radio" name="pay" value="paypal" id="payPaypal" />
-                    <i class="fab fa-paypal" style="font-size:22px; margin-right:8px; color:#003087;"></i>
+                    <input type="radio" name="pay" value="payu" id="payPayU" />
+                    <i class="fas fa-credit-card" style="font-size:22px; margin-right:8px; color:#e85300;"></i>
                     <div>
-                        <div class="title">PayPal</div>
-                        <small class="muted" style="display:block;color:#666">Pago seguro y rápido</small>
+                        <div class="title">PayU</div>
+                        <small class="muted" style="display:block;color:#666">Paga con tarjeta, PSE, Nequi o efectivo</small>
                     </div>
+                </div>
+                <div id="payuButtons" class="hidden" style="margin-top:12px;">
+                    <button id="btnPayU" type="button" class="btn btn-primary"
+                        style="width:100%; background:#e85300; border-color:#e85300; color:#fff; font-weight:700; padding:13px 16px; border-radius:10px; font-size:15px;">
+                        <i class="fas fa-credit-card"></i> Pagar con PayU
+                    </button>
+                    <small style="display:block;color:#666;margin-top:6px;">Serás redirigido a la pasarela segura de PayU para completar el pago.</small>
                 </div>
                 <!--<div class="payment-method">
                     <input type="radio" name="pay" value="gpay" id="payGPay" />
@@ -1003,8 +1008,6 @@
                         <small class="muted" style="display:block;color:#666">Paga con G&nbsp;Pay</small>
                     </div>
                 </div>-->
-
-                <div id="paypalButtons" class="hidden" style="margin-top:12px;"></div>
 
                 <div style="font-weight:700; margin:14px 0 6px 0;">1 día hábil</div>
                 <div class="payment-method" id="nequiMethod">
@@ -1392,294 +1395,112 @@
             document.getElementById('mapFrame').src = `https://maps.google.com/maps?q=${q}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
         }
 
-        // PayPal: usa endpoints backend para crear/capturar y guardar pedido
-        async function loadPayPalSdk() {
-            if (window.paypal) return true;
-            if (window.__paypalLoading) return new Promise((res) => {
-                const i = setInterval(() => {
-                    if (window.paypal) {
-                        clearInterval(i);
-                        res(true);
-                    }
-                }, 120);
-                setTimeout(() => {
-                    clearInterval(i);
-                    res(!!window.paypal);
-                }, 6000);
-            });
+        // PayU (WebCheckout): crea la orden en el backend y redirige a la pasarela.
+        // La confirmación real del pago la hace el backend vía payu_confirmation.php.
+        function ensurePayU() {
+            const el = document.getElementById('payuButtons');
+            if (el) el.classList.remove('hidden');
+        }
+
+        function getCheckoutUser() {
             try {
-                window.__paypalLoading = true;
-                const confRes = await fetch('../backend/php/payments/get_paypal_client.php');
-                const conf = await confRes.json();
-                const clientId = conf.client_id;
-                const currency = conf.currency || 'COP';
-                const components = conf.components || 'buttons';
-                const funding = conf.enable_funding || 'card,venmo,paylater';
-                const script = document.createElement('script');
-                const params = new URLSearchParams({
-                    'client-id': clientId,
-                    currency,
-                    components,
-                    'enable-funding': funding,
-                    intent: 'capture'
-                });
-                script.src = `https://www.paypal.com/sdk/js?${params.toString()}`;
-                script.async = true;
-                script.setAttribute('data-namespace', 'paypal');
-                document.head.appendChild(script);
-                await new Promise((resolve, reject) => {
-                    script.onload = () => resolve(true);
-                    script.onerror = () => reject(new Error('SDK PayPal no cargó'));
-                });
-                return !!window.paypal;
+                const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
+                if (!rawStr) return null;
+                const raw = JSON.parse(rawStr);
+                const u = raw && raw.user ? raw.user : raw;
+                return {
+                    id: u.id_usuario || u.id || 0,
+                    email: u.correo_electronico || u.email || '',
+                    name: u.nombres_completos || u.nombre || u.name || ''
+                };
             } catch (e) {
-                return false;
+                return null;
             }
         }
-        async function saveOrder(capture) {
+
+        async function startPayU() {
+            if (!isLoggedIn()) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Debes iniciar sesión',
+                    text: 'Para pagar con PayU, inicia sesión.',
+                    confirmButtonText: 'Iniciar sesión'
+                }).then(() => {
+                    sessionStorage.setItem('postLoginRedirect', window.location.pathname);
+                    if (typeof window.openAuthModal === 'function') {
+                        window.openAuthModal('login');
+                    } else {
+                        window.location.href = '../login/login.php?returnUrl=' + encodeURIComponent(window.location.pathname);
+                    }
+                });
+                return;
+            }
+            const cartItems = getCart();
+            if (!cartItems.length) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tu carrito está vacío',
+                    text: 'Agrega productos antes de continuar.',
+                    confirmButtonText: 'Ver productos',
+                    confirmButtonColor: '#ff0000'
+                }).then(() => {
+                    window.location.href = '../productos.php';
+                });
+                return;
+            }
+            const btn = document.getElementById('btnPayU');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Redirigiendo a PayU…';
+            }
             try {
-                const items = getCart();
-                const payload = {
-                    paypal_id: (capture && capture.id) || null,
-                    status: (capture && capture.status) || 'COMPLETED',
-                    total: CheckoutState.orderTotal,
-                    delivery: CheckoutState.delivery,
-                    address: CheckoutState.address,
-                    schedule: CheckoutState.schedule,
-                    items,
-                    user: (function() {
-                        try {
-                            const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
-                            if (!rawStr) return null;
-                            const raw = JSON.parse(rawStr);
-                            const u = raw && raw.user ? raw.user : raw;
-                            return {
-                                email: u.correo_electronico || u.email || '',
-                                name: u.nombres_completos || u.nombre || u.name || ''
-                            };
-                        } catch (e) {
-                            return null;
-                        }
-                    })()
-                };
-                const res = await window.dcFetchJson('../backend/php/orders/orders_save.php', {
+                const res = await window.dcFetchJson('../backend/php/payments/create_payu_order.php', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        total: CheckoutState.orderTotal,
+                        delivery: CheckoutState.delivery,
+                        address: CheckoutState.address,
+                        schedule: CheckoutState.schedule,
+                        items: cartItems,
+                        user: getCheckoutUser()
+                    })
                 });
                 const data = await res.json();
-                return data;
+                if (!data || data.ok !== true || !data.checkout) {
+                    const msg = (data && data.error) ? data.error : 'No se pudo iniciar el pago con PayU.';
+                    Swal.fire({ icon: 'error', title: 'No se pudo iniciar el pago', text: msg });
+                    return;
+                }
+                // Construir formulario oculto y enviarlo a PayU (redirige al cliente a la pasarela)
+                const form = document.createElement('form');
+                form.method = data.checkout.method || 'POST';
+                form.action = data.checkout.action;
+                form.style.display = 'none';
+                const fields = data.checkout.fields || {};
+                Object.keys(fields).forEach((k) => {
+                    const inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = k;
+                    inp.value = String(fields[k]);
+                    form.appendChild(inp);
+                });
+                document.body.appendChild(form);
+                form.submit();
             } catch (e) {
-                return {
-                    ok: false,
-                    error: String(e)
-                };
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Pagar con PayU';
+                }
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al iniciar el pago',
+                    text: String(e && e.message ? e.message : e)
+                });
             }
         }
 
-        function ensurePayPal() {
-            const el = document.getElementById('paypalButtons');
-            el.classList.remove('hidden');
-            if (el.dataset.rendered === '1') return;
-            // Cargar SDK si no está presente
-            (async function() {
-                const ok = await loadPayPalSdk();
-                if (!ok || !window.paypal) {
-                    const isBrave = (navigator.brave && (await navigator.brave.isBrave())) || /Brave/i.test(navigator.userAgent);
-                    const text = isBrave ?
-                        'Tu navegador está bloqueando el SDK. En Brave desactiva Shields para localhost o añade una excepción para paypal.com.' :
-                        'Sin conexión o Client ID inválido. Verifica tu Internet y credenciales.';
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'PayPal no cargó',
-                        text
-                    });
-                    return;
-                }
-                paypal.Buttons({
-                    style: {
-                        layout: 'vertical',
-                        color: 'blue',
-                        shape: 'pill',
-                        label: 'paypal'
-                    },
-                    createOrder: async function() {
-                        try {
-                            const res = await fetch('../backend/php/payments/create_paypal_order.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    amount: (CheckoutState.orderTotal || 0).toFixed(2)
-                                })
-                            });
-                            const out = await res.json();
-                            if (out && out.id) return out.id;
-                            throw new Error((out && out.error) || 'No se pudo crear la orden');
-                        } catch (err) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error creando la orden',
-                                text: String(err.message || err)
-                            });
-                            throw err;
-                        }
-                    },
-                    onApprove: async function(data) {
-                        try {
-                            const res = await fetch('../backend/php/payments/capture_paypal_order.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    orderID: data.orderID
-                                })
-                            });
-                            const out = await res.json();
-                            if (out && (out.status === 'COMPLETED' || (out.raw && out.raw.status === 'COMPLETED'))) {
-                                const saved = await saveOrder(out.raw || {
-                                    id: data.orderID,
-                                    status: 'COMPLETED'
-                                });
-                                if (!saved || saved.ok !== true) {
-                                    const msg = (saved && (saved.error || saved.message)) ? (saved.error || saved.message) : 'No se pudo guardar el pedido.';
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Pago completado, pedido no registrado',
-                                        text: msg
-                                    });
-                                    return;
-                                }
-                                const orderId = (saved && saved.order_id) ? saved.order_id : null;
-                                // Enviar factura al correo del usuario (si hay email)
-                                try {
-                                    const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
-                                    const raw = rawStr ? JSON.parse(rawStr) : null;
-                                    const u = raw && raw.user ? raw.user : raw;
-                                    const email = (u && (u.correo_electronico || u.email)) || null;
-                                    if (orderId && email) {
-                                        await window.dcFetchJson('../backend/php/orders/send_invoice_email.php', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({
-                                                order_id: orderId,
-                                                to: email
-                                            })
-                                        });
-                                    }
-                                } catch (e) {}
 
-                                // Mostrar mensaje de éxito y redirigir al inicio
-                                if (orderId) {
-                                    try {
-                                        const key = getCartKey();
-                                        if (key) {
-                                            localStorage.setItem(key, JSON.stringify([]));
-                                            window.dispatchEvent(new CustomEvent('cart:updated', {
-                                                detail: {
-                                                    items: []
-                                                }
-                                            }));
-                                        }
-                                    } catch (e) {}
-
-                                    try {
-                                        markProgressComplete();
-                                    } catch (e) {}
-
-                                    // Enviar factura por correo
-                                    try {
-                                        const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
-                                        const raw = rawStr ? JSON.parse(rawStr) : null;
-                                        const u = raw && raw.user ? raw.user : raw;
-                                        const email = (u && (u.correo_electronico || u.email)) || null;
-                                        if (email) {
-                                            await window.dcFetchJson('../backend/php/orders/send_invoice_email.php', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                    order_id: orderId,
-                                                    to: email
-                                                })
-                                            });
-                                        }
-                                    } catch (e) {
-                                        /* opcional */
-                                    }
-
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: '¡Compra Exitosa!',
-                                        text: 'Tu pedido ha sido procesado correctamente y tu factura fue enviada al correo.',
-                                        confirmButtonText: 'OK',
-                                        confirmButtonColor: '#ff0000',
-                                        allowOutsideClick: false
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            window.location.href = 'https://districarnes-83qm.onrender.com/index.php';
-                                        }
-                                    });
-                                    return;
-                                }
-                                try {
-                                    if (window.PurchaseHistoryStore && orderId) {
-                                        window.PurchaseHistoryStore.record({
-                                            id: orderId,
-                                            method: 'paypal',
-                                            total: CheckoutState.orderTotal,
-                                            items: (getCart() || []).map(i => ({
-                                                title: i.title || i.name,
-                                                price: i.price,
-                                                qty: i.qty || i.quantity || 1
-                                            }))
-                                        });
-                                    }
-                                } catch (e) {}
-                                try {
-                                    const key = getCartKey();
-                                    if (key) {
-                                        localStorage.setItem(key, JSON.stringify([]));
-                                        window.dispatchEvent(new CustomEvent('cart:updated', {
-                                            detail: {
-                                                items: []
-                                            }
-                                        }));
-                                    }
-                                } catch (e) {}
-                            } else {
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'Pago no completado',
-                                    text: 'Verifica tu método de pago.'
-                                });
-                            }
-                        } catch (err) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error al capturar pago',
-                                text: String(err.message || err)
-                            });
-                        }
-                    },
-                    onError: function(err) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de PayPal',
-                            text: String(err)
-                        });
-                    }
-                }).render('#paypalButtons');
-                el.dataset.rendered = '1';
-            })();
-        }
 
         // Eventos
         document.addEventListener('DOMContentLoaded', function() {
@@ -1912,10 +1733,10 @@
             document.querySelectorAll('input[name="pay"]').forEach(r => {
                 r.addEventListener('change', () => {
                     CheckoutState.payMethod = r.value;
-                    if (r.value === 'paypal') {
-                        ensurePayPal();
+                    if (r.value === 'payu') {
+                        ensurePayU();
                     } else {
-                        document.getElementById('paypalButtons').classList.add('hidden');
+                        document.getElementById('payuButtons').classList.add('hidden');
                     }
                     const nequiPanel = document.getElementById('nequiPanel');
                     if (nequiPanel) {
@@ -2009,18 +1830,21 @@
             // Preselección de pago si viene desde el carrito
             try {
                 const pref = sessionStorage.getItem('preferredPay');
-                if (pref === 'paypal') {
-                    const r = document.getElementById('payPaypal');
+                if (pref === 'payu') {
+                    const r = document.getElementById('payPayU');
                     if (r) {
                         r.checked = true;
-                        CheckoutState.payMethod = 'paypal';
-                        ensurePayPal();
+                        CheckoutState.payMethod = 'payu';
+                        ensurePayU();
                     }
                     sessionStorage.removeItem('preferredPay');
                 }
             } catch (e) {
                 /* noop */
             }
+            const btnPayU = document.getElementById('btnPayU');
+            if (btnPayU) btnPayU.addEventListener('click', startPayU);
+
             document.getElementById('finishCheckout').addEventListener('click', async () => {
                 if (!isLoggedIn()) {
                     Swal.fire({
@@ -2065,7 +1889,11 @@
                     });
                     return;
                 }
-                if (CheckoutState.payMethod !== 'paypal') {
+                if (CheckoutState.payMethod === 'payu') {
+                    startPayU();
+                    return;
+                }
+                if (CheckoutState.payMethod !== 'payu') {
                     Swal.fire({
                         icon: 'success',
                         title: 'Pedido confirmado',
@@ -2122,7 +1950,7 @@
                                     /* opcional: el pedido ya quedó registrado */
                                 }
                             }
-                            // Enviar factura por correo también en métodos no‑PayPal
+                            // Enviar factura por correo también en métodos Nequi/Efectivo
                             try {
                                 const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
                                 const raw = rawStr ? JSON.parse(rawStr) : null;
@@ -2161,9 +1989,7 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: '¡Pedido Registrado!',
-                                text: CheckoutState.payMethod === 'paypal'
-                                    ? 'Tu pedido ha sido procesado correctamente y tu factura fue enviada al correo.'
-                                    : 'Tu pedido quedó registrado. Confirmaremos tu pago con el comprobante y te avisaremos.',
+                                text: 'Tu pedido quedó registrado. Confirmaremos tu pago con el comprobante y te avisaremos.',
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: '#ff0000',
                                 allowOutsideClick: false
@@ -2277,7 +2103,7 @@
     </footer>
     <!-- CHAT BOT -->
     <i class="fab fa-cc-mastercard" title="Mastercard" style="font-size:28px;color:#EB001B;margin-right:8px;"></i>
-    <i class="fab fa-cc-paypal" title="PayPal" style="font-size:28px;color:#003087;margin-right:8px;"></i>
+    <i class="fas fa-credit-card" title="PayU" style="font-size:28px;color:#e85300;margin-right:8px;"></i>
     <i class="fab fa-cc-amex" title="American Express" style="font-size:28px;color:#2E77BC;margin-right:8px;"></i>
     <i class="fab fa-cc-discover" title="Discover" style="font-size:28px;color:#FF6000;margin-right:8px;"></i>
     </div>

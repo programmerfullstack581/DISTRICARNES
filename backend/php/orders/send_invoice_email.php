@@ -204,7 +204,9 @@ try {
           metodo_pago = EXCLUDED.metodo_pago
       ");
       
-      $payMethod = $order['pay_method'] ?? ($order['paypal_id'] ? 'PayPal' : 'Efectivo/Nequi');
+      $methodMap = ['paypal'=>'PayPal','payu'=>'PayU','nequi'=>'Nequi','efectivo'=>'Efectivo','efecty'=>'Efectivo'];
+      $rawMethod = strtolower((string)($order['pay_method'] ?? ''));
+      $payMethod = $methodMap[$rawMethod] ?? ($order['paypal_id'] ? 'PayPal' : 'Efectivo/Nequi');
       
       $stmtFactura->execute([
         $orderId,

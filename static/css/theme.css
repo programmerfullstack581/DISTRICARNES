@@ -939,8 +939,8 @@ html[data-theme="light"] #site-search-sidebar {
     transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
 }
 
-.header { z-index: 1050; }
-.mobile-header { z-index: 2000; }
+.header { z-index: 10001; }
+.mobile-header { z-index: 10002; }
 
 /* Espaciador que compensa la altura del header fijo.
    Valores de respaldo mientras JS mide la altura exacta. */

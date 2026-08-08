@@ -88,6 +88,7 @@ if (!function_exists('dc_whatsapp_config')) {
     }
     $methodLabels = [
       'paypal'   => 'PayPal',
+      'payu'     => 'PayU',
       'nequi'    => 'Nequi',
       'efectivo' => 'Efectivo',
       'efecty'   => 'Efectivo',

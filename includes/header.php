@@ -14,7 +14,7 @@ $bp = $basePath;
     <header class="header ">
         <style>
             .header{background:#000; border-bottom:none !important; box-shadow:none !important}
-            .mobile-header{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;background:#000;border-bottom:none;padding:.4rem .5rem;gap:12px;width:100%;box-sizing:border-box;position:sticky;top:0;z-index:2000;min-height:50px}
+            .mobile-header{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;background:#000;border-bottom:none;padding:.4rem .5rem;gap:12px;width:100%;box-sizing:border-box;position:sticky;top:0;z-index:10002;min-height:50px}
             .mh-left,.mh-right{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:nowrap}
             .mh-left{padding-left:.25rem}
             .mh-right{padding-right:.25rem;justify-content:flex-end}

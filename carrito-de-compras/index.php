@@ -705,7 +705,7 @@
                 <div class="summary-row" id="discountRow" style="display:none;"><span>Descuento</span><span id="discount">-$0</span></div>
                 <div class="summary-row summary-total"><span>Total</span><span id="total">$0</span></div>
                 <button id="btnCheckout" class="btn-primary" type="button">Continuar compra</button>
-                <button id="btnPayPalQuick" class="btn-paypal" type="button"><i class="fab fa-paypal"></i> Pagar con PayPal</button>
+                <button id="btnPayUQuick" class="btn-paypal" type="button"><i class="fas fa-credit-card"></i> Pagar con PayU</button>
                 <button id="btnClear" class="btn-secondary" type="button"><i class="fas fa-trash-alt"></i> Vaciar carrito</button>
                 <div class="summary-trust">
                     <span><i class="fas fa-lock"></i> Pago seguro</span>
