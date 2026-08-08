@@ -917,3 +917,86 @@ html[data-theme="light"] #site-search-sidebar {
     border-color: #d1d5db !important;
     color: #111827 !important;
 }
+
+/* ============================================================
+   HEADER FIJO CON EFECTO GLASSMORPHISM — todas las páginas
+   (Va AL FINAL del documento para ganar en la cascada sobre
+    base.css, header_en_general.css y los estilos inline del header.)
+   El header queda FIJO arriba mientras el contenido se desplaza.
+   Un div .header-spacer (inyectado tras </header>) compensa la
+   altura; JS ajusta la altura exacta según sesión y viewport.
+   ============================================================ */
+.header,
+.mobile-header {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin: 0;
+    -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+    backdrop-filter: blur(14px) saturate(150%) !important;
+    transition: background-color .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.header { z-index: 1050; }
+.mobile-header { z-index: 2000; }
+
+/* Espaciador que compensa la altura del header fijo.
+   Valores de respaldo mientras JS mide la altura exacta. */
+.header-spacer {
+    width: 100%;
+    height: 0;
+    min-height: 0;
+}
+@media (min-width: 993px) {
+    .header-spacer { min-height: 96px; }
+}
+@media (max-width: 992px) {
+    .header-spacer { min-height: 52px; }
+}
+
+/* En móvil solo debe verse la barra móvil: ocultamos el header de
+   escritorio (hasta ahora quedaba como una franja negra vacía). */
+@media (max-width: 992px) {
+    .header { display: none !important; }
+}
+
+/* ---------- Variante OSCURA ---------- */
+html[data-theme="dark"] .header,
+html[data-theme="dark"] .mobile-header {
+    background: rgba(8, 8, 8, 0.62) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* ---------- Variante CLARA ---------- */
+html[data-theme="light"] .header,
+html[data-theme="light"] .mobile-header {
+    background: rgba(255, 255, 255, 0.80) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Barra de navegación y buscador translúcidos para que el efecto
+   glass se vea uniforme dentro del header. */
+html[data-theme="dark"] .header .nav-menu {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+html[data-theme="light"] .header .nav-menu {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html[data-theme="dark"] .header .ml-search form {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+html[data-theme="light"] .header .ml-search form {
+    background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Iconos de la barra móvil translúcidos en modo claro */
+html[data-theme="light"] .mh-icon {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}

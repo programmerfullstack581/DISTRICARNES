@@ -31,18 +31,10 @@
     <!-- Header -->
     <header class="header ">
         <style>
-            .header {
-                background: #000;
-                border-bottom: none !important;
-                box-shadow: none !important
-            }
-
             .mobile-header {
                 display: none;
                 align-items: center;
                 justify-content: space-between;
-                background: #000;
-                border-bottom: none;
                 padding: .4rem .5rem;
                 position: sticky;
                 top: 0;
@@ -766,6 +758,39 @@
             </button>
         </div>
     </header>
+    <!-- Espaciador que compensa el header fijo (altura ajustada por JS) -->
+    <div class="header-spacer" aria-hidden="true"></div>
+    <script>
+        (function () {
+            function syncHeaderSpacer() {
+                var spacer = document.querySelector('.header-spacer');
+                if (!spacer) return;
+                var h = 0;
+                var els = document.querySelectorAll('.header, .mobile-header');
+                for (var i = 0; i < els.length; i++) {
+                    var eh = els[i].offsetHeight || 0;
+                    if (eh > 0) h += eh;
+                }
+                spacer.style.minHeight = '0px';
+                spacer.style.height = h + 'px';
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', syncHeaderSpacer);
+            } else {
+                syncHeaderSpacer();
+            }
+            window.addEventListener('load', syncHeaderSpacer);
+            window.addEventListener('resize', syncHeaderSpacer);
+            document.addEventListener('theme:changed', syncHeaderSpacer);
+            if (window.MutationObserver) {
+                var obs = new MutationObserver(function () { syncHeaderSpacer(); });
+                var headerEls = document.querySelectorAll('.header, .mobile-header');
+                for (var i = 0; i < headerEls.length; i++) {
+                    obs.observe(headerEls[i], { childList: true, subtree: true, attributes: true });
+                }
+            }
+        })();
+    </script>
 
 
     <main class="container">
