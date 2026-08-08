@@ -160,15 +160,15 @@ include __DIR__ . '/includes/header.php';
                 return;
             }
             container.innerHTML = favorites.map(item => `
-        <div class="card" style="background:#0b0b0b;border:1px solid #222;border-radius:10px;overflow:hidden;">
+        <div class="card" style="background:var(--dc-surface);border:1px solid var(--dc-border);border-radius:10px;overflow:hidden;">
           <img src="${item.image || './assets/icon/LOGO-DISTRICARNES.png'}" alt="${item.name || 'Producto'}" style="width:100%;height:160px;object-fit:cover;" />
           <div class="card-body" style="padding:12px;">
             <h3 style="margin:0 0 6px;">${item.name || 'Producto'}</h3>
-            <p style="opacity:.8;margin:0 0 10px;">${item.price ? ('$' + item.price) : ''}</p>
+            <p style="opacity:.8;margin:0 0 10px;color:var(--dc-price);font-weight:700;">${item.price ? ('$' + item.price) : ''}</p>
             <small style="opacity:.7;">Agregado: ${item.addedAt ? new Date(item.addedAt).toLocaleString() : ''}</small>
           </div>
           <div class="card-actions" style="padding:12px;display:flex;gap:8px;">
-            <button class="btn-remove" data-id="${item.id}" style="background:#111;color:#fff;border:1px solid #333;border-radius:8px;padding:8px 10px;cursor:pointer;">Quitar</button>
+            <button class="btn-remove" data-id="${item.id}" style="background:var(--dc-surface-2);color:var(--dc-text);border:1px solid var(--dc-border-strong);border-radius:8px;padding:8px 10px;cursor:pointer;">Quitar</button>
           </div>
         </div>
       `).join('');

@@ -21,6 +21,41 @@
     var isInitializing = false;
     var authFailed = false;
 
+    function currentTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+
+    // Estilos del mapa según el tema activo. El modo oscuro se conserva
+    // como referencia; en modo claro se usa una cartografía profesional clara.
+    function getMapStyles() {
+        var dark = currentTheme() === 'dark';
+        if (dark) {
+            return [
+                { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
+                { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
+                { elementType: 'labels.icon', stylers: [{ visibility: 'simplified' }] },
+                { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#1a1a1a' }] },
+                { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0b0b0b' }] },
+                { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#000000' }] },
+                { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#000000' }] },
+                { featureType: 'administrative', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
+                { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+            ];
+        }
+        return [
+            { elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
+            { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
+            { elementType: 'labels.icon', stylers: [{ visibility: 'simplified' }] },
+            { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+            { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#616161' }] },
+            { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#c9dff0' }] },
+            { featureType: 'landscape', elementType: 'geometry', stylers: [{ color: '#f2f2f2' }] },
+            { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#e8e8e8' }] },
+            { featureType: 'administrative', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
+            { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+        ];
+    }
+
     // Google Maps dispara gm_authFailure cuando rechaza la API key:
     // key inválida, referrer no permitido, API no habilitada o sin billing.
     // En vez del cuadro de error gris, degradamos al mapa embebido.
@@ -185,42 +220,8 @@
             center: { lat: lat, lng: lng },
             zoom: 16,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
-            backgroundColor: '#000000',
-            styles: [
-                { elementType: 'labels.text.fill', stylers: [{ color: '#ffffff' }] },
-                { elementType: 'labels.text.stroke', stylers: [{ color: '#000000' }] },
-                { elementType: 'labels.icon', stylers: [{ visibility: 'simplified' }] },
-                {
-                    featureType: 'road',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#1a1a1a' }]
-                },
-                {
-                    featureType: 'water',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#0b0b0b' }]
-                },
-                {
-                    featureType: 'landscape',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#000000' }]
-                },
-                {
-                    featureType: 'poi',
-                    elementType: 'geometry',
-                    stylers: [{ color: '#000000' }]
-                },
-                {
-                    featureType: 'administrative',
-                    elementType: 'labels',
-                    stylers: [{ visibility: 'simplified' }]
-                },
-                {
-                    featureType: 'poi',
-                    elementType: 'labels',
-                    stylers: [{ visibility: 'off' }]
-                }
-            ],
+            backgroundColor: currentTheme() === 'dark' ? '#000000' : '#e8eef2',
+            styles: getMapStyles(),
             streetViewControl: true,
             streetViewControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
             fullscreenControl: true,
@@ -403,6 +404,15 @@
     }
 
     onReady(bootstrap);
+
+    // Re-dibuja el mapa al cambiar de tema (theme.js emite 'theme:changed').
+    if (window.addEventListener) {
+        window.addEventListener('theme:changed', function () {
+            if (window.DistriCarnesMap && typeof window.DistriCarnesMap.reload === 'function') {
+                window.DistriCarnesMap.reload();
+            }
+        });
+    }
 
     window.DistriCarnesMap = {
         init: bootstrap,

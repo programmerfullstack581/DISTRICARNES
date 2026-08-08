@@ -237,18 +237,18 @@ include __DIR__ . '/includes/header.php';
                         return '<div style="margin:6px 0 2px;padding:8px 4px;">' + steps.map((s, i) => {
                             const done = i <= currentIdx;
                             return `<div style="display:flex;align-items:flex-start;gap:10px;padding:3px 0;">
-                                <span style="width:18px;height:18px;border-radius:50%;flex:0 0 18px;margin-top:2px;background:${done ? '#ff0000' : '#2a2a2a'};color:#fff;font-size:.65rem;display:flex;align-items:center;justify-content:center;">${done ? '&#10003;' : (i + 1)}</span>
-                                <span style="color:${done ? '#fff' : '#777'};font-weight:${done ? '700' : '400'};font-size:.85rem;">${s.label}</span>
+                                <span style="width:18px;height:18px;border-radius:50%;flex:0 0 18px;margin-top:2px;background:${done ? '#ff0000' : 'var(--dc-border-strong)'};color:#fff;font-size:.65rem;display:flex;align-items:center;justify-content:center;">${done ? '&#10003;' : (i + 1)}</span>
+                                <span style="color:${done ? 'var(--dc-text)' : 'var(--dc-text-muted)'};font-weight:${done ? '700' : '400'};font-size:.85rem;">${s.label}</span>
                             </div>`;
                         }).join('') + '</div>';
                     }
 
                     if (!orders.length) {
                         container.innerHTML = `
-                            <div style="text-align:center;padding:40px;background:#0b0b0b;border:1px solid #222;border-radius:12px;">
-                                <i class="fas fa-shopping-bag" style="font-size:3rem;color:#444;margin-bottom:15px;display:block;"></i>
+                            <div style="text-align:center;padding:40px;background:var(--dc-surface);border:1px solid var(--dc-border);border-radius:12px;">
+                                <i class="fas fa-shopping-bag" style="font-size:3rem;color:var(--dc-text-faint);margin-bottom:15px;display:block;"></i>
                                 <h3 style="margin-bottom:8px;">No hay compras registradas</h3>
-                                <p style="color:#888;margin-bottom:20px;">Aún no has realizado ninguna compra con esta cuenta.</p>
+                                <p style="color:var(--dc-text-muted);margin-bottom:20px;">Aún no has realizado ninguna compra con esta cuenta.</p>
                                 <a href="./productos.php" class="btn" style="background:#ff0000;color:#fff;padding:10px 25px;border-radius:50px;font-weight:700;text-decoration:none;display:inline-block;">Ir a comprar</a>
                             </div>
                         `;
@@ -257,7 +257,7 @@ include __DIR__ . '/includes/header.php';
                     container.innerHTML = orders.map(order => {
                         const [stLabel, stColor] = orderStatus(order.status);
                         return `
-        <div class="card" style="background:#0b0b0b;border:1px solid #222;border-radius:10px;padding:12px;">
+        <div class="card" style="background:var(--dc-surface);border:1px solid var(--dc-border);border-radius:10px;padding:12px;">
           <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
             <strong>Orden #${order.id || ''}</strong>
             <span style="display:inline-flex;align-items:center;gap:8px;flex-wrap:wrap;">
@@ -278,7 +278,7 @@ include __DIR__ . '/includes/header.php';
           <div class="card-footer" style="margin-top:8px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
             <div><strong>Total:</strong> ${formatCOP(order.total)}</div>
             <div style="display:flex;gap:8px;">
-              ${order.id ? `<a href="backend/php/orders/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid #444;border-radius:6px;color:#fff;text-decoration:none;">Ver factura</a>` : ''}
+              ${order.id ? `<a href="backend/php/orders/order_invoice.php?order_id=${order.id}" class="btn" style="padding:6px 10px;border:1px solid var(--dc-border-strong);border-radius:6px;color:var(--dc-text);text-decoration:none;">Ver factura</a>` : ''}
             </div>
           </div>
         </div>`;

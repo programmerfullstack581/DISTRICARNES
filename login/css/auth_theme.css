@@ -1,0 +1,192 @@
+/* ============================================================
+   DISTRICARNES - Páginas de autenticación (login, registro,
+   restablecer contraseña): tema de aplicación.
+   Sobreescribe los estilos oscuros (incluidos los inline) con
+   los mismos tokens del tema público (theme.css).
+   El modo oscuro se mantiene como referencia visual.
+   ============================================================ */
+
+/* ---------- Fondo y texto base ---------- */
+html[data-theme="light"] {
+    background-color: var(--dc-bg, #faf6f0);
+}
+
+html[data-theme="light"] body {
+    background: var(--dc-bg, #faf6f0) !important;
+    color: var(--dc-text, #2b2620) !important;
+    text-shadow: none !important;
+}
+
+html[data-theme="light"] label,
+html[data-theme="light"] .form-label,
+html[data-theme="light"] .login-form-card .form-label,
+html[data-theme="light"] .register-form-card .form-label {
+    color: var(--dc-text, #2b2620) !important;
+}
+
+/* ---------- Tarjeta del formulario (login y registro) ---------- */
+html[data-theme="light"] .login-form-card,
+html[data-theme="light"] .register-form-card {
+    background: var(--dc-surface, #ffffff) !important;
+    box-shadow: 0 12px 32px var(--dc-shadow, rgba(120, 90, 40, 0.08)) !important;
+    border: 1px solid var(--dc-border, #e9dfd1) !important;
+}
+
+html[data-theme="light"] .login-form-card .form-title,
+html[data-theme="light"] .register-form-card .form-title-main {
+    color: var(--dc-text, #2b2620) !important;
+}
+
+html[data-theme="light"] .login-form-card .form-title .highlight,
+html[data-theme="light"] .register-form-card .form-title-main .highlight {
+    color: var(--dc-primary, #ff0000) !important;
+}
+
+html[data-theme="light"] .login-form-card .form-subtitle,
+html[data-theme="light"] .register-form-card .form-subtitle-main {
+    color: var(--dc-text-muted, #6f675c) !important;
+}
+
+/* ---------- Inputs (superan los estilos inline negros) ---------- */
+html[data-theme="light"] .login-form-card .input-group,
+html[data-theme="light"] .register-form-card .input-group {
+    border-color: var(--dc-border-strong, #ddd2bf) !important;
+}
+
+html[data-theme="light"] .login-form-card .input-group:focus-within,
+html[data-theme="light"] .register-form-card .input-group:focus-within {
+    border-color: var(--dc-primary, #ff0000) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 90, 42, 0.18) !important;
+}
+
+html[data-theme="light"] .login-form-card .input-group .form-control,
+html[data-theme="light"] .register-form-card .input-group .form-control,
+html[data-theme="light"] .login-form-card .form-control,
+html[data-theme="light"] .register-form-card .form-control {
+    background-color: var(--dc-surface-2, #fffdf8) !important;
+    color: var(--dc-text, #2b2620) !important;
+}
+
+html[data-theme="light"] .login-form-card .input-group-text,
+html[data-theme="light"] .register-form-card .input-group-text {
+    background-color: var(--dc-surface-3, #faf5ee) !important;
+    color: var(--dc-text, #2b2620) !important;
+}
+
+html[data-theme="light"] .login-form-card .input-group .bi,
+html[data-theme="light"] .register-form-card .input-group .bi {
+    color: var(--dc-primary, #ff0000) !important;
+}
+
+html[data-theme="light"] .login-form-card .input-group .form-control:focus,
+html[data-theme="light"] .register-form-card .input-group .form-control:focus {
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+html[data-theme="light"] input::placeholder {
+    color: var(--dc-text-faint, #a89f93) !important;
+}
+
+html[data-theme="light"] #celular::placeholder,
+html[data-theme="light"] #celular::-webkit-input-placeholder,
+html[data-theme="light"] #celular::-ms-input-placeholder,
+html[data-theme="light"] #celular::-moz-placeholder {
+    color: var(--dc-text-faint, #a89f93) !important;
+    opacity: 1 !important;
+}
+
+/* ---------- Logo ---------- */
+html[data-theme="light"] .logo-container img {
+    background-color: var(--dc-surface, #ffffff) !important;
+    border: 1px solid var(--dc-border, #e9dfd1) !important;
+    border-radius: 12px !important;
+}
+
+/* ---------- Ojo de contraseña ---------- */
+html[data-theme="light"] .toggle-password {
+    color: var(--dc-text-muted, #6f675c) !important;
+    fill: var(--dc-text-muted, #6f675c) !important;
+}
+
+/* ---------- Botones secundarios y enlaces ---------- */
+html[data-theme="light"] .btn-login-link-custom {
+    background-color: var(--dc-surface-2, #fffdf8) !important;
+    color: var(--dc-text, #2b2620) !important;
+    border-color: var(--dc-border, #e9dfd1) !important;
+}
+
+html[data-theme="light"] .btn-login-link-custom:hover,
+html[data-theme="light"] .btn-login-link-custom:focus {
+    background-color: var(--dc-hover, #f7f1e6) !important;
+    color: var(--dc-primary, #ff0000) !important;
+    border-color: var(--dc-primary, #ff0000) !important;
+}
+
+html[data-theme="light"] .btn-login-custom:hover,
+html[data-theme="light"] .btn-login-custom:focus {
+    background-color: var(--dc-accent, #ff5a2a) !important;
+    color: #ffffff !important;
+}
+
+/* Botón de registro: cancela el hover negro inline (onmouseover) */
+html[data-theme="light"] .btn-register-custom:hover,
+html[data-theme="light"] .btn-register-custom:focus {
+    background-color: var(--dc-accent, #ff5a2a) !important;
+    color: #ffffff !important;
+    border-color: var(--dc-accent, #ff5a2a) !important;
+}
+
+html[data-theme="light"] .form-txt-links a {
+    color: var(--dc-text, #2b2620) !important;
+}
+
+html[data-theme="light"] .form-txt-links a:hover {
+    color: var(--dc-primary, #ff0000) !important;
+}
+
+/* ---------- Página: restablecer contraseña ---------- */
+html[data-theme="light"] .container {
+    background: transparent !important;
+}
+
+html[data-theme="light"] .input-wrap {
+    background: var(--dc-surface-2, #fffdf8) !important;
+    border: 1px solid var(--dc-border, #e9dfd1) !important;
+}
+
+html[data-theme="light"] .input-wrap input {
+    background-color: var(--dc-surface-2, #fffdf8) !important;
+    color: var(--dc-text, #2b2620) !important;
+}
+
+html[data-theme="light"] #email::placeholder {
+    color: var(--dc-text-faint, #a89f93) !important;
+    font-style: italic !important;
+    opacity: 0.9 !important;
+}
+
+html[data-theme="light"] .send-icon {
+    background: var(--dc-surface-2, #fffdf8) !important;
+    border-color: var(--dc-border, #e9dfd1) !important;
+}
+
+/* ---------- Botón de tema en el header de las páginas de acceso ---------- */
+html[data-theme="light"] .login-header .dc-theme-target .dc-theme-toggle,
+html[data-theme="light"] .register-header .dc-theme-target .dc-theme-toggle {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+html[data-theme="dark"] .login-header .dc-theme-target .dc-theme-toggle,
+html[data-theme="dark"] .register-header .dc-theme-target .dc-theme-toggle {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+html[data-theme] .login-header .dc-theme-target .dc-theme-menu,
+html[data-theme] .register-header .dc-theme-target .dc-theme-menu {
+    right: 0;
+}

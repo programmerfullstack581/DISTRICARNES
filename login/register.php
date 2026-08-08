@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../static/css/responsive.css" />
     <link rel="stylesheet" href="../static/css/base.css" />
     <link rel="stylesheet" href="../static/css/theme.css" />
+    <link rel="stylesheet" href="../login/css/auth_theme.css" />
     <script src="../static/js/theme.js"></script>
     <script src="../static/js/header_actions.js"></script>
     <script src="../static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/../static/js/auth_modal.js') ?>"></script>
@@ -23,6 +24,7 @@
 
 <body style="background-color: black; color: white; text-shadow: 0 0 2px rgba(255,255,255,0.5);">
     <div class="register-header">
+        <span class="dc-theme-target" style="position:absolute;top:50%;right:18px;transform:translateY(-50%);"></span>
         <h1><i class="bi bi-person-plus-fill"></i> Crea tu Cuenta en Districarnes </h1>
         <p class="lead">Regístrate para disfrutas de todos los beneficios de DistriCarnes Hermanos Navarro.</p>
     </div>

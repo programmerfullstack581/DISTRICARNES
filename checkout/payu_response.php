@@ -58,6 +58,7 @@ $esRechazado = in_array($status, ['CANCELLED', 'ERROR'], true);
     <title>Resultado del pago | DISTRICARNES</title>
     <link rel="stylesheet" href="../static/css/base.css" />
     <link rel="stylesheet" href="../static/css/theme.css" />
+    <script src="../static/js/theme.js"></script>
     <link rel="icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>

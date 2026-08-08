@@ -17,11 +17,13 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="stylesheet" href="../static/css/responsive.css" />
     <link rel="stylesheet" href="../static/css/theme.css" />
+    <link rel="stylesheet" href="../login/css/auth_theme.css" />
     <script src="../static/js/theme.js"></script>
 </head>
 
 <body>
     <div class="login-header">
+        <span class="dc-theme-target" style="position:absolute;top:50%;right:18px;transform:translateY(-50%);"></span>
         <h1><i class="bi bi-box-arrow-in-right"></i> Acceso Districarnes </h1>
         <p class="lead">Ingresa tus datos para acceder a tu cuenta y comenzar a comprar en DistriCarnes Hermanos
             Navarro.</p>

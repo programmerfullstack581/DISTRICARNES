@@ -110,6 +110,12 @@
   }
 
   function inject() {
+    // Hosts genéricos (ej. panel administrativo): cualquier elemento
+    // con la clase .dc-theme-target recibe su propio botón de tema.
+    var targets = document.querySelectorAll('.dc-theme-target');
+    for (var ti = 0; ti < targets.length; ti++) {
+      targets[ti].appendChild(makeButton());
+    }
     var navIcons = document.querySelector('.nav-icons');
     var desktop = navIcons || document.getElementById('quickLinks');
     if (desktop) {

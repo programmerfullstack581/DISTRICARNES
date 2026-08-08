@@ -8,6 +8,7 @@
   <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
   <link rel="stylesheet" href="./css/login.css" />
   <link rel="stylesheet" href="../static/css/theme.css" />
+  <link rel="stylesheet" href="./css/auth_theme.css" />
   <script src="../static/js/theme.js"></script>
   <link rel="stylesheet" href="../static/css/responsive.css" />
   <link rel="stylesheet" href="../static/css/base.css" />
@@ -176,7 +177,8 @@
 </head>
 
 <body>
-  <div class="login-header">
+  <div class="login-header" style="position:relative;">
+    <span class="dc-theme-target" style="position:absolute;top:50%;right:18px;transform:translateY(-50%);"></span>
 
     <p class="lead">Ingresa tu dirección de correo electrónico para recibir un enlace para restablecer tu contraseña.
     </p>

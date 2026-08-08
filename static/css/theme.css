@@ -41,6 +41,52 @@ html[data-theme="dark"] {
     --gradient-card: linear-gradient(145deg, #000000, #000000);
 }
 
+/* ============================================================
+   VARIABLES SEMÁNTICAS DE TEMA — DISTRICARNES
+   Estas variables unifican las superficies, bordes y textos para
+   que cualquier componente (incluido HTML generado por JS) pueda
+   adaptarse al tema sin colores hardcodeados.
+   Uso en estilos inline: var(--dc-surface), var(--dc-border), etc.
+   ============================================================ */
+:root {
+    --dc-bg: #faf6f0;
+    --dc-surface: #ffffff;
+    --dc-surface-2: #fffdf8;
+    --dc-surface-3: #faf5ee;
+    --dc-border: #e9dfd1;
+    --dc-border-soft: #f2ece0;
+    --dc-border-strong: #ddd2bf;
+    --dc-text: #2b2620;
+    --dc-text-muted: #6f675c;
+    --dc-text-faint: #a89f93;
+    --dc-primary: #ff0000;
+    --dc-primary-soft: #ff5a2a;
+    --dc-accent: #ff5a2a;
+    --dc-hover: #f7f1e6;
+    --dc-gold: #c9972b;
+    --dc-price: #d9481f;
+    --dc-shadow: rgba(120, 90, 40, 0.08);
+}
+html[data-theme="dark"] {
+    --dc-bg: #000000;
+    --dc-surface: #0b0b0b;
+    --dc-surface-2: #111111;
+    --dc-surface-3: #171717;
+    --dc-border: #222222;
+    --dc-border-soft: #2a2a2a;
+    --dc-border-strong: #333333;
+    --dc-text: #ffffff;
+    --dc-text-muted: #9ca3af;
+    --dc-text-faint: #6b7280;
+    --dc-primary: #ff0000;
+    --dc-primary-soft: #ff5a2a;
+    --dc-accent: #ff3333;
+    --dc-hover: #171717;
+    --dc-gold: #ffd700;
+    --dc-price: #ff6b6b;
+    --dc-shadow: rgba(0, 0, 0, 0.45);
+}
+
 /* ---------- Cuerpo ---------- */
 body {
     background: var(--background-color);
@@ -921,6 +967,24 @@ html[data-theme="light"] #site-search-sidebar {
     background: #ffffff !important;
     border-color: #d1d5db !important;
     color: #111827 !important;
+}
+
+/* ============================================================
+   NAVE GAME — el área del juego permanece oscura en ambos temas
+   (minijuego espacial con visuales neón; solo el header y footer
+   siguen al tema seleccionado)
+   ============================================================ */
+html[data-theme="light"] .navegame-body,
+html[data-theme="light"] .navegame-body .game-page-wrapper,
+html[data-theme="light"] .navegame-body main {
+    background-color: #000000 !important;
+}
+html[data-theme="light"] .navegame-body .game-header-title h1,
+html[data-theme="light"] .navegame-body .game-header-title p,
+html[data-theme="light"] .navegame-body .game-overlay h2,
+html[data-theme="light"] .navegame-body .game-overlay .overlay-sub,
+html[data-theme="light"] .navegame-body .game-hud {
+    color: #ffffff !important;
 }
 
 /* ============================================================
