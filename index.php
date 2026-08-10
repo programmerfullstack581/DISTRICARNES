@@ -313,9 +313,12 @@ include __DIR__ . '/includes/header.php';
 
     <!-- Hero Section  contendio donde va la imagen donde esta el titulo y el carnicero navarro -->
     <section class="hero1section">
-        <!-- FONDO PLEXUS CON PUNTOS Y LÍNEAS (limitado al hero) -->
+        <!-- FONDO VIDEO DE CARNICERÍA (limitado al hero) -->
         <div id="anime-bg">
-            <canvas id="plexus-canvas"></canvas>
+            <video id="hero-video" autoplay muted loop playsinline preload="auto"
+                src="<?php echo $basePath; ?>/assets/icon/video de fondo para carniceria-modo claro y oscuro.mp4">
+                Tu navegador no soporta video HTML5.
+            </video>
             <div class="hero-overlay"></div>
         </div>
         <section id="hero1section"
@@ -375,23 +378,24 @@ include __DIR__ . '/includes/header.php';
             height: 100%;
             z-index: -3;
             overflow: hidden;
-            background: radial-gradient(ellipse at bottom, #1a0f0f 0%, #0a0505 100%);
+            background: #0a0505;
         }
 
-        #plexus-canvas {
+        #hero-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            object-fit: cover;
         }
 
         .hero-overlay {
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(ellipse at 30% 50%, rgba(204, 0, 0, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 70%, rgba(255, 51, 51, 0.1) 0%, transparent 50%);
+                radial-gradient(ellipse at 30% 50%, rgba(0, 0, 0, 0.25) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 70%, rgba(0, 0, 0, 0.35) 0%, transparent 55%);
             z-index: -2;
             pointer-events: none;
         }
@@ -411,23 +415,23 @@ include __DIR__ . '/includes/header.php';
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.45);
             z-index: -1;
         }
 
-        /* --- Adaptación de la esfera y el hero al modo claro --- */
+        /* --- Adaptación del video y el hero al modo claro --- */
         html[data-theme="light"] #anime-bg {
-            background: radial-gradient(ellipse at bottom, #fff0ef 0%, #ffffff 100%) !important;
+            background: #ffffff !important;
         }
 
         html[data-theme="light"] .hero-overlay {
             background:
-                radial-gradient(ellipse at 30% 50%, rgba(204, 0, 0, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 70% 70%, rgba(255, 51, 51, 0.06) 0%, transparent 50%);
+                radial-gradient(ellipse at 30% 50%, rgba(0, 0, 0, 0.12) 0%, transparent 55%),
+                radial-gradient(ellipse at 70% 70%, rgba(0, 0, 0, 0.18) 0%, transparent 55%);
         }
 
         html[data-theme="light"] .hero1section::before {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.4);
         }
 
         html[data-theme="light"] .hero1section h1,
@@ -464,284 +468,6 @@ include __DIR__ . '/includes/header.php';
         (function () {
           'use strict';
 
-          var canvas, ctx, W = 0, H = 0, DPR = 1;
-          var POINTS = 520;
-          var FOCAL = 4;               // perspectiva
-          var autoYaw = 0;
-          var pitchBase = 0;
-          var yawMouse = 0, pitchMouse = 0;
-          var cursorX = 0, cursorY = 0, cursorActive = false;
-          var energy = 0;              // pulso de energía (flash)
-          var rafId = null;
-          var rings = [];
-
-          var pts = [];    // puntos en la esfera (unit)
-          var edges = [];  // conexiones precalculadas {a, b, d}
-          var THRESH = 0;
-          var rx = [], ry = [], rz = [];
-          var px = [], py = [], scale = [];
-
-          function random(min, max) { return min + Math.random() * (max - min); }
-
-          // Paleta de colores de la esfera según el tema (se relee cada frame,
-          // así el cambio claro/oscuro se refleja al instante sin recargar).
-          function isDarkTheme() {
-            return document.documentElement.getAttribute('data-theme') === 'dark';
-          }
-
-          function palette() {
-            return isDarkTheme() ? {
-              glow: [255, 51, 51],
-              glowMid: [220, 20, 60],
-              line: [255, 45, 45],
-              point: [255, 120, 120],
-              glint: [255, 255, 255],
-              ring: [255, 80, 80]
-            } : {
-              glow: [220, 38, 38],
-              glowMid: [153, 27, 27],
-              line: [200, 35, 35],
-              point: [239, 68, 68],
-              glint: [127, 29, 29],
-              ring: [190, 30, 30]
-            };
-          }
-
-          function rgbaC(c, a) {
-            return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a.toFixed(3) + ')';
-          }
-
-          function buildSphere() {
-            // Distribución uniforme de puntos sobre la esfera (espiral de Fibonacci)
-            var golden = Math.PI * (3 - Math.sqrt(5));
-            pts = [];
-            for (var i = 0; i < POINTS; i++) {
-              var y = 1 - (i / (POINTS - 1)) * 2;
-              var rad = Math.sqrt(Math.max(0, 1 - y * y));
-              var theta = golden * i;
-              pts.push({
-                x: Math.cos(theta) * rad,
-                y: y,
-                z: Math.sin(theta) * rad,
-                phase: random(0, Math.PI * 2),
-                size: random(1.2, 2.6)
-              });
-            }
-            // Conexiones: unir puntos cercanos en 3D para formar la telaraña
-            THRESH = 1.9 * Math.sqrt(4 * Math.PI / POINTS);
-            edges = [];
-            for (var a = 0; a < POINTS; a++) {
-              for (var b = a + 1; b < POINTS; b++) {
-                var dx = pts[a].x - pts[b].x;
-                var dy = pts[a].y - pts[b].y;
-                var dz = pts[a].z - pts[b].z;
-                var d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                if (d < THRESH) edges.push({ a: a, b: b, d: d });
-              }
-            }
-          }
-
-          function init() {
-            canvas = document.getElementById('plexus-canvas');
-            if (!canvas) return;
-            ctx = canvas.getContext('2d');
-            DPR = Math.min(window.devicePixelRatio || 1, 1.5);
-
-            var w = window.innerWidth;
-            POINTS = w < 768 ? 400 : w < 1280 ? 540 : 700;
-            buildSphere();
-
-            function resize() {
-              var container = document.querySelector('.hero1section') || document.body;
-              var rect = container.getBoundingClientRect();
-              W = Math.max(rect.width || window.innerWidth, 1);
-              H = Math.max(rect.height || window.innerHeight, 1);
-              canvas.width = W * DPR;
-              canvas.height = H * DPR;
-              canvas.style.width = W + 'px';
-              canvas.style.height = H + 'px';
-              ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            }
-            resize();
-            window.addEventListener('resize', function () {
-              resize();
-            var w2 = window.innerWidth;
-            var n = w2 < 768 ? 400 : w2 < 1280 ? 540 : 700;
-            if (n !== POINTS) { POINTS = n; buildSphere(); }
-            });
-
-            // ---------- Interacción ----------
-            function onMove(e) {
-              var rect = canvas.getBoundingClientRect();
-              var inside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
-              if (!inside) { cursorActive = false; return; }
-              cursorX = e.clientX - rect.left;
-              cursorY = e.clientY - rect.top;
-              cursorActive = true;
-            }
-            document.addEventListener('mousemove', onMove);
-            document.addEventListener('mouseout', function () { cursorActive = false; });
-            document.addEventListener('touchmove', function (e) {
-              var t = e.touches[0];
-              if (!t) return;
-              var rect = canvas.getBoundingClientRect();
-              cursorX = t.clientX - rect.left;
-              cursorY = t.clientY - rect.top;
-              cursorActive = true;
-            }, { passive: true });
-
-            // Clic: pulso de energía + anillo expansivo
-            document.addEventListener('click', function (e) {
-              var rect = canvas.getBoundingClientRect();
-              var x = e.clientX - rect.left;
-              var y = e.clientY - rect.top;
-              energy = 1;
-              rings.push({ x: x, y: y, r: 6, max: random(240, 360), alpha: 0.8, lineW: 2.4, speed: 5.2 });
-            });
-
-            // Refuerzo visual al cerrar el modal de bienvenida
-            window.heroCanvasBurst = function () {
-              energy = 1;
-              rings.push({ x: W / 2, y: H / 2, r: 8, max: Math.max(W, H) * 0.5, alpha: 0.9, lineW: 3, speed: 7 });
-            };
-
-            // ---------- Bucle ----------
-            var prev = performance.now();
-            function loop(now) {
-              rafId = requestAnimationFrame(loop);
-              var dt = Math.min(now - prev, 50) / 16.6667; // normalizado a 60fps
-              prev = now;
-              update(dt);
-              draw();
-            }
-            rafId = requestAnimationFrame(loop);
-
-            document.addEventListener('visibilitychange', function () {
-              if (document.hidden) cancelAnimationFrame(rafId);
-              else { prev = performance.now(); rafId = requestAnimationFrame(loop); }
-            });
-          }
-
-          function update(dt) {
-            autoYaw += 0.0038 * dt;
-            pitchBase = Math.sin(autoYaw * 0.35) * 0.16;
-
-            // La esfera se inclina suavemente hacia el cursor
-            var ty = 0, tp = 0;
-            if (cursorActive) {
-              ty = ((cursorX - W / 2) / Math.max(W, 1)) * 1.1;
-              tp = -((cursorY - H / 2) / Math.max(H, 1)) * 0.7;
-            }
-            yawMouse += (ty - yawMouse) * 0.06 * dt;
-            pitchMouse += (tp - pitchMouse) * 0.06 * dt;
-
-            var yaw = autoYaw + yawMouse;
-            var pitch = pitchBase + pitchMouse;
-            var cosY = Math.cos(yaw), sinY = Math.sin(yaw);
-            var cosP = Math.cos(pitch), sinP = Math.sin(pitch);
-
-            var sRadius = Math.max(W, H) * 0.55;
-            var cx = W / 2, cy = H / 2;
-
-            for (var i = 0; i < POINTS; i++) {
-              var p = pts[i];
-              var x1 = p.x * cosY + p.z * sinY;
-              var z1 = -p.x * sinY + p.z * cosY;
-              var y2 = p.y * cosP - z1 * sinP;
-              var z2 = p.y * sinP + z1 * cosP;
-
-              rx[i] = x1;
-              ry[i] = y2;
-              rz[i] = z2;
-
-              var s = FOCAL / (FOCAL - z2);
-              scale[i] = s;
-              px[i] = cx + x1 * sRadius * s;
-              py[i] = cy + y2 * sRadius * s;
-            }
-
-            if (energy > 0) energy *= 0.94;
-            if (energy < 0.01) energy = 0;
-
-            for (var r = rings.length - 1; r >= 0; r--) {
-              var rg = rings[r];
-              rg.r += rg.speed * dt;
-              rg.alpha *= 0.965;
-              if (rg.r > rg.max || rg.alpha < 0.02) rings.splice(r, 1);
-            }
-          }
-
-          function glow(x, y, r, alpha) {
-            var pal = palette();
-            var g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
-            g.addColorStop(0, rgbaC(pal.glow, alpha));
-            g.addColorStop(0.45, rgbaC(pal.glowMid, alpha * 0.45));
-            g.addColorStop(1, rgbaC(pal.glowMid, 0));
-            ctx.fillStyle = g;
-            ctx.beginPath();
-            ctx.arc(x, y, r * 4, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          function draw() {
-            var pal = palette();
-            var time = performance.now() * 0.001;
-            ctx.clearRect(0, 0, W, H);
-
-            // Halo central suave
-            glow(W / 2, H / 2, Math.min(W, H) * 0.32, isDarkTheme() ? 0.05 : 0.028);
-
-            var eBoost = 0.55 + 0.45 * energy;
-
-            // Conexiones (telaraña de la esfera)
-            for (var e = 0; e < edges.length; e++) {
-              var ed = edges[e];
-              var a = ed.a, b = ed.b;
-              var az = rz[a], bz = rz[b];
-              if (az < -0.28 && bz < -0.28) continue;
-              var depthF = 0.5 + 0.5 * (((az + bz) / 2) + 1) / 2;
-              var alpha = (1 - ed.d / THRESH) * 0.75 * depthF * eBoost;
-              if (alpha < 0.03) continue;
-              ctx.strokeStyle = rgbaC(pal.line, alpha);
-              ctx.lineWidth = 0.7 * depthF;
-              ctx.beginPath();
-              ctx.moveTo(px[a], py[a]);
-              ctx.lineTo(px[b], py[b]);
-              ctx.stroke();
-            }
-
-            // Puntos: los de atrás tenues, los de adelante brillantes
-            for (var i = 0; i < POINTS; i++) {
-              var z = rz[i];
-              var depth2 = (z + 1) / 2; // 0 (atrás) .. 1 (frente)
-              var s = scale[i];
-              var tw = 0.7 + 0.3 * Math.sin(time * 2 + pts[i].phase);
-              var size = pts[i].size * s * (0.7 + 0.5 * depth2);
-              var alpha = (0.25 + 0.75 * depth2) * (0.65 + 0.35 * tw) * (0.75 + 0.25 * energy);
-              glow(px[i], py[i], size, alpha * 0.4);
-              ctx.fillStyle = rgbaC(pal.point, alpha);
-              ctx.beginPath();
-              ctx.arc(px[i], py[i], size, 0, Math.PI * 2);
-              ctx.fill();
-              if (z > 0) {
-                ctx.fillStyle = rgbaC(pal.glint, alpha * 0.8 * depth2);
-                ctx.beginPath();
-                ctx.arc(px[i] - size * 0.3, py[i] - size * 0.3, size * 0.35, 0, Math.PI * 2);
-                ctx.fill();
-              }
-            }
-
-            // Anillos expansivos
-            for (var r = 0; r < rings.length; r++) {
-              var rg = rings[r];
-              ctx.strokeStyle = rgbaC(pal.ring, rg.alpha);
-              ctx.lineWidth = rg.lineW * rg.alpha;
-              ctx.beginPath();
-              ctx.arc(rg.x, rg.y, rg.r, 0, Math.PI * 2);
-              ctx.stroke();
-            }
-          }
-
           // --- Entrada del hero con anime.js (título letra por letra) ---
           function splitLetters(el) {
             var text = el.textContent.replace(/\s+/g, ' ').trim();
@@ -770,7 +496,6 @@ include __DIR__ . '/includes/header.php';
           window.playHeroEntrance = function () {
             if (window.__heroPlayed) return;
             window.__heroPlayed = true;
-            if (window.heroCanvasBurst) window.heroCanvasBurst();
             if (!window.anime) return;
 
             var a = window.anime;
@@ -827,12 +552,6 @@ include __DIR__ . '/includes/header.php';
               });
             }
           };
-
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-          } else {
-            init();
-          }
         })();
     </script>
 
