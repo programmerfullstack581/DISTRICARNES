@@ -119,10 +119,6 @@ include __DIR__ . '/includes/header.php';
                             if (logo) logo.style.display = 'none';
                         } else {
                             document.body.classList.remove('drawer-open');
-                            var ov = document.getElementById('drawerOverlay');
-                            var md = document.getElementById('mobileDrawer');
-                            if (ov) ov.style.display = 'none';
-                            if (md) md.style.display = '';
                             if (ql) ql.style.display = '';
                             if (nav) nav.style.display = '';
                             if (logo) logo.style.display = '';

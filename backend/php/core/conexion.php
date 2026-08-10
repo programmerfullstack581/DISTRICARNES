@@ -7,7 +7,7 @@ if (!defined('BYPASS_SECURITY')) {
 }
 
 // ===============================
-// Configuración de la base de datos
+// Configuración de la base de datos variables de entorno
 // ===============================
 
 // Zona horaria por defecto: Bogotá, Colombia
@@ -46,7 +46,7 @@ if (empty($host) || empty($database) || empty($username) || empty($password)) {
 }
 
 // ===============================
-// Verificar driver PostgreSQL
+// Verificar driver PostgreSQL para la base de datos 
 // ===============================
 
 if (!in_array('pgsql', PDO::getAvailableDrivers(), true)) {
@@ -62,13 +62,13 @@ if (!in_array('pgsql', PDO::getAvailableDrivers(), true)) {
 }
 
 // ===============================
-// Crear conexión con PDO PostgreSQL
+// Crear conexión con PDO PostgreSQL para la base de datos 
 // ===============================
 
 try {
     // DSN para Session Pooler de Supabase
     $dsn = "pgsql:host=$host;port=$port;dbname=$database;sslmode=require";
-    
+
     $conexion = new PDO(
         $dsn,
         $username,
@@ -84,7 +84,6 @@ try {
     $conexion->exec("SET NAMES 'UTF8'");
     // Establecer zona horaria de la sesión de la BD a Colombia
     $conexion->exec("SET TIME ZONE 'America/Bogota'");
-
 } catch (PDOException $e) {
     if (!headers_sent()) {
         header('Content-Type: application/json; charset=utf-8');
@@ -112,5 +111,3 @@ try {
 }
 
 // conexion exitosa a la base de datos districarnes que se encuentra en supabase 
-
-?>
