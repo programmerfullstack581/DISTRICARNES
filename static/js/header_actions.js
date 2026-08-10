@@ -16,6 +16,7 @@
         if (opts.input || opts.html) return true;
         if (opts.confirmButtonText && opts.timer == null) return true;
         if (opts.draggable) return true;
+        if (opts.allowOutsideClick !== undefined) return true;
         return false;
       };
       Swal.fire = function (options, ...rest) {

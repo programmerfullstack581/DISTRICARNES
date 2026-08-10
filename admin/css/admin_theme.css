@@ -868,3 +868,21 @@ html[data-theme="dark"] .sidebar .menu-item.active {
     background: linear-gradient(135deg, #ff0000, #ff5a2a) !important;
     color: #ffffff !important;
 }
+
+/* ============================================================
+   HEADER DEL PANEL ADMIN EN FLUJO NORMAL
+   theme.css fija el header público (`.header { position: fixed !important }`)
+   para el sitio. El panel admin reutiliza la clase `.header` dentro de
+   `.main-content`, donde debe permanecer estático; de lo contrario el
+   header queda flotando y tapa el contenido (tarjetas, tablas, sesión).
+   ============================================================ */
+.main-content .header {
+    position: static !important;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: auto;
+    z-index: auto;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
