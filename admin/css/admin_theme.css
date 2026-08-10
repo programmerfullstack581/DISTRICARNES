@@ -974,3 +974,658 @@ html[data-theme="dark"] .swal2-select,
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* ============================================================
+   MODO OSCURO ELEGANTE — SUPERFICIES EN CAPAS (PANEL ADMIN)
+   Complementa los overrides de modo claro del archivo.
+   Usa los tokens --dc-* definidos en static/css/theme.css, que se
+   carga antes que este archivo. Ganar por especificidad al CSS
+   plano embebido en las páginas del panel.
+   ============================================================ */
+
+/* ---------- Base / layout ---------- */
+html[data-theme="dark"] body,
+html[data-theme="dark"] .main-content {
+    background: var(--dc-bg) !important;
+    color: var(--dc-text) !important;
+}
+
+/* ---------- Sidebar ---------- */
+html[data-theme="dark"] .sidebar {
+    background: var(--dc-surface) !important;
+    border-right: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .sidebar .logo,
+html[data-theme="dark"] .sidebar .logo span {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .sidebar .nav-menu,
+html[data-theme="dark"] .sidebar .menu-items {
+    background: transparent !important;
+}
+html[data-theme="dark"] .sidebar .nav-link,
+html[data-theme="dark"] .sidebar .menu-item {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .sidebar .nav-link i,
+html[data-theme="dark"] .sidebar .menu-item i {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .sidebar .nav-link:hover,
+html[data-theme="dark"] .sidebar .menu-item:hover {
+    background: var(--dc-hover) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .sidebar .nav-link:hover i,
+html[data-theme="dark"] .sidebar .menu-item:hover i {
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .sidebar .nav-link.active,
+html[data-theme="dark"] .sidebar .menu-item.active {
+    background: var(--dc-primary) !important;
+    color: #fff !important;
+}
+html[data-theme="dark"] .sidebar .nav-link.active i,
+html[data-theme="dark"] .sidebar .menu-item.active i {
+    color: #fff !important;
+}
+html[data-theme="dark"] .sidebar .menu-divider {
+    border-color: var(--dc-border) !important;
+}
+
+/* ---------- Barra superior (topbar) ---------- */
+html[data-theme="dark"] .main-content .header {
+    background: var(--dc-surface) !important;
+    border-bottom: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .header .menu-toggle,
+html[data-theme="dark"] .header h1 {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .header .header-actions i,
+html[data-theme="dark"] .header .header-right i,
+html[data-theme="dark"] .header .notifications i {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .header .notification-badge {
+    background: var(--dc-primary) !important;
+    color: #fff !important;
+}
+html[data-theme="dark"] .header .user-info .user-role,
+html[data-theme="dark"] .header .user-profile .user-role,
+html[data-theme="dark"] .header .user-details .user-role {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .header .user-info,
+html[data-theme="dark"] .header .user-profile,
+html[data-theme="dark"] .header .user-details {
+    color: var(--dc-text) !important;
+}
+
+/* ---------- Búsqueda y filtros ---------- */
+html[data-theme="dark"] .search-box {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+}
+html[data-theme="dark"] .search-box input {
+    background: transparent !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .search-box input::placeholder {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .search-box i,
+html[data-theme="dark"] .search-box .icon {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .search-filter-bar,
+html[data-theme="dark"] .filter-bar {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .filter-select,
+html[data-theme="dark"] .filter-input,
+html[data-theme="dark"] .filter select,
+html[data-theme="dark"] .filter input {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .filter-group label,
+html[data-theme="dark"] .filter label {
+    color: var(--dc-text-muted) !important;
+}
+
+/* ---------- Tarjetas de estadísticas ---------- */
+html[data-theme="dark"] .stat-card {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+    box-shadow: var(--dc-shadow-sm) !important;
+}
+html[data-theme="dark"] .stat-card .stat-title,
+html[data-theme="dark"] .stat-card .stat-label,
+html[data-theme="dark"] .stat-card .stat-header {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .stat-card .stat-value {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .stat-change.up,
+html[data-theme="dark"] .trend-up {
+    color: var(--dc-success) !important;
+}
+html[data-theme="dark"] .stat-change.down,
+html[data-theme="dark"] .trend-down {
+    color: var(--dc-danger) !important;
+}
+html[data-theme="dark"] .trend-neutral {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .stat-icon {
+    background: var(--dc-primary-soft) !important;
+    color: var(--dc-primary) !important;
+}
+
+/* ---------- Acciones rápidas ---------- */
+html[data-theme="dark"] .quick-actions .action-btn {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .quick-actions .action-btn i {
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .quick-actions .action-btn:hover {
+    border-color: var(--dc-primary) !important;
+    background: var(--dc-primary-soft) !important;
+}
+
+/* ---------- Botones ---------- */
+html[data-theme="dark"] .btn-primary {
+    background: var(--dc-primary) !important;
+    border-color: var(--dc-primary) !important;
+    color: #fff !important;
+}
+html[data-theme="dark"] .btn-primary:hover {
+    background: var(--dc-primary-hover) !important;
+    border-color: var(--dc-primary-hover) !important;
+}
+html[data-theme="dark"] .btn-secondary,
+html[data-theme="dark"] .action-btn-profile {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .btn-secondary:hover,
+html[data-theme="dark"] .action-btn-profile:hover {
+    border-color: var(--dc-primary) !important;
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .btn-danger {
+    background: rgba(242, 95, 89, 0.12) !important;
+    border: 1px solid rgba(242, 95, 89, 0.4) !important;
+    color: var(--dc-danger) !important;
+}
+html[data-theme="dark"] .btn-danger:hover {
+    background: rgba(242, 95, 89, 0.22) !important;
+}
+html[data-theme="dark"] .btn-success {
+    background: rgba(52, 199, 123, 0.12) !important;
+    border: 1px solid rgba(52, 199, 123, 0.4) !important;
+    color: var(--dc-success) !important;
+}
+html[data-theme="dark"] .btn-success:hover {
+    background: rgba(52, 199, 123, 0.22) !important;
+}
+
+/* ---------- Tablas ---------- */
+html[data-theme="dark"] .table,
+html[data-theme="dark"] .users-table,
+html[data-theme="dark"] .orders-table,
+html[data-theme="dark"] .invoices-table,
+html[data-theme="dark"] .sales-table-container,
+html[data-theme="dark"] .users-table-container,
+html[data-theme="dark"] .table-container,
+html[data-theme="dark"] .table-stats {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .table thead th,
+html[data-theme="dark"] .users-table thead th,
+html[data-theme="dark"] .orders-table thead th,
+html[data-theme="dark"] .invoices-table thead th,
+html[data-theme="dark"] .table-row.header,
+html[data-theme="dark"] .table-row.head {
+    background: var(--dc-surface-2) !important;
+    color: var(--dc-text-muted) !important;
+    border-bottom: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .table tbody td,
+html[data-theme="dark"] .users-table tbody td,
+html[data-theme="dark"] .orders-table tbody td,
+html[data-theme="dark"] .invoices-table tbody td,
+html[data-theme="dark"] .table-row {
+    color: var(--dc-text) !important;
+    border-bottom: 1px solid var(--dc-border-soft) !important;
+}
+html[data-theme="dark"] .table tbody tr:hover,
+html[data-theme="dark"] .users-table tbody tr:hover,
+html[data-theme="dark"] .orders-table tbody tr:hover,
+html[data-theme="dark"] .table-row:hover {
+    background: var(--dc-hover) !important;
+}
+html[data-theme="dark"] .table tbody tr:nth-child(even),
+html[data-theme="dark"] .users-table tbody tr:nth-child(even),
+html[data-theme="dark"] .orders-table tbody tr:nth-child(even) {
+    background: var(--dc-surface-2) !important;
+}
+html[data-theme="dark"] .customer-name,
+html[data-theme="dark"] .item-name,
+html[data-theme="dark"] .product-title,
+html[data-theme="dark"] .product-category {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .customer-email {
+    color: var(--dc-text-muted) !important;
+}
+
+/* ---------- Tarjetas de contenido ---------- */
+html[data-theme="dark"] .product-card,
+html[data-theme="dark"] .inventory-card,
+html[data-theme="dark"] .promotion-card,
+html[data-theme="dark"] .category-card,
+html[data-theme="dark"] .report-card,
+html[data-theme="dark"] .profile-card,
+html[data-theme="dark"] .settings-card {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+    box-shadow: var(--dc-shadow-sm) !important;
+}
+html[data-theme="dark"] .product-card:hover,
+html[data-theme="dark"] .inventory-card:hover,
+html[data-theme="dark"] .promotion-card:hover,
+html[data-theme="dark"] .category-card:hover,
+html[data-theme="dark"] .report-card:hover,
+html[data-theme="dark"] .profile-card:hover,
+html[data-theme="dark"] .settings-card:hover {
+    border-color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .product-card .product-info,
+html[data-theme="dark"] .inventory-card .item-details,
+html[data-theme="dark"] .promotion-card .promotion-details,
+html[data-theme="dark"] .promotion-title,
+html[data-theme="dark"] .promotion-description,
+html[data-theme="dark"] .report-title,
+html[data-theme="dark"] .report-header,
+html[data-theme="dark"] .setting-item {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .product-price,
+html[data-theme="dark"] .item-price,
+html[data-theme="dark"] .lote-price,
+html[data-theme="dark"] .promotion-price {
+    color: var(--dc-price) !important;
+}
+html[data-theme="dark"] .product-stock,
+html[data-theme="dark"] .product-status,
+html[data-theme="dark"] .promotion-status,
+html[data-theme="dark"] .lote-qty,
+html[data-theme="dark"] .lote-exp {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .card-footer,
+html[data-theme="dark"] .profile-footer,
+html[data-theme="dark"] .settings-footer {
+    background: var(--dc-surface) !important;
+    border-top: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .profile-body,
+html[data-theme="dark"] .profile-info,
+html[data-theme="dark"] .info-value,
+html[data-theme="dark"] .detail-value {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .info-label,
+html[data-theme="dark"] .detail-label,
+html[data-theme="dark"] .lotes-title {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .detail-row,
+html[data-theme="dark"] .info-grid {
+    border-color: var(--dc-border-soft) !important;
+}
+
+/* ---------- Detalles de pedido / factura ---------- */
+html[data-theme="dark"] .invoice-detail-section,
+html[data-theme="dark"] .invoice-items-list,
+html[data-theme="dark"] .order-items-list,
+html[data-theme="dark"] .order-details,
+html[data-theme="dark"] .lotes-block {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .invoice-item,
+html[data-theme="dark"] .item-row,
+html[data-theme="dark"] .lote-row {
+    background: var(--dc-surface-2) !important;
+    border-bottom: 1px solid var(--dc-border-soft) !important;
+}
+html[data-theme="dark"] .invoice-id,
+html[data-theme="dark"] .invoice-code,
+html[data-theme="dark"] .invoice-date,
+html[data-theme="dark"] .order-id,
+html[data-theme="dark"] .order-date,
+html[data-theme="dark"] .item-qty,
+html[data-theme="dark"] .item-quantity {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .invoice-total-label {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .invoice-total-value,
+html[data-theme="dark"] .order-total {
+    color: var(--dc-price) !important;
+}
+
+/* ---------- Actividad / alertas ---------- */
+html[data-theme="dark"] .activity-feed,
+html[data-theme="dark"] .alerts-section {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .activity-title,
+html[data-theme="dark"] .alerts-header {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .activity-time {
+    color: var(--dc-text-faint) !important;
+}
+
+/* ---------- Gráficos ---------- */
+html[data-theme="dark"] .chart-container,
+html[data-theme="dark"] .chart-placeholder {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+    color: var(--dc-text-faint) !important;
+}
+
+/* ---------- Formularios ---------- */
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-group input,
+html[data-theme="dark"] .form-group select,
+html[data-theme="dark"] .form-group textarea,
+html[data-theme="dark"] input.form-control,
+html[data-theme="dark"] select.form-control,
+html[data-theme="dark"] textarea.form-control {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] .form-group input::placeholder,
+html[data-theme="dark"] .form-group textarea::placeholder {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-group input:focus,
+html[data-theme="dark"] .form-group select:focus,
+html[data-theme="dark"] .form-group textarea:focus {
+    border-color: var(--dc-primary) !important;
+    box-shadow: 0 0 0 3px var(--dc-ring) !important;
+}
+html[data-theme="dark"] select option {
+    background: var(--dc-surface-2) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .form-group label,
+html[data-theme="dark"] .form-label,
+html[data-theme="dark"] .form-grid label {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .image-upload,
+html[data-theme="dark"] .image-preview {
+    background: var(--dc-surface-2) !important;
+    border: 1px dashed var(--dc-border-strong) !important;
+}
+
+/* ---------- Modales ---------- */
+html[data-theme="dark"] .modal-content {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border) !important;
+    box-shadow: var(--dc-shadow-lg) !important;
+}
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+    background: var(--dc-surface-2) !important;
+    border-color: var(--dc-border) !important;
+}
+html[data-theme="dark"] .modal-title,
+html[data-theme="dark"] .modal-body {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .modal-header .close,
+html[data-theme="dark"] .close-btn {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .modal-header .close:hover,
+html[data-theme="dark"] .close-btn:hover {
+    color: var(--dc-primary) !important;
+}
+
+/* ---------- Menús de usuario ---------- */
+html[data-theme="dark"] .user-dropdown,
+html[data-theme="dark"] .user-info-dropdown {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    box-shadow: var(--dc-shadow-lg) !important;
+}
+html[data-theme="dark"] .user-dropdown a,
+html[data-theme="dark"] .user-info-dropdown a,
+html[data-theme="dark"] .user-dropdown .dropdown-item,
+html[data-theme="dark"] .user-info-dropdown .dropdown-item {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .user-dropdown a:hover,
+html[data-theme="dark"] .user-info-dropdown a:hover,
+html[data-theme="dark"] .user-dropdown .dropdown-item:hover,
+html[data-theme="dark"] .user-info-dropdown .dropdown-item:hover {
+    background: var(--dc-hover) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .user-dropdown .menu-divider,
+html[data-theme="dark"] .user-info-dropdown .menu-divider {
+    border-color: var(--dc-border) !important;
+}
+html[data-theme="dark"] .user-avatar,
+html[data-theme="dark"] .user-avatar-large {
+    background: var(--dc-surface-3) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+}
+
+/* ---------- Paginación ---------- */
+html[data-theme="dark"] .pagination button,
+html[data-theme="dark"] .pagination a {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .pagination button:hover,
+html[data-theme="dark"] .pagination a:hover {
+    border-color: var(--dc-primary) !important;
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .pagination button.active,
+html[data-theme="dark"] .pagination a.active,
+html[data-theme="dark"] .pagination .active {
+    background: var(--dc-primary) !important;
+    border-color: var(--dc-primary) !important;
+    color: #fff !important;
+}
+
+/* ---------- Pestañas ---------- */
+html[data-theme="dark"] .settings-tabs,
+html[data-theme="dark"] .tab-content {
+    background: var(--dc-surface) !important;
+    border-color: var(--dc-border) !important;
+}
+html[data-theme="dark"] .tab-link {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .tab-link:hover {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .tab-link.active {
+    color: var(--dc-primary) !important;
+    border-bottom-color: var(--dc-primary) !important;
+}
+
+/* ---------- Badges de estado ---------- */
+html[data-theme="dark"] .status-active,
+html[data-theme="dark"] .status-completed,
+html[data-theme="dark"] .status-paid,
+html[data-theme="dark"] .status-normal-stock,
+html[data-theme="dark"] .status-scheduled,
+html[data-theme="dark"] .factus-sent {
+    color: var(--dc-success) !important;
+    background: rgba(52, 199, 123, 0.12) !important;
+    border-color: rgba(52, 199, 123, 0.35) !important;
+}
+html[data-theme="dark"] .status-pending,
+html[data-theme="dark"] .status-processing,
+html[data-theme="dark"] .factus-pending {
+    color: var(--dc-warning) !important;
+    background: rgba(242, 166, 58, 0.12) !important;
+    border-color: rgba(242, 166, 58, 0.35) !important;
+}
+html[data-theme="dark"] .status-inactive,
+html[data-theme="dark"] .status-expired,
+html[data-theme="dark"] .status-cancelled,
+html[data-theme="dark"] .status-low-stock,
+html[data-theme="dark"] .factus-error {
+    color: var(--dc-danger) !important;
+    background: rgba(242, 95, 89, 0.12) !important;
+    border-color: rgba(242, 95, 89, 0.35) !important;
+}
+html[data-theme="dark"] .status-badge,
+html[data-theme="dark"] .lowstock-badge,
+html[data-theme="dark"] .expiry-badge,
+html[data-theme="dark"] .lote-tag,
+html[data-theme="dark"] .proof-badge {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text-muted) !important;
+}
+
+/* ---------- Estados vacíos y avisos ---------- */
+html[data-theme="dark"] .empty-state {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .empty-state i {
+    color: var(--dc-text-faint) !important;
+}
+html[data-theme="dark"] .empty-state h3,
+html[data-theme="dark"] .empty-state .title {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .alert-info,
+html[data-theme="dark"] .alert-item {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+}
+html[data-theme="dark"] .alert-details {
+    color: var(--dc-text-muted) !important;
+}
+
+/* ---------- Categorías / título / extras ---------- */
+html[data-theme="dark"] .category-btn {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .category-btn:hover,
+html[data-theme="dark"] .category-btn.active {
+    border-color: var(--dc-primary) !important;
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .page-title,
+html[data-theme="dark"] .export-title,
+html[data-theme="dark"] .table-title,
+html[data-theme="dark"] .table-header,
+html[data-theme="dark"] .section-title,
+html[data-theme="dark"] .card-title {
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .avatar-preview,
+html[data-theme="dark"] .profile-header,
+html[data-theme="dark"] .photo-actions {
+    background: var(--dc-surface-2) !important;
+    border-color: var(--dc-border) !important;
+}
+html[data-theme="dark"] .product-image {
+    background: var(--dc-surface-2) !important;
+}
+
+/* ---------- Botones de acción en línea ---------- */
+html[data-theme="dark"] .btn-view,
+html[data-theme="dark"] .btn-edit,
+html[data-theme="dark"] .btn-email,
+html[data-theme="dark"] .btn-download,
+html[data-theme="dark"] .btn-inline,
+html[data-theme="dark"] .btn-export,
+html[data-theme="dark"] .btn-toggle,
+html[data-theme="dark"] .btn-link {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] .btn-view:hover,
+html[data-theme="dark"] .btn-edit:hover,
+html[data-theme="dark"] .btn-email:hover,
+html[data-theme="dark"] .btn-download:hover,
+html[data-theme="dark"] .btn-inline:hover,
+html[data-theme="dark"] .btn-export:hover,
+html[data-theme="dark"] .btn-toggle:hover,
+html[data-theme="dark"] .btn-link:hover {
+    border-color: var(--dc-primary) !important;
+    color: var(--dc-primary) !important;
+}
+html[data-theme="dark"] .btn-delete {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid rgba(242, 95, 89, 0.4) !important;
+    color: var(--dc-danger) !important;
+}
+html[data-theme="dark"] .btn-delete:hover {
+    background: rgba(242, 95, 89, 0.12) !important;
+    color: var(--dc-danger) !important;
+}
+
+/* ---------- Pantalla de login ---------- */
+html[data-theme="dark"] #loginForm {
+    background: var(--dc-surface) !important;
+    border: 1px solid var(--dc-border) !important;
+    box-shadow: var(--dc-shadow-lg) !important;
+}
+html[data-theme="dark"] #loginForm .input-group-text {
+    background: var(--dc-surface-2) !important;
+    border-color: var(--dc-border-strong) !important;
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] #loginForm .input-group {
+    border-color: var(--dc-border-strong) !important;
+}
+html[data-theme="dark"] #loginForm .form-control,
+html[data-theme="dark"] #loginForm input[type="email"],
+html[data-theme="dark"] #loginForm input[type="password"] {
+    background: var(--dc-surface-2) !important;
+    border: 1px solid var(--dc-border-strong) !important;
+    color: var(--dc-text) !important;
+}
+html[data-theme="dark"] #loginForm .form-label,
+html[data-theme="dark"] #loginForm .form-label label {
+    color: var(--dc-text-muted) !important;
+}
+html[data-theme="dark"] .admin-header p,
+html[data-theme="dark"] .form-section p {
+    color: var(--dc-text-muted) !important;
+}

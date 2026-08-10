@@ -1480,15 +1480,18 @@ html[data-theme="light"] .login-form-card .form-title .highlight,
 html[data-theme="light"] .register-form-card .form-title-main .highlight { color: var(--dc-primary) !important; }
 html[data-theme="light"] .input-group-text { background-color: var(--dc-surface-2) !important; color: var(--dc-text) !important; }
 html[data-theme="light"] .toggle-password { color: var(--dc-text-muted) !important; fill: var(--dc-text-muted) !important; }
-html[data-theme="light"] .btn-admin-custom,
 html[data-theme="light"] .btn-login-link-custom,
-html[data-theme="light"] .btn-phone-custom,
-html[data-theme="light"] .btn-login-custom {
+html[data-theme="light"] .btn-phone-custom {
     background-color: var(--dc-surface) !important;
     color: var(--dc-text) !important;
     border-color: var(--dc-primary) !important;
 }
-html[data-theme="light"] .btn-login-custom:hover { background-color: var(--dc-primary-hover) !important; color: #fff !important; }
+html[data-theme="light"] .btn-login-link-custom:hover,
+html[data-theme="light"] .btn-phone-custom:hover {
+    background-color: var(--dc-primary) !important;
+    color: #fff !important;
+    border-color: var(--dc-primary) !important;
+}
 
 html[data-theme="light"] .content-section h2,
 html[data-theme="light"] .contact-box h3,

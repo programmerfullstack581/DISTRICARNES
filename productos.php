@@ -1047,6 +1047,7 @@ include __DIR__ . '/includes/header.php';
         document.addEventListener('DOMContentLoaded', ensureResponsiveState);
         window.addEventListener('resize', ensureResponsiveState);
     </script>
+    <script src="<?php echo $basePath; ?>/static/js/public_tour.js"></script>
 </body>
 <script src="./static/js/productos.js"></script>
 

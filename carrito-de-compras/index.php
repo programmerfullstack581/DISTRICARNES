@@ -265,6 +265,7 @@
     <script src="../static/js/loader.js" defer></script>
     <script src="../static/js/session_guard.js" defer></script>
     <script src="../static/js/network_guard.js" defer></script>
+    <script src="../static/js/public_tour.js"></script>
 </body>
 
 </html>

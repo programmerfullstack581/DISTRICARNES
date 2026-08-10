@@ -1276,6 +1276,7 @@ include __DIR__ . '/includes/header.php';
     <script src="./static/js/loader.js" defer></script>
     <script src="./static/js/session_guard.js" defer></script>
     <script src="./static/js/network_guard.js" defer></script>
+    <script src="./static/js/onboarding.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var toggle = document.querySelector('.chatbot-toggle');
@@ -1329,6 +1330,7 @@ include __DIR__ . '/includes/header.php';
         document.addEventListener('DOMContentLoaded', ensureResponsiveState);
         window.addEventListener('resize', ensureResponsiveState);
     </script>
+    <script src="<?php echo $basePath; ?>/static/js/public_tour.js"></script>
 </body>
 
 </html>
