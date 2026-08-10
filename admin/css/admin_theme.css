@@ -886,3 +886,68 @@ html[data-theme="dark"] .sidebar .menu-item.active {
     -webkit-backdrop-filter: none !important;
     backdrop-filter: none !important;
 }
+
+/* ============================================================
+   ALERTAS / CONFIRMACIONES SweetAlert2 SIEMPRE OSCURAS EN EL PANEL
+   El panel admin es negro en ambos temas; en modo claro theme.css
+   pinta los popups de blanco y quedan rotos (fondo blanco que se ve
+   encima del fondo negro). Aquí se fuerza el esquema oscuro para los
+   modales y toasts del panel en cualquier tema.
+   ============================================================ */
+html[data-theme="light"] .swal2-container,
+html[data-theme="dark"] .swal2-container,
+.swal2-container { background: rgba(0, 0, 0, 0.7) !important; }
+
+html[data-theme="light"] .swal2-popup.swal2-modal,
+html[data-theme="light"] .swal2-popup.swal2-toast,
+html[data-theme="dark"] .swal2-popup.swal2-modal,
+html[data-theme="dark"] .swal2-popup.swal2-toast,
+.swal2-popup.swal2-modal,
+.swal2-popup.swal2-toast {
+    background: #111111 !important;
+    color: #ffffff !important;
+    border: 1px solid #2a2a2a !important;
+}
+
+html[data-theme="light"] .swal2-title,
+html[data-theme="dark"] .swal2-title,
+html[data-theme="light"] .swal2-toast .swal2-title,
+html[data-theme="dark"] .swal2-toast .swal2-title,
+.swal2-title,
+.swal2-toast .swal2-title { color: #ffffff !important; }
+
+html[data-theme="light"] .swal2-html-container,
+html[data-theme="dark"] .swal2-html-container,
+html[data-theme="light"] .swal2-toast .swal2-html-container,
+html[data-theme="dark"] .swal2-toast .swal2-html-container,
+.swal2-html-container,
+.swal2-toast .swal2-html-container { color: #d1d5db !important; }
+
+html[data-theme="light"] .swal2-close,
+html[data-theme="dark"] .swal2-close,
+.swal2-close { color: #ffffff !important; }
+
+html[data-theme="light"] .swal2-cancel,
+html[data-theme="dark"] .swal2-cancel,
+.swal2-cancel {
+    background: #1f1f1f !important;
+    color: #ffffff !important;
+    border-color: #333333 !important;
+}
+html[data-theme="light"] .swal2-cancel:hover,
+html[data-theme="dark"] .swal2-cancel:hover,
+.swal2-cancel:hover { background: #2a2a2a !important; }
+
+html[data-theme="light"] .swal2-input,
+html[data-theme="light"] .swal2-textarea,
+html[data-theme="light"] .swal2-select,
+html[data-theme="dark"] .swal2-input,
+html[data-theme="dark"] .swal2-textarea,
+html[data-theme="dark"] .swal2-select,
+.swal2-input,
+.swal2-textarea,
+.swal2-select {
+    background: #0f0f0f !important;
+    color: #ffffff !important;
+    border-color: #2a2a2a !important;
+}
