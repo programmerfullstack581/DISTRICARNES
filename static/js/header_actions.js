@@ -394,4 +394,4 @@ function initHeader() {
       else { window.location.href = url; }
     }
   });
-});
+}
