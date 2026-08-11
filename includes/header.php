@@ -27,53 +27,84 @@ $bp = $basePath;
                 border-radius: 0 0 8px 0;
                 transition: top 0.2s ease;
             }
-            .skip-link:focus {
+            .skip-link:focus { top: 0; }
+
+            /* ── Header base ── */
+            .header { border-bottom: none !important; box-shadow: none !important; }
+
+            /* ── Barra móvil ── */
+            .mobile-header {
+                display: none;
+                grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+                align-items: center;
+                border-bottom: none;
+                padding: .4rem .5rem;
+                gap: 12px;
+                width: 100%;
+                box-sizing: border-box;
+                position: sticky;
                 top: 0;
+                z-index: 10002;
+                min-height: 50px;
             }
-        </style>
-            .header{background:#000; border-bottom:none !important; box-shadow:none !important}
-            .mobile-header{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;background:#000;border-bottom:none;padding:.4rem .5rem;gap:12px;width:100%;box-sizing:border-box;position:sticky;top:0;z-index:10002;min-height:50px}
-            .mh-left,.mh-right{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:nowrap}
-            .mh-left{padding-left:.25rem}
-            .mh-right{padding-right:.25rem;justify-content:flex-end}
-            .mh-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:#111;border:1px solid #222}
-            .mh-icon i{font-size:1.2rem}
-            .mh-cart{position:relative}
-            .mh-badge{position:absolute;top:-4px;right:-4px;background:#ff0000;color:#fff;border-radius:999px;font-size:.65rem;padding:2px 6px;line-height:1}
-            @media (max-width:992px){
-                .mobile-header{display:grid}
-                .ml-search{display:none}
-                #quickLinks{display:none}
-                #userLoggedButtons{display:none !important}
-                .nav-menu{display:none}
-                .header .logo{display:none !important}
-                .header .mobile-toggle{display:none !important}
-                .header .header-content{padding:0;margin:0}
+            .mh-left, .mh-right { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: nowrap; }
+            .mh-left  { padding-left: .25rem; }
+            .mh-right { padding-right: .25rem; justify-content: flex-end; }
+            .mh-icon  { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+            .mh-icon i { font-size: 1.2rem; }
+            .mh-cart  { position: relative; }
+            .mh-badge { position: absolute; top: -4px; right: -4px; background: var(--dc-primary, #e8192c); color: #fff; border-radius: 999px; font-size: .65rem; padding: 2px 6px; line-height: 1; }
+
+            @media (max-width: 992px) {
+                .mobile-header   { display: grid; }
+                .ml-search       { display: none; }
+                #quickLinks      { display: none; }
+                #userLoggedButtons { display: none !important; }
+                .nav-menu        { display: none; }
+                .header .logo    { display: none !important; }
+                .header .mobile-toggle { display: none !important; }
+                .header .header-content { padding: 0; margin: 0; }
             }
-            .header-content,.nav-menu,.ml-search{border-bottom:none !important; box-shadow:none !important}
-            .user-avatar.has-photo,.user-avatar-large.has-photo{background-color: transparent !important}
-            @media (min-width:993px){
-                .mobile-drawer,.mobile-drawer-overlay{display:none !important}
-            }
-            /* Escritorio: logo, etiquetas de navegacion y boton de acceso en una sola fila alineada */
-            @media (min-width:993px){
-                .header .header-content{flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:1.5rem}
-                .header .logo{order:1;flex:0 0 auto}
-                .header .nav-menu{order:2;flex:1 1 auto;justify-content:center;align-items:center;flex-wrap:nowrap;width:auto;max-width:none;margin:0;gap:2.75rem;padding:0 1rem;border:none;border-radius:0;background:transparent !important}
-                #quickLinks,#authButtons,.header #userLoggedButtons{order:3;flex:0 0 auto}
-                @media (max-width:1200px){
-                    .header .header-content{gap:0.75rem}
-                    .header .nav-menu{gap:0.75rem}
-                    .header .logo{height:48px}
-                    .header .nav-menu a{padding:0.25rem 0.4rem;font-size:0.95rem}
-                    #authButtons button{padding:0.375rem 0.75rem !important;font-size:0.8rem}
+
+            .header-content, .nav-menu, .ml-search { border-bottom: none !important; box-shadow: none !important; }
+            .user-avatar.has-photo, .user-avatar-large.has-photo { background-color: transparent !important; }
+
+            @media (min-width: 993px) {
+                .mobile-drawer, .mobile-drawer-overlay { display: none !important; }
+
+                /* Escritorio: logo — nav — accesos en una fila */
+                .header .header-content {
+                    flex-wrap: nowrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 1.5rem;
                 }
-                @media (max-width:1100px){
-                    .header .nav-menu{gap:0.5rem}
-                    .header .nav-menu a{padding:0.2rem 0.3rem;font-size:0.9rem}
-                    #authButtons button{padding:0.3rem 0.5rem !important;font-size:0.75rem}
-                    #authButtons button i{font-size:1.1rem}
+                .header .logo { order: 1; flex: 0 0 auto; }
+                .header .nav-menu {
+                    order: 2; flex: 1 1 auto;
+                    justify-content: center; align-items: center;
+                    flex-wrap: nowrap; width: auto; max-width: none;
+                    margin: 0; gap: 2.75rem;
+                    padding: 0 1rem;
+                    border: none; border-radius: 0;
+                    background: transparent !important;
                 }
+                #quickLinks, #authButtons, .header #userLoggedButtons { order: 3; flex: 0 0 auto; }
+            }
+
+            @media (max-width: 1200px) {
+                .header .header-content { gap: 0.75rem; }
+                .header .nav-menu      { gap: 0.75rem; }
+                .header .logo          { height: 48px; }
+                .header .nav-menu a    { padding: 0.25rem 0.4rem; font-size: 0.95rem; }
+                #authButtons button    { padding: 0.375rem 0.75rem !important; font-size: 0.8rem; }
+            }
+
+            @media (max-width: 1100px) {
+                .header .nav-menu   { gap: 0.5rem; }
+                .header .nav-menu a { padding: 0.2rem 0.3rem; font-size: 0.9rem; }
+                #authButtons button { padding: 0.3rem 0.5rem !important; font-size: 0.75rem; }
+                #authButtons button i { font-size: 1.1rem; }
             }
         </style>
         <div class="mobile-header" id="mobileHeader">
