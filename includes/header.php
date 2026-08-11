@@ -71,7 +71,7 @@ $bp = $basePath;
                 }
             </style>
             <div class="mh-left">
-                <button class="mh-icon" aria-label="Menú" onclick="(function(){document.body.classList.add('drawer-open');})()">
+                <button class="mh-icon" aria-label="Menú" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -94,11 +94,11 @@ $bp = $basePath;
                     <i class="far fa-user-circle" id="mhUserIcon"></i>
                 </a>
             </div>
-            <div class="mobile-drawer-overlay" id="drawerOverlay" onclick="(function(){document.body.classList.remove('drawer-open');})()"></div>
+            <div class="mobile-drawer-overlay" id="drawerOverlay"></div>
             <aside class="mobile-drawer" id="mobileDrawer" style="z-index:10000">
                 <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #111;color:#fff">
                     <span>Menú</span>
-                    <button type="button" aria-label="Cerrar" onclick="(function(){document.body.classList.remove('drawer-open');})()" style="background:#111;color:#fff;border:1px solid #222;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center">×</button>
+                    <button type="button" aria-label="Cerrar" id="drawerCloseBtn" style="background:#111;color:#fff;border:1px solid #222;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center">×</button>
                 </div>
                 <style>
                     .mobile-drawer{background:#000;border:1px solid #111;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.6)}
@@ -122,7 +122,7 @@ $bp = $basePath;
                 </div>
                 <div id="drawerUserLogged" style="display:none;padding:8px 12px;gap:10px;flex-direction:column;align-items:stretch">
                     <a href="<?php echo $bp; ?>/perfil.php" style="background:#111;color:#fff;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-user"></i> Mi Perfil</a>
-                    <a href="#" onclick="logout()" style="background:#111;color:#ff6b6b;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                     <a href="#" class="drawer-logout-btn" style="background:#111;color:#ff6b6b;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                 </div>
             </aside>
         </div>
@@ -155,18 +155,14 @@ $bp = $basePath;
                     <a href="<?php echo $bp; ?>/login/login.php" class="block">
                         <button
                             style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
-                            onmouseover="this.style.borderColor='red'; this.style.backgroundColor='black'; this.style.color='white';"
-                            onmouseout="this.style.borderColor='red'; this.style.backgroundColor='red'; this.style.color='white';"
-                            class="bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
+                            class="btn-auth-login bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
                             <i class="bi bi-box-arrow-in-right" style="font-size: 1.5rem;"></i> INICIAR SESIÓN
                         </button>
                     </a>
                     <a href="<?php echo $bp; ?>/login/register.php" class="block">
                         <button
                             style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
-                            onmouseover="this.style.borderColor='red'; this.style.backgroundColor='black'; this.style.color='white';"
-                            onmouseout="this.style.borderColor='red'; this.style.backgroundColor='red'; this.style.color='white';"
-                            class="bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
+                            class="btn-auth-register bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
                             <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i>
                             REGISTRARSE
                         </button>
@@ -178,7 +174,7 @@ $bp = $basePath;
             <!-- Botones para usuario logueado (inicialmente ocultos) -->
             <div id="userLoggedButtons" style="display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
                 <div class="user-profile-container">
-                    <button class="menu-button" onclick="toggleUserDropdown()" aria-expanded="false"
+                    <button class="menu-button" id="userMenuBtn" aria-expanded="false"
                         aria-haspopup="true">
                         <span class="user-avatar" id="userAvatar"></span>
                         <span class="user-name" id="userName"></span>

@@ -799,7 +799,7 @@ include __DIR__ . '/includes/header.php';
     </footer>
 
     <!-- CHAT BOT -->
-    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Abrir chat DISTRICARNES" aria-label="Abrir chat DISTRICARNES">
+    <div class="chatbot-toggle" title="Abrir chat DISTRICARNES" aria-label="Abrir chat DISTRICARNES">
         <i class="fas fa-robot"></i>
     </div>
     <div class="chatbot-container">
@@ -810,7 +810,7 @@ include __DIR__ . '/includes/header.php';
                 <p>Asistente Virtual</p>
                 <p>Tu especialista en carnes premium</p>
             </div>
-            <button class="close-btn" onclick="toggleChatbot()" aria-label="Cerrar chat">
+            <button class="close-btn" aria-label="Cerrar chat">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -842,19 +842,19 @@ include __DIR__ . '/includes/header.php';
         </div>
         <div class="chatbot-input">
             <div class="input-container">
-                <input type="text" class="chat-input" id="userInput" placeholder="¿Qué deseas saber sobre nuestras carnes?" onkeypress="handleKeyPress(event)" autocomplete="off" />
+                <input type="text" class="chat-input" id="userInput" placeholder="¿Qué deseas saber sobre nuestras carnes?" autocomplete="off" />
                 <button class="voice-btn" title="Entrada de voz (No implementado)">
                     <i class="fas fa-microphone"></i>
                 </button>
-                <button class="send-btn" onclick="sendMessage()">
+                <button class="send-btn">
                     <i class="fas fa-paper-plane"></i>
                 </button>
             </div>
             <div class="quick-actions">
-                <button class="quick-action" onclick="handleQuickAction('productos')">
+                <button class="quick-action" data-action="productos">
                     <i class="fas fa-drumstick-bite"></i> Ver Productos
                 </button>
-                <button class="quick-action" onclick="handleQuickAction('horarios')">
+                <button class="quick-action" data-action="horarios">
                     <i class="fas fa-clock"></i> Horarios
                 </button>
                 <button class="quick-action" onclick="handleQuickAction('contacto')">
@@ -1019,34 +1019,6 @@ include __DIR__ . '/includes/header.php';
     <script src="./static/js/loader.js" defer></script>
     <script src="./static/js/session_guard.js" defer></script>
     <script src="./static/js/network_guard.js" defer></script>
-    <script>
-        function ensureResponsiveState() {
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            const isMobile = window.innerWidth <= 992;
-
-            const authButtons = document.getElementById('authButtons');
-            const userLoggedButtons = document.getElementById('userLoggedButtons');
-            const drawerAuth = document.querySelector('.drawer-quicklinks');
-            const drawerUser = document.getElementById('drawerUserLogged');
-
-            if (userData) {
-                // Usuario logueado
-                if (authButtons) authButtons.style.display = 'none';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'flex';
-                if (drawerAuth) drawerAuth.style.display = 'none';
-                if (drawerUser) drawerUser.style.display = 'flex';
-            } else {
-                // Usuario no logueado
-                if (authButtons) authButtons.style.display = 'flex';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'none';
-                if (drawerAuth) drawerAuth.style.display = 'flex';
-                if (drawerUser) drawerUser.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-        window.addEventListener('resize', ensureResponsiveState);
-    </script>
     <script src="<?php echo $basePath; ?>/static/js/public_tour.js"></script>
 </body>
 <script src="./static/js/productos.js"></script>

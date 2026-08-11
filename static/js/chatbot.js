@@ -672,3 +672,41 @@ async function sendMessage() {
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 }
+
+(function initChatbot() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindChatbot);
+  } else {
+    bindChatbot();
+  }
+  function bindChatbot() {
+    var toggle = document.querySelector('.chatbot-toggle');
+    if (toggle && !toggle._dcBound) {
+      toggle._dcBound = true;
+      toggle.addEventListener('click', toggleChatbot);
+    }
+    var closeBtn = document.querySelector('.chatbot-container .close-btn');
+    if (closeBtn && !closeBtn._dcBound) {
+      closeBtn._dcBound = true;
+      closeBtn.addEventListener('click', toggleChatbot);
+    }
+    var sendBtn = document.querySelector('.chatbot-container .send-btn');
+    if (sendBtn && !sendBtn._dcBound) {
+      sendBtn._dcBound = true;
+      sendBtn.addEventListener('click', sendMessage);
+    }
+    var userInput = document.getElementById('userInput');
+    if (userInput && !userInput._dcBound) {
+      userInput._dcBound = true;
+      userInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendMessage(); });
+    }
+    var quickActions = document.querySelectorAll('.chatbot-container .quick-action');
+    quickActions.forEach(function (btn) {
+      if (!btn._dcBound) {
+        btn._dcBound = true;
+        var action = btn.getAttribute('data-action') || btn.textContent.trim().toLowerCase();
+        btn.addEventListener('click', function () { handleQuickAction(action); });
+      }
+    });
+  }
+})();

@@ -73,25 +73,3 @@
 
                     
                 </script>
-            <script>
-                (function(){
-                    function ensureResponsiveState(){
-                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
-                        var ql = document.getElementById('quickLinks');
-                        var nav = document.getElementById('navMenu');
-                        var logo = document.querySelector('.header .logo');
-                        if (isMobile) {
-                            if (ql) ql.style.display='none';
-                            if (nav) nav.style.display='none';
-                            if (logo) logo.style.display='none';
-                        } else {
-                            document.body.classList.remove('drawer-open');
-                            if (ql) ql.style.display='';
-                            if (nav) nav.style.display='';
-                            if (logo) logo.style.display='';
-                        }
-                    }
-                    window.addEventListener('resize', ensureResponsiveState);
-                    document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-                })();
-            </script>

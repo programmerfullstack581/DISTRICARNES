@@ -55,7 +55,10 @@
   } catch (e) { /* noop */ }
 })();
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', initHeader);
+if (document.readyState !== 'loading') initHeader();
+
+function initHeader() {
   try {
     const header = document.querySelector('.header');
     const headerContent = document.querySelector('.header .header-content');
@@ -72,82 +75,77 @@ document.addEventListener('DOMContentLoaded', () => {
         headerContent.insertBefore(burger, headerContent.firstChild);
       }
       // Drawer lateral y overlay
-      let drawerOverlay = document.getElementById('mobileDrawerOverlay');
-      if (!drawerOverlay) {
-        drawerOverlay = document.createElement('div');
-        drawerOverlay.id = 'mobileDrawerOverlay';
-        drawerOverlay.className = 'mobile-drawer-overlay';
-        document.body.appendChild(drawerOverlay);
-      }
+      let drawerOverlay = document.getElementById('drawerOverlay');
       let drawer = document.getElementById('mobileDrawer');
-      if (!drawer) {
-        drawer = document.createElement('aside');
-        drawer.id = 'mobileDrawer';
-        drawer.className = 'mobile-drawer';
-        drawer.innerHTML = `
-          <div class="drawer-header">
-            <div class="drawer-grip"></div>
-            <div class="drawer-title">Menú</div>
-            <button class="drawer-close" aria-label="Cerrar"><i class="fas fa-times"></i></button>
-          </div>
-          <div class="drawer-content"></div>
-        `;
-        document.body.appendChild(drawer);
-      }
-      const drawerContent = drawer.querySelector('.drawer-content');
-      const navMenu = header.querySelector('.nav-menu');
-      const authButtons = document.getElementById('authButtons');
-      const userLoggedButtons = document.getElementById('userLoggedButtons');
-      const quickLinks = document.getElementById('quickLinks');
+      if (drawer) {
+        const drawerContent = drawer.querySelector('.drawer-content') || drawer;
+        const navMenu = header.querySelector('.nav-menu');
+        const authButtons = document.getElementById('authButtons');
+        const userLoggedButtons = document.getElementById('userLoggedButtons');
+        const quickLinks = document.getElementById('quickLinks');
 
-      const pageDrawer = document.getElementById('drawerAuthButtons');
-      const moveToDrawer = () => {
-        // Si la página ya trae su propio drawer (con botones de acceso), NO mover el DOM
-        if (!drawerContent || pageDrawer) return;
-        // QuickLinks (carrito) primero, para que sea visible inmediatamente
-        if (quickLinks && quickLinks.parentElement !== drawerContent) {
-          quickLinks.classList.add('drawer-quicklinks');
-          drawerContent.insertBefore(quickLinks, drawerContent.firstChild);
+        const pageDrawer = document.getElementById('drawerAuthButtons');
+        const moveToDrawer = () => {
+          if (!drawerContent || pageDrawer) return;
+          if (quickLinks && quickLinks.parentElement !== drawerContent) {
+            quickLinks.classList.add('drawer-quicklinks');
+            drawerContent.insertBefore(quickLinks, drawerContent.firstChild);
+          }
+          if (navMenu && navMenu.parentElement !== drawerContent) drawerContent.appendChild(navMenu);
+          if (authButtons && authButtons.parentElement !== drawerContent) drawerContent.appendChild(authButtons);
+          if (userLoggedButtons && userLoggedButtons.parentElement !== drawerContent) drawerContent.appendChild(userLoggedButtons);
+        };
+        const moveToHeader = () => {
+          if (navMenu && navMenu.parentElement !== headerContent) headerContent.appendChild(navMenu);
+          if (authButtons && authButtons.parentElement !== headerContent) headerContent.appendChild(authButtons);
+          if (userLoggedButtons && userLoggedButtons.parentElement !== headerContent) headerContent.appendChild(userLoggedButtons);
+          if (quickLinks && quickLinks.parentElement !== headerContent) {
+            quickLinks.classList.remove('drawer-quicklinks');
+            headerContent.appendChild(quickLinks);
+          }
+        };
+        const applyLayout = () => {
+          if (window.matchMedia('(max-width: 992px)').matches) { moveToDrawer(); }
+          else { document.body.classList.remove('drawer-open'); moveToHeader(); }
+        };
+        applyLayout();
+        let rT = null;
+        window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(applyLayout, 120); });
+
+        const menuBtn = header.querySelector('.mobile-header .mh-icon[aria-label="Menú"]') || header.querySelector('#mobileMenuBtn');
+        if (menuBtn && !menuBtn._dcBound) {
+          menuBtn._dcBound = true;
+          menuBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.classList.toggle('drawer-open');
+          });
         }
-        if (navMenu && navMenu.parentElement !== drawerContent) drawerContent.appendChild(navMenu);
-        if (authButtons && authButtons.parentElement !== drawerContent) drawerContent.appendChild(authButtons);
-        if (userLoggedButtons && userLoggedButtons.parentElement !== drawerContent) drawerContent.appendChild(userLoggedButtons);
-      };
-      const moveToHeader = () => {
-        // El nav de escritorio vive dentro de .header-content para quedar en la
-        // misma fila alineada que el logo y los botones de acceso.
-        if (navMenu && navMenu.parentElement !== headerContent) headerContent.appendChild(navMenu);
-        // authButtons y userLoggedButtons viven en header-content originalmente
-        if (authButtons && authButtons.parentElement !== headerContent) headerContent.appendChild(authButtons);
-        if (userLoggedButtons && userLoggedButtons.parentElement !== headerContent) headerContent.appendChild(userLoggedButtons);
-        if (quickLinks && quickLinks.parentElement !== headerContent) {
-          quickLinks.classList.remove('drawer-quicklinks');
-          headerContent.appendChild(quickLinks);
+        if (burger && !burger._dcBound) {
+          burger._dcBound = true;
+          burger.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.body.classList.toggle('drawer-open');
+          });
         }
-      };
-      const applyLayout = () => {
-        if (window.matchMedia('(max-width: 992px)').matches) { moveToDrawer(); }
-        else { document.body.classList.remove('drawer-open'); moveToHeader(); }
-      };
-      applyLayout();
-      let rT = null;
-      window.addEventListener('resize', () => { clearTimeout(rT); rT = setTimeout(applyLayout, 120); });
-      burger.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        document.body.classList.toggle('drawer-open'); 
-      });
-      // Cierre rápido
-      const closeDrawer = () => document.body.classList.remove('drawer-open');
-      const btnClose = drawer.querySelector('.drawer-close');
-      if (btnClose) btnClose.addEventListener('click', closeDrawer);
-      if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
-      document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeDrawer(); });
-      // Cerrar al navegar desde el drawer
-      if (drawerContent) {
-        drawerContent.addEventListener('click', (e) => {
-          const a = e.target.closest('a');
-          if (a && a.getAttribute('href')) { closeDrawer(); }
-        });
+        const closeDrawer = () => document.body.classList.remove('drawer-open');
+        const btnClose = drawer.querySelector('#drawerCloseBtn') || drawer.querySelector('.drawer-close');
+        if (btnClose) btnClose.addEventListener('click', closeDrawer);
+        if (drawerOverlay) drawerOverlay.addEventListener('click', closeDrawer);
+        document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeDrawer(); });
+        if (drawerContent) {
+          drawerContent.addEventListener('click', (e) => {
+            const a = e.target.closest('a');
+            if (a && a.getAttribute('href')) { closeDrawer(); }
+          });
+        }
+        const drawerLogout = drawer.querySelector('.drawer-logout-btn');
+        if (drawerLogout && !drawerLogout._dcBound) {
+          drawerLogout._dcBound = true;
+          drawerLogout.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof window.logout === 'function') window.logout();
+          });
+        }
       }
       // Escuchar cambios en storage para actualizar visibilidad de botones (login vs usuario)
       window.addEventListener('storage', (ev) => {
@@ -382,6 +380,11 @@ document.addEventListener('DOMContentLoaded', () => {
     else if (text.indexOf('configuración') >= 0) { url = '/perfil.php'; tab = 'settings'; }
     else if (text.indexOf('historial') >= 0) { url = '/historial.php'; }
     else if (text.indexOf('favoritos') >= 0) { url = '/favoritos.php'; }
+    else if (text.indexOf('cerrar sesión') >= 0 || link.classList.contains('logout')) {
+      e.preventDefault();
+      if (typeof window.logout === 'function') window.logout();
+      return;
+    }
     if (url) {
       e.preventDefault();
       var dd = document.getElementById('userDropdown');

@@ -138,13 +138,11 @@
 
                     <button
                         style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red; "
-                        onmouseover="this.style.borderColor='red'; this.style.backgroundColor='black'; this.style.color='white';"
-                        onmouseout="this.style.borderColor='red'; this.style.backgroundColor='red'; this.style.color='white';"
                         type="submit" class="btn btn-register-custom" id="registerButton"><i
                             class="bi bi-check-circle-fill"></i>
                         Registrarse
                     </button>
-                    <a href="./login.php" class="btn btn-login-link-custom" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}"><i class="bi bi-box-arrow-in-right"></i> Ya
+                    <a href="./login.php" class="btn btn-login-link-custom btn-open-login-modal"><i class="bi bi-box-arrow-in-right"></i> Ya
                         Tengo Una Cuenta</a>
                 </form>
             </div>
@@ -226,6 +224,21 @@
                         var isHidden = input.type === 'password';
                         input.type = isHidden ? 'text' : 'password';
                         this.textContent = isHidden ? '🔒' : '👁️';
+                    });
+                }
+            })();
+        </script>
+        <script>
+            (function() {
+                var loginLink = document.querySelector('.btn-open-login-modal');
+                if (loginLink) {
+                    loginLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        if (typeof window.openAuthModal === 'function') {
+                            window.openAuthModal('login');
+                        } else {
+                            window.location.href = loginLink.getAttribute('href');
+                        }
                     });
                 }
             })();

@@ -158,7 +158,7 @@
                 }
             </style>
             <div class="mh-left">
-                <button class="mh-icon" aria-label="Menú" onclick="(function(){document.body.classList.add('drawer-open');})()">
+                <button class="mh-icon" aria-label="Menú" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
@@ -176,11 +176,11 @@
                     <i class="far fa-user-circle" id="mhUserIcon"></i>
                 </a>
             </div>
-            <div class="mobile-drawer-overlay" id="drawerOverlay" onclick="(function(){document.body.classList.remove('drawer-open');})()"></div>
+            <div class="mobile-drawer-overlay" id="drawerOverlay"></div>
             <aside class="mobile-drawer" id="mobileDrawer" style="z-index:10000">
                 <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #111;color:#fff">
                     <span>Menú</span>
-                    <button type="button" aria-label="Cerrar" onclick="(function(){document.body.classList.remove('drawer-open');})()" style="background:#111;color:#fff;border:1px solid #222;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center">×</button>
+                    <button type="button" aria-label="Cerrar" id="drawerCloseBtn" style="background:#111;color:#fff;border:1px solid #222;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center">×</button>
                 </div>
                 <style>
                     .mobile-drawer {
@@ -246,7 +246,7 @@
                 </div>
                 <div id="drawerUserLogged" style="display:none;padding:8px 12px;gap:10px;flex-direction:column;align-items:stretch">
                     <a href="../perfil.php" style="background:#111;color:#fff;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-user"></i> Mi Perfil</a>
-                    <a href="#" onclick="logout()" style="background:#111;color:#ff6b6b;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                     <a href="#" class="drawer-logout-btn" style="background:#111;color:#ff6b6b;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                 </div>
             </aside>
         </div>
@@ -279,8 +279,6 @@
                     <a href="./login/login.php" class="block">
                         <button
                             style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
-                            onmouseover="this.style.borderColor='red'; this.style.backgroundColor='black'; this.style.color='white';"
-                            onmouseout="this.style.borderColor='red'; this.style.backgroundColor='red'; this.style.color='white';"
                             class="bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
                             <i class="bi bi-box-arrow-in-right" style="font-size: 1.5rem;"></i> INICIAR SESIÓN
                         </button>
@@ -288,8 +286,6 @@
                     <a href="./login/register.php" class="block">
                         <button
                             style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
-                            onmouseover="this.style.borderColor='red'; this.style.backgroundColor='black'; this.style.color='white';"
-                            onmouseout="this.style.borderColor='red'; this.style.backgroundColor='red'; this.style.color='white';"
                             class="bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
                             <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i>
                             REGISTRARSE
@@ -302,7 +298,7 @@
             <!-- Botones para usuario logueado (inicialmente ocultos) -->
             <div id="userLoggedButtons" style="display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
                 <div class="user-profile-container">
-                    <button class="menu-button" onclick="toggleUserDropdown()" aria-expanded="false"
+                    <button class="menu-button" id="userMenuBtn" aria-expanded="false"
                         aria-haspopup="true">
                         <span class="user-avatar" id="userAvatar"></span>
                         <span class="user-name" id="userName"></span>
@@ -353,10 +349,10 @@
 
                             <div class="menu-divider"></div>
 
-                            <a href="#" class="menu-item logout" onclick="logout()">
-                                <i class="fas fa-sign-out-alt" style="color: red;"></i>
-                                <span style="color: red;">Cerrar Sesión</span>
-                            </a>
+                             <a href="#" class="menu-item logout">
+                                 <i class="fas fa-sign-out-alt" style="color: red;"></i>
+                                 <span style="color: red;">Cerrar Sesión</span>
+                             </a>
                         </div>
                     </div>
                 </div>
@@ -724,29 +720,6 @@
                     }
                 </script>
             </nav>
-            <script>
-                (function() {
-                    function ensureResponsiveState() {
-                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
-                        var ql = document.getElementById('quickLinks');
-                        var nav = document.getElementById('navMenu');
-                        var logo = document.querySelector('.header .logo');
-                        if (isMobile) {
-                            if (ql) ql.style.display = 'none';
-                            if (nav) nav.style.display = 'none';
-                            if (logo) logo.style.display = 'none';
-                        } else {
-                            document.body.classList.remove('drawer-open');
-                            if (ql) ql.style.display = '';
-                            if (nav) nav.style.display = '';
-                            if (logo) logo.style.display = '';
-                        }
-                    }
-                    window.addEventListener('resize', ensureResponsiveState);
-                    document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-                })();
-            </script>
-
             <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
                 <i class="fas fa-bars "></i>
             </button>
@@ -811,8 +784,7 @@
                             </div>
                             <div class="desc">Residencial</div>
                             <a href="#" class="muted-link" id="btnEditAddress"
-                                style="color: #000; transition: color 0.2s ease;"
-                                onmouseover="this.style.color='#ff0000'" onmouseout="this.style.color='#000'">Modificar
+                                style="color: #000; transition: color 0.2s ease;">Modificar
                                 domicilio o elegir otro</a>
                         </div>
                     </label>
@@ -830,8 +802,7 @@
                                 <div class="desc">Lu a Sá: 8:30 a 12:30 hs. Lu a Vi: 14:30 a 19:30 hs. Sá: 14:30 a 17 hs.
                                     Do: 10 a 13 hs.
                                 </div>
-                                <a href="#" class="muted-link" style="color: #000; transition: color 0.2s ease;"
-                                    onmouseover="this.style.color='#ff0000'" onmouseout="this.style.color='#000'">Ver punto
+                                <a href="#" class="muted-link" style="color: #000; transition: color 0.2s ease;">Ver punto
                                     en el mapa o elegir otro</a>
                             </div>
                         </label>
@@ -840,10 +811,8 @@
                 -->
             </div>
             <div class="actions">
-                <button class="btn btn-primary" id="toStep2" onclick="window.__goStep && window.__goStep('stepAddress')"
-                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;"
-                    onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
-                    onmouseout="this.style.backgroundColor='#ff0000'; this.style.transform='scale(1)'">Continuar</button>
+                <button class="btn btn-primary" id="toStep2" 
+                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;">Continuar</button>
             </div>
         </section>
 
@@ -858,9 +827,7 @@
                     <button class="btn" id="backToStep1" style="background:#333; color:#fff;">Atrás</button>
                     <button class="btn" id="btnAddAddress">Agregar nuevo domicilio</button>
                     <button class="btn btn-primary" id="toStep3"
-                        style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;"
-                        onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
-                        onmouseout="this.style.backgroundColor='#ff0000'; this.style.transform='scale(1)'">Continuar</button>
+                        style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;">Continuar</button>
                 </div>
 
                 <!-- Formulario nuevo domicilio -->
@@ -943,9 +910,7 @@
                 <button class="btn" id="backToStep2" style="background:#333; color:#fff;">Atrás</button>
                 <button class="btn" id="skipMap">Omitir</button>
                 <button class="btn btn-primary" id="toStep4"
-                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;"
-                    onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
-                    onmouseout="this.style.backgroundColor='#ff0000'; this.style.transform='scale(1)'">Guardar
+                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;">Guardar
                     dirección</button>
             </div>
         </section>
@@ -969,9 +934,7 @@
             <div class="actions">
                 <button class="btn" id="backToStep3" style="background:#333; color:#fff;">Atrás</button>
                 <button class="btn btn-primary" id="toStep5"
-                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;"
-                    onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
-                    onmouseout="this.style.backgroundColor='#ff0000'; this.style.transform='scale(1)'">Continuar</button>
+                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;">Continuar</button>
             </div>
         </section>
 
@@ -1050,9 +1013,7 @@
             <div class="actions">
                 <button class="btn" id="backToStep4" style="background:#333; color:#fff;">Atrás</button>
                 <button class="btn btn-primary" id="finishCheckout"
-                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;"
-                    onmouseover="this.style.backgroundColor='#cc0000'; this.style.transform='scale(1.05)'"
-                    onmouseout="this.style.backgroundColor='#ff0000'; this.style.transform='scale(1)'">Continuar</button>
+                    style="background-color: #ff0000; color: #ffffff; transition: background-color 0.3s ease, transform 0.2s ease;">Continuar</button>
             </div>
         </section>
 

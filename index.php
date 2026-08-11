@@ -105,29 +105,7 @@ include __DIR__ . '/includes/header.php';
                         if (email) email.textContent = emailVal;
                         if (role) role.textContent = roleVal;
                     }
-                </script>
-            <script>
-                (function() {
-                    function ensureResponsiveState() {
-                        var isMobile = window.matchMedia('(max-width: 992px)').matches;
-                        var ql = document.getElementById('quickLinks');
-                        var nav = document.getElementById('navMenu');
-                        var logo = document.querySelector('.header .logo');
-                        if (isMobile) {
-                            if (ql) ql.style.display = 'none';
-                            if (nav) nav.style.display = 'none';
-                            if (logo) logo.style.display = 'none';
-                        } else {
-                            document.body.classList.remove('drawer-open');
-                            if (ql) ql.style.display = '';
-                            if (nav) nav.style.display = '';
-                            if (logo) logo.style.display = '';
-                        }
-                    }
-                    window.addEventListener('resize', ensureResponsiveState);
-                    document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-                })();
-            </script>
+                 </script>
     <!-- Modal (se mostrará automáticamente) -->
     <div id="welcomeModal" class="modal-overlay">
         <div class="modal">
@@ -1297,34 +1275,6 @@ include __DIR__ . '/includes/header.php';
                 if (e.key === 'Enter' || e.key === ' ') openClose(e);
             });
         });
-    </script>
-    <script>
-        function ensureResponsiveState() {
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            const isMobile = window.innerWidth <= 992;
-
-            const authButtons = document.getElementById('authButtons');
-            const userLoggedButtons = document.getElementById('userLoggedButtons');
-            const drawerAuth = document.querySelector('.drawer-quicklinks');
-            const drawerUser = document.getElementById('drawerUserLogged');
-
-            if (userData) {
-                // Usuario logueado
-                if (authButtons) authButtons.style.display = 'none';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'flex';
-                if (drawerAuth) drawerAuth.style.display = 'none';
-                if (drawerUser) drawerUser.style.display = 'flex';
-            } else {
-                // Usuario no logueado
-                if (authButtons) authButtons.style.display = 'flex';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'none';
-                if (drawerAuth) drawerAuth.style.display = 'flex';
-                if (drawerUser) drawerUser.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-        window.addEventListener('resize', ensureResponsiveState);
     </script>
     <script src="<?php echo $basePath; ?>/static/js/public_tour.js"></script>
 </body>

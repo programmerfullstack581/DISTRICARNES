@@ -899,34 +899,6 @@ include __DIR__ . '/includes/header.php';
     <script src="./static/js/loader.js" defer></script>
     <script src="./static/js/session_guard.js" defer></script>
     <script src="./static/js/network_guard.js" defer></script>
-    <script>
-        function ensureResponsiveState() {
-            const userData = JSON.parse(localStorage.getItem('userData'));
-            const isMobile = window.innerWidth <= 992;
-
-            const authButtons = document.getElementById('authButtons');
-            const userLoggedButtons = document.getElementById('userLoggedButtons');
-            const drawerAuth = document.querySelector('.drawer-quicklinks');
-            const drawerUser = document.getElementById('drawerUserLogged');
-
-            if (userData) {
-                // Usuario logueado
-                if (authButtons) authButtons.style.display = 'none';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'flex';
-                if (drawerAuth) drawerAuth.style.display = 'none';
-                if (drawerUser) drawerUser.style.display = 'flex';
-            } else {
-                // Usuario no logueado
-                if (authButtons) authButtons.style.display = 'flex';
-                if (userLoggedButtons) userLoggedButtons.style.display = 'none';
-                if (drawerAuth) drawerAuth.style.display = 'flex';
-                if (drawerUser) drawerUser.style.display = 'none';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', ensureResponsiveState);
-        window.addEventListener('resize', ensureResponsiveState);
-    </script>
 </body>
 
 </html>
