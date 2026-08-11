@@ -20,47 +20,49 @@
 
 /* ============================================================
    1. TOKENS DE DISEÑO — MODO CLARO (por defecto)
+   Paleta limpia blanco/rojo/gris: profesional, alta legibilidad.
+   Sin tonos "piel" (crema/arena). Blancos puros con grises neutros.
    ============================================================ */
 :root {
-    /* Superficies */
-    --dc-bg: #f4f1ec;
-    --dc-bg-2: #ece7dd;
+    /* Superficies — blanco puro + grises neutros fríos */
+    --dc-bg: #f5f6f8;
+    --dc-bg-2: #eceef2;
     --dc-surface: #ffffff;
-    --dc-surface-2: #f8f5ef;
-    --dc-surface-3: #efeae1;
+    --dc-surface-2: #f0f2f5;
+    --dc-surface-3: #e6e9ee;
 
     /* Bordes */
-    --dc-border: #e3dccf;
-    --dc-border-soft: #ece6da;
-    --dc-border-strong: #cfc5b3;
+    --dc-border: #dde1e9;
+    --dc-border-soft: #e8ebf0;
+    --dc-border-strong: #c4cad6;
 
-    /* Texto */
-    --dc-text: #26221c;
-    --dc-text-muted: #635c4f;
-    --dc-text-faint: #9d9482;
+    /* Texto — casi negro con jerarquía clara */
+    --dc-text: #111827;
+    --dc-text-muted: #4b5563;
+    --dc-text-faint: #9ca3af;
 
-    /* Marca */
-    --dc-primary: #d51a2b;
-    --dc-primary-hover: #ad1220;
-    --dc-primary-soft: #fbecec;
-    --dc-accent: #e85b24;
-    --dc-gold: #a8741a;
-    --dc-price: #d9481f;
+    /* Marca roja institucional */
+    --dc-primary: #e8192c;
+    --dc-primary-hover: #c0121f;
+    --dc-primary-soft: #fde8ea;
+    --dc-accent: #f04e23;
+    --dc-gold: #c28000;
+    --dc-price: #dc2626;
 
-    /* Estados */
-    --dc-success: #1e9e55;
-    --dc-warning: #b26a00;
-    --dc-danger: #d0342c;
+    /* Estados semánticos */
+    --dc-success: #16a34a;
+    --dc-warning: #d97706;
+    --dc-danger: #dc2626;
     --dc-info: #2563eb;
 
     /* Interacción */
-    --dc-hover: #f4eee4;
-    --dc-ring: rgba(213, 26, 43, 0.22);
+    --dc-hover: #f1f3f7;
+    --dc-ring: rgba(232, 25, 44, 0.20);
 
-    /* Sombras */
-    --dc-shadow-sm: 0 2px 8px rgba(94, 76, 44, 0.06);
-    --dc-shadow: 0 8px 24px rgba(94, 76, 44, 0.09);
-    --dc-shadow-lg: 0 18px 44px rgba(94, 76, 44, 0.15);
+    /* Sombras suaves neutras */
+    --dc-shadow-sm: 0 1px 4px rgba(17, 24, 39, 0.06), 0 1px 2px rgba(17, 24, 39, 0.04);
+    --dc-shadow: 0 4px 16px rgba(17, 24, 39, 0.08), 0 2px 6px rgba(17, 24, 39, 0.05);
+    --dc-shadow-lg: 0 12px 36px rgba(17, 24, 39, 0.12), 0 4px 12px rgba(17, 24, 39, 0.07);
 
     /* Radios */
     --dc-radius-sm: 8px;
@@ -73,42 +75,43 @@
 
 /* ============================================================
    1.1 TOKENS DE DISEÑO — MODO OSCURO
-   Superficies en capas (jamás negro absoluto) para crear
-   profundidad visual.
+   Superficies con matiz rojizo cálido para coherencia con la marca.
+   Capas bien diferenciadas para jerarquía visual.
    ============================================================ */
 html[data-theme="dark"] {
-    --dc-bg: #0b0b0e;
-    --dc-bg-2: #101014;
-    --dc-surface: #16161b;
-    --dc-surface-2: #1d1d23;
-    --dc-surface-3: #26262d;
+    /* Superficies con leve tinte rojizo en los más profundos */
+    --dc-bg: #0d0b0b;
+    --dc-bg-2: #120e0e;
+    --dc-surface: #1a1414;
+    --dc-surface-2: #221a1a;
+    --dc-surface-3: #2c2222;
 
-    --dc-border: #2d2d35;
-    --dc-border-soft: #26262e;
-    --dc-border-strong: #3d3d47;
+    --dc-border: #3a2b2b;
+    --dc-border-soft: #2e2222;
+    --dc-border-strong: #4a3535;
 
-    --dc-text: #f1f0ec;
-    --dc-text-muted: #a8a6ae;
-    --dc-text-faint: #70707a;
+    --dc-text: #f3f0ef;
+    --dc-text-muted: #b0a8a8;
+    --dc-text-faint: #756c6c;
 
-    --dc-primary: #ff2020;
-    --dc-primary-hover: #ff4d4d;
-    --dc-primary-soft: rgba(255, 32, 32, 0.14);
+    --dc-primary: #f52535;
+    --dc-primary-hover: #ff4d5a;
+    --dc-primary-soft: rgba(245, 37, 53, 0.15);
     --dc-accent: #ff6a3d;
     --dc-gold: #e0ae52;
-    --dc-price: #ff6b5e;
+    --dc-price: #ff6060;
 
     --dc-success: #34c77b;
     --dc-warning: #f2a63a;
     --dc-danger: #f25f59;
     --dc-info: #5b96f7;
 
-    --dc-hover: #212129;
-    --dc-ring: rgba(255, 32, 32, 0.35);
+    --dc-hover: #261e1e;
+    --dc-ring: rgba(245, 37, 53, 0.32);
 
-    --dc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
-    --dc-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
-    --dc-shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.55);
+    --dc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.40);
+    --dc-shadow: 0 8px 24px rgba(0, 0, 0, 0.50);
+    --dc-shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.60);
 
     color-scheme: dark;
 }
@@ -127,11 +130,11 @@ html[data-theme="dark"] {
     --background-color: var(--dc-bg);
     --card-background: var(--dc-surface);
     --border-color: var(--dc-border);
-    --shadow-color: rgba(94, 76, 44, 0.10);
-    --gradient-primary: linear-gradient(135deg, #e85b24, #d51a2b);
-    --gradient-card: linear-gradient(145deg, #ffffff, #fffdf8);
+    --shadow-color: rgba(17, 24, 39, 0.08);
+    --gradient-primary: linear-gradient(135deg, #f04e23, #e8192c);
+    --gradient-card: linear-gradient(145deg, #ffffff, #f5f6f8);
     --bg-cream: var(--dc-bg);
-    --card-warm: #fffdf8;
+    --card-warm: #ffffff;
     --border-warm: var(--dc-border);
 }
 html[data-theme="dark"] {
@@ -142,11 +145,11 @@ html[data-theme="dark"] {
     --background-color: var(--dc-bg);
     --card-background: var(--dc-surface);
     --border-color: var(--dc-border);
-    --shadow-color: rgba(0, 0, 0, 0.45);
-    --gradient-primary: linear-gradient(135deg, #ff2020, #d40000);
-    --gradient-card: linear-gradient(145deg, #18181e, #141419);
+    --shadow-color: rgba(0, 0, 0, 0.50);
+    --gradient-primary: linear-gradient(135deg, #f52535, #c0121f);
+    --gradient-card: linear-gradient(145deg, #1a1414, #120e0e);
     --bg-cream: var(--dc-bg);
-    --card-warm: #131318;
+    --card-warm: #1a1414;
     --border-warm: var(--dc-border);
 }
 
@@ -254,16 +257,16 @@ html[data-theme="dark"] .header .ml-search form { background: rgba(255, 255, 255
 /* ---------- Variante CLARA ---------- */
 html[data-theme="light"] .header,
 html[data-theme="light"] .mobile-header {
-    background: rgba(255, 253, 248, 0.82) !important;
+    background: rgba(255, 255, 255, 0.92) !important;
     border-bottom: 1px solid var(--dc-border) !important;
-    box-shadow: 0 4px 24px rgba(94, 76, 44, 0.08) !important;
+    box-shadow: 0 2px 16px rgba(17, 24, 39, 0.07) !important;
 }
 html[data-theme="light"] .header .nav-menu {
     background: transparent !important;
     border-color: transparent !important;
 }
 html[data-theme="light"] .header .ml-search form {
-    background: rgba(0, 0, 0, 0.05) !important;
+    background: var(--dc-surface-2) !important;
     border-color: var(--dc-border) !important;
 }
 html[data-theme="light"] .ml-search input { color: var(--dc-text) !important; }
@@ -1631,7 +1634,9 @@ html[data-theme="dark"] .contact-form textarea { background: var(--dc-surface-2)
 
 /* ---------- Ubícanos (inicio) ---------- */
 html[data-theme="light"] .ubicanos-card a[href^="tel:"] { color: var(--dc-text) !important; }
-html[data-theme="light"] .ubicanos-card h3 { color: var(--dc-primary) !important; }
+html[data-theme="light"] .ubicanos-card h3,
+html[data-theme="light"] .ubicanos-title { color: var(--dc-primary) !important; }
+html[data-theme="light"] .ubicanos-card { color: var(--dc-text) !important; }
 
 /* ---------- Empty states ---------- */
 .empty-state { color: var(--dc-text-muted) !important; }

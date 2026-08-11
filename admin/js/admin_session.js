@@ -62,3 +62,56 @@
 
   window.__AdminSessionRestored = true;
 })();
+
+/* ============================================================
+   Overlay del sidebar para móvil — se inyecta una sola vez.
+   Cierra el sidebar al tocar fuera de él en pantallas pequeñas.
+   ============================================================ */
+(function () {
+  if (window.__AdminSidebarOverlayInit) return;
+  window.__AdminSidebarOverlayInit = true;
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var sidebar = document.getElementById('sidebar');
+    var toggle  = document.getElementById('menuToggle');
+    var mainContent = document.getElementById('mainContent');
+    if (!sidebar || !toggle) return;
+
+    /* Crear overlay */
+    var overlay = document.createElement('div');
+    overlay.id = 'sidebarOverlay';
+    overlay.className = 'sidebar-overlay';
+    document.body.appendChild(overlay);
+
+    /* Cerrar sidebar al pulsar overlay */
+    overlay.addEventListener('click', function () {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    /* Mejorar el toggle existente: añadir overlay y bloquear scroll */
+    toggle.addEventListener('click', function () {
+      var isMobile = window.innerWidth <= 992;
+      if (isMobile) {
+        var isOpen = sidebar.classList.contains('active');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active', !isOpen);
+        document.body.style.overflow = isOpen ? '' : 'hidden';
+      } else {
+        /* Escritorio: colapsar sidebar y ajustar main-content */
+        sidebar.classList.toggle('collapsed');
+        if (mainContent) mainContent.classList.toggle('expanded');
+      }
+    });
+
+    /* Al redimensionar, limpiar estado si se pasa a escritorio */
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 992) {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        sidebar.classList.remove('active');
+      }
+    });
+  });
+})();

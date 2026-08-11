@@ -2,14 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=League+Spartan:wght@500;600;700&family=Pacifico&family=Noto+Serif:wght@400;700&display=swap');
 
 :root {
-    --primary-color: #ff0000;
-    --secondary-color: #ff0000;
-    --text-color: #ffffff;
-    --light-text-color: #cccccc;
-    --background-color: #000000;
-    --card-background: #000000;
-    --border-color: #000000;
-    --shadow-color: rgba(0, 0, 0, 0.3);
+    /* Colores base — tema oscuro por defecto (re-escritos por theme.css según data-theme) */
+    --primary-color: var(--dc-primary, #e8192c);
+    --secondary-color: var(--dc-primary, #e8192c);
+    --text-color: var(--dc-text, #f1f0ec);
+    --light-text-color: var(--dc-text-muted, #a8a6ae);
+    --background-color: var(--dc-bg, #0d0b0b);
+    --card-background: var(--dc-surface, #171212);
+    --border-color: var(--dc-border, #332828);
+    --shadow-color: rgba(0, 0, 0, 0.35);
     /* Tipografías base */
     --font-sans: 'Poppins', 'Montserrat', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     --font-serif: 'DejaVu Serif', 'Noto Serif', Georgia, 'Times New Roman', serif;

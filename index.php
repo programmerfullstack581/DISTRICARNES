@@ -531,11 +531,18 @@ include __DIR__ . '/includes/header.php';
 
     <section class="brand-marquee" aria-label="Marcas y servicios">
         <style>
+            /* brand-marquee — respeta el tema activo vía tokens CSS */
             .brand-marquee {
-                background: #0b0b0b;
-                border-top: 1px solid rgba(255, 255, 255, .06);
-                border-bottom: 1px solid rgba(255, 255, 255, .06);
-                overflow: hidden
+                background: var(--dc-surface, #1a1414);
+                border-top: 1px solid var(--dc-border, rgba(255,255,255,.06));
+                border-bottom: 1px solid var(--dc-border, rgba(255,255,255,.06));
+                overflow: hidden;
+                transition: background-color .25s ease, border-color .25s ease;
+            }
+            html[data-theme="light"] .brand-marquee {
+                background: var(--dc-surface-2) !important;
+                border-top-color: var(--dc-border) !important;
+                border-bottom-color: var(--dc-border) !important;
             }
 
             .brand-marquee__viewport {
@@ -549,17 +556,23 @@ include __DIR__ . '/includes/header.php';
                 top: 0;
                 bottom: 0;
                 width: 60px;
-                pointer-events: none
+                pointer-events: none;
+                z-index: 1;
             }
 
             .brand-marquee__fade.left {
                 left: 0;
-                background: linear-gradient(90deg, #0b0b0b 0%, rgba(11, 11, 11, 0) 100%)
+                background: linear-gradient(90deg, var(--dc-surface, #1a1414) 0%, transparent 100%)
             }
-
             .brand-marquee__fade.right {
                 right: 0;
-                background: linear-gradient(270deg, #0b0b0b 0%, rgba(11, 11, 11, 0) 100%)
+                background: linear-gradient(270deg, var(--dc-surface, #1a1414) 0%, transparent 100%)
+            }
+            html[data-theme="light"] .brand-marquee__fade.left {
+                background: linear-gradient(90deg, var(--dc-surface-2) 0%, transparent 100%) !important
+            }
+            html[data-theme="light"] .brand-marquee__fade.right {
+                background: linear-gradient(270deg, var(--dc-surface-2) 0%, transparent 100%) !important
             }
 
             .brand-marquee__track {
@@ -579,12 +592,15 @@ include __DIR__ . '/includes/header.php';
                 display: inline-flex;
                 align-items: center;
                 gap: 8px;
-                color: #d7d7d7;
+                color: var(--dc-text-muted, #b0a8a8);
                 text-decoration: none;
                 white-space: nowrap;
                 font-weight: 700;
                 opacity: .9;
-                transition: transform .2s ease, opacity .2s ease
+                transition: transform .2s ease, opacity .2s ease, color .2s ease
+            }
+            html[data-theme="light"] .brand-item {
+                color: var(--dc-text-muted) !important;
             }
 
             .brand-item i {
@@ -593,21 +609,17 @@ include __DIR__ . '/includes/header.php';
 
             .brand-item:hover {
                 transform: scale(1.05);
-                opacity: 1
+                opacity: 1;
+                color: var(--dc-text, #f3f0ef)
             }
 
             .brand-item .is-red {
-                color: #ff1f1f
+                color: var(--dc-primary, #e8192c)
             }
 
             @keyframes brandScroll {
-                from {
-                    transform: translateX(0)
-                }
-
-                to {
-                    transform: translateX(-50%)
-                }
+                from { transform: translateX(0) }
+                to   { transform: translateX(-50%) }
             }
         </style>
         <div class="brand-marquee__viewport">
@@ -764,8 +776,8 @@ include __DIR__ . '/includes/header.php';
                 </div>
             </div>
             <div class="ubicanos-card"
-                style="flex:1 1 320px; min-width:280px; background:#0b0b0b; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:16px; color:#fff;">
-                <h3 style="margin:0 0 8px; color:#ff0000; font-weight:800;">Ubícanos</h3>
+                style="flex:1 1 320px; min-width:280px; border-radius:8px; padding:16px;">
+                <h3 class="ubicanos-title" style="margin:0 0 8px; font-weight:800;">Ubícanos</h3>
                 <div
                     style="display:grid; grid-template-columns:20px 1fr; gap:8px; align-items:start; margin-bottom:12px;">
                     <div style="opacity:.9;">📍</div>
@@ -778,18 +790,18 @@ include __DIR__ . '/includes/header.php';
                 <div style="display:flex; gap:10px; flex-wrap:wrap;">
                     <a href="https://www.google.com/maps?q=DistriCarnes+Cartagena&hl=es" target="_blank"
                         rel="noopener noreferrer"
-                        style="background:#ff0000; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">Ver
+                        style="background:var(--dc-primary,#e8192c); color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">Ver
                         en Google Maps</a>
                     <a href="https://www.google.com/maps/dir/?api=1&destination=10.39697399240679,-75.55148638476352"
                         target="_blank" rel="noopener noreferrer"
-                        style="background:#1f2937; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">Cómo
+                        style="background:var(--dc-surface-3,#2c2222); color:var(--dc-text,#fff); padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">Cómo
                         llegar</a>
                     <a href="https://wa.me/573015210177?text=Hola%20DistriCarnes,%20quiero%20m%C3%A1s%20informaci%C3%B3n"
                         target="_blank" rel="noopener noreferrer"
                         style="background:#22c55e; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; text-decoration:none;">WhatsApp</a>
                     <button type="button"
                         onclick="(function(){var t='Olaya Herrera #34-71A-60, Cartagena de Indias, Colombia';navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){try{showToast('Dirección copiada','success',{duration:1500});}catch(e){}});})()"
-                        style="background:#374151; color:#fff; padding:10px 14px; border-radius:999px; font-weight:700; border:none; cursor:pointer;">Copiar
+                        style="background:var(--dc-surface-2,#221a1a); color:var(--dc-text,#fff); padding:10px 14px; border-radius:999px; font-weight:700; border:1px solid var(--dc-border,rgba(255,255,255,0.1)); cursor:pointer;">Copiar
                         dirección</button>
                 </div>
             </div>
