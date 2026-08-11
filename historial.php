@@ -30,7 +30,7 @@ include __DIR__ . '/includes/header.php';
 <?php include __DIR__ . '/includes/header-scripts.php'; ?>
     
 
-    <main class="container" style="max-width:1000px;margin:30px auto;padding:0 16px;">
+    <main class="container" style="max-width:1000px;margin:30px auto;padding:0 16px;" id="main-content">
         <h1 style="font-size:1.8rem;margin-bottom:16px;">Historial de compra</h1>
         <div id="historyList" class="grid" style="display:grid;gap:12px;grid-template-columns:1fr;">
             <!-- Orders render here -->

@@ -12,7 +12,25 @@ if (!isset($headerExtra)) $headerExtra = '';
 $bp = $basePath;
 ?>
     <header class="header ">
+        <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
         <style>
+            .skip-link {
+                position: absolute;
+                top: -40px;
+                left: 0;
+                background: #ff0000;
+                color: #fff;
+                padding: 8px 16px;
+                z-index: 100000;
+                text-decoration: none;
+                font-weight: 700;
+                border-radius: 0 0 8px 0;
+                transition: top 0.2s ease;
+            }
+            .skip-link:focus {
+                top: 0;
+            }
+        </style>
             .header{background:#000; border-bottom:none !important; box-shadow:none !important}
             .mobile-header{display:none;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;background:#000;border-bottom:none;padding:.4rem .5rem;gap:12px;width:100%;box-sizing:border-box;position:sticky;top:0;z-index:10002;min-height:50px}
             .mh-left,.mh-right{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:nowrap}

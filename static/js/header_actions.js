@@ -146,6 +146,36 @@ function initHeader() {
             if (typeof window.logout === 'function') window.logout();
           });
         }
+        // Focus trap: mantener el foco dentro del drawer cuando está abierto
+        const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+        const trapFocus = (e) => {
+          if (!document.body.classList.contains('drawer-open') || !drawer) return;
+          const focusable = Array.from(drawer.querySelectorAll(focusableSelector)).filter(el => el.offsetParent !== null);
+          if (!focusable.length) return;
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.key === 'Tab') {
+            if (e.shiftKey) {
+              if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+            } else {
+              if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+            }
+          }
+        };
+        if (!document._dcFocusTrapBound) {
+          document._dcFocusTrapBound = true;
+          document.addEventListener('keydown', trapFocus);
+        }
+        // Enfocar el primer elemento del drawer cuando se abre
+        const observer = new MutationObserver(() => {
+          if (document.body.classList.contains('drawer-open') && drawer) {
+            const focusable = Array.from(drawer.querySelectorAll(focusableSelector)).filter(el => el.offsetParent !== null);
+            if (focusable.length && document.activeElement && !drawer.contains(document.activeElement)) {
+              focusable[0].focus();
+            }
+          }
+        });
+        if (drawer) observer.observe(drawer, { attributes: true, attributeFilter: ['class'] });
       }
       // Escuchar cambios en storage para actualizar visibilidad de botones (login vs usuario)
       window.addEventListener('storage', (ev) => {

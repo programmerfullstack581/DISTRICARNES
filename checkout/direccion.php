@@ -760,7 +760,7 @@
     </script>
 
 
-    <main class="container">
+    <main class="container" id="main-content">
         <div class="checkout-progress" id="checkoutProgress">
             <div class="line"><span class="line-fill"></span></div>
             <ul class="progress-steps">

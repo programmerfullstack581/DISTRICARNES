@@ -36,7 +36,7 @@
     include __DIR__ . '/../includes/header-scripts.php';
     ?>
     
-    <main class="cart-page">
+    <main class="cart-page" id="main-content">
         <div class="cart-head">
             <h2 class="cart-head-title">
                 <i class="bi bi-cart-fill"></i>

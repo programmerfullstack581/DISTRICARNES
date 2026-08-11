@@ -31,10 +31,16 @@ include __DIR__ . '/includes/header.php';
 <?php include __DIR__ . '/includes/header-scripts.php'; ?>
   
 
-    <main class="container" style="max-width:1000px;margin:30px auto;padding:0 16px;">
+    <main class="container" style="max-width:1000px;margin:30px auto;padding:0 16px;" id="main-content">
         <h1 style="font-size:1.8rem;margin-bottom:16px;">Mis favoritos</h1>
         <div id="favoritesList" class="grid" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
             <!-- Favorites render here -->
+        </div>
+        <div id="emptyFavorites" class="empty-state" style="display:none;">
+            <i class="bi bi-heart"></i>
+            <h3>No tienes favoritos aún</h3>
+            <p>Explora nuestro catálogo y guarda tus productos preferidos para verlos aquí.</p>
+            <a class="btn-primary" href="../productos.php">Ver productos</a>
         </div>
     </main>
 

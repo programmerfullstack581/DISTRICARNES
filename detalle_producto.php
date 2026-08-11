@@ -1097,7 +1097,7 @@ include __DIR__ . '/includes/header.php';
     
 
     <!-- Contenido Detalle -->
-    <div class="product-detail-container product-detail"> <!-- clase product-detail añadida para cart_utils -->
+    <div class="product-detail-container product-detail" id="main-content"> <!-- clase product-detail añadida para cart_utils -->
         
         <!-- Columna Izquierda -->
         <div class="detail-image-wrapper">

@@ -309,7 +309,7 @@ include __DIR__ . '/includes/header.php';
         </aside>
 
         <!-- PRODUCTS -->
-        <main class="products-grid" style="color: white;">
+        <main class="products-grid" style="color: white;" id="main-content">
             <div class="products-header">
                 <div class="products-count" style="color: white;">Mostrando <?php echo $startDisplay . '-' . $endDisplay . ' de ' . $total . ' resultados'; ?></div>
             </div>

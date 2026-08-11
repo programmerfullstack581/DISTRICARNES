@@ -38,7 +38,7 @@ include __DIR__ . '/includes/header.php';
 <?php include __DIR__ . '/includes/header-scripts.php'; ?>
     
     <!-- Contenido Principal -->
-    <main style="background-color: #000000;" class="main-content">
+    <main style="background-color: #000000;" class="main-content" id="main-content">
         <!-- Hero Section Ultra Moderno con Video -->
         <section class="hero-ultra-modern">
             <div class="hero-video-container">

@@ -286,7 +286,7 @@ include __DIR__ . '/includes/header.php';
 
 
     <!-- Hero Section  contendio donde va la imagen donde esta el titulo y el carnicero navarro -->
-    <section class="hero1section">
+    <section class="hero1section" id="main-content">
         <!-- FONDO VIDEO DE CARNICERÍA (limitado al hero) -->
         <div id="anime-bg">
             <video id="hero-video" autoplay muted loop playsinline preload="auto"

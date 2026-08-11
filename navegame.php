@@ -32,7 +32,7 @@ require_once __DIR__ . '/config/bootstrap.php';
 
     <?php include __DIR__ . '/includes/header-scripts.php'; ?>
 
-    <main style="background-color: #000000;" class="main-content">
+    <main style="background-color: #000000;" class="main-content" id="main-content">
         <div class="game-page-wrapper">
             <div class="game-header-title">
                 <div class="game-badge">

@@ -24,7 +24,7 @@
         <p class="lead">Lea detenidamente estos términos y condiciones antes de utilizar nuestros servicios en DistriCarnes Hermanos Navarro.</p>
     </div>
 
-    <main class="container">
+    <main class="container" id="main-content">
        
         <section class="content-section">
             <div class="last-updated">
