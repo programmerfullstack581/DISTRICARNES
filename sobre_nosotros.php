@@ -27,7 +27,7 @@ require_once __DIR__ . '/config/bootstrap.php';
 
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <!-- Header -->
 <?php
 $activeNav = 'nosotros';
@@ -38,7 +38,7 @@ include __DIR__ . '/includes/header.php';
 <?php include __DIR__ . '/includes/header-scripts.php'; ?>
     
     <!-- Contenido Principal -->
-    <main style="background-color: #000000;" class="main-content" id="main-content">
+    <main class="main-content" id="main-content">
         <!-- Hero Section Ultra Moderno con Video -->
         <section class="hero-ultra-modern">
             <div class="hero-video-container">
@@ -171,7 +171,7 @@ include __DIR__ . '/includes/header.php';
         </section>
 
         <!-- Valores Corporativos -->
-        <section class="values-section-pro" style="background-color: #000000;">
+        <section class="values-section-pro">
             <div class="container-pro">
                 <div class="section-header">
                     <div class="section-badge">

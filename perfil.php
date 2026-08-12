@@ -24,7 +24,7 @@ require_once __DIR__ . '/config/bootstrap.php';
     <script src="<?php echo $basePath; ?>/static/js/auth_modal.js?v=<?= filemtime(__DIR__ . '/static/js/auth_modal.js') ?>"></script>
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <!-- Header -->
 <?php
 $activeNav = '';

@@ -26,7 +26,7 @@
 
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <!-- Header -->
 <?php
 $activeNav = 'contacto';

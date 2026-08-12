@@ -27,7 +27,7 @@ require_once __DIR__ . '/backend/php/core/conexion.php';
 
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <?php
     $q = isset($_GET['q']) ? trim($_GET['q']) : '';
     $categoria = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';

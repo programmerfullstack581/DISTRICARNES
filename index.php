@@ -24,7 +24,7 @@ require_once __DIR__ . '/config/bootstrap.php';
     <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <!-- Header -->
 <?php
 $activeNav = 'inicio';

@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Carrito de Compras - DISTRICARNES</title>
     <link rel="stylesheet" href="../static/css/nav_pills.css" />
     <link rel="stylesheet" href="../static/css/cart.css">
@@ -21,12 +20,11 @@
     <script src="../static/js/theme.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <!-- app.js antiguo deshabilitado en la nueva vista CRUD -->
-    <link rel="stylesheet" href="../static/css/responsive.css" />
     <link rel="icon" type="image/x-icon" href="../assets/icon/image-removebg-preview sin fondo (1).ico" />
 
 </head>
 
-<body class=" bg-black text-white ">
+<body class="">
     <!-- Header compartido del sitio (igual al de las demás páginas) -->
     <?php
     if (!isset($basePath)) {
@@ -35,7 +33,7 @@
     include __DIR__ . '/../includes/header.php';
     include __DIR__ . '/../includes/header-scripts.php';
     ?>
-    
+
     <main class="cart-page" id="main-content">
         <div class="cart-head">
             <h2 class="cart-head-title">
@@ -240,22 +238,26 @@
     <script src="../static/js/index.js"></script>
     <script src="../static/js/chatbot.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var toggle = document.querySelector('.chatbot-toggle');
             var container = document.querySelector('.chatbot-container');
             if (!toggle || !container) return;
+
             function openClose(e) {
-                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
                 container.classList.toggle('active');
                 if (container.classList.contains('active')) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         var input = document.getElementById('userInput') || document.querySelector('.chat-input');
                         if (input) input.focus();
                     }, 200);
                 }
             }
             toggle.addEventListener('click', openClose);
-            toggle.addEventListener('keydown', function (e) {
+            toggle.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') openClose(e);
             });
         });

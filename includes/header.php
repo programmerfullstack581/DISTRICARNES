@@ -145,18 +145,111 @@ $bp = $basePath;
             </div>
             <div class="mobile-drawer-overlay" id="drawerOverlay"></div>
             <aside class="mobile-drawer" id="mobileDrawer" style="z-index:10000">
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #111;color:#fff">
-                    <span>Menú</span>
-                    <button type="button" aria-label="Cerrar" id="drawerCloseBtn" style="background:#111;color:#fff;border:1px solid #222;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center">×</button>
+                <div class="drawer-header-bar">
+                    <span class="drawer-header-title">Menú</span>
+                    <button type="button" aria-label="Cerrar" id="drawerCloseBtn" class="drawer-close-btn">×</button>
                 </div>
                 <style>
-                    .mobile-drawer{background:#000;border:1px solid #111;border-radius:12px;box-shadow:0 10px 32px rgba(0,0,0,.6)}
-                    .drawer-quicklinks a{margin:6px 0;font-weight:800;letter-spacing:.2px}
-                    .drawer-nav{padding:10px 12px}
-                    .drawer-nav a{display:block;background:#0d0d0d;border:1px solid #1a1a1a;color:#fff;text-decoration:none;padding:12px 14px;border-radius:12px;font-weight:700;text-align:center}
-                    .drawer-nav a + a{margin-top:8px}
-                    .drawer-nav a.active{background:#1a1a1a;border-color:#333;position:relative}
-                    .drawer-nav a.active::after{content:"";display:block;height:2px;background:#ff0000;width:80%;margin:8px auto 0;border-radius:2px}
+                    /* Drawer móvil — usa tokens de tema para respetar modo claro/oscuro */
+                    .mobile-drawer {
+                        background: var(--dc-surface, #1a1414);
+                        border: 1px solid var(--dc-border, rgba(255,255,255,0.08));
+                        border-radius: 12px;
+                        box-shadow: var(--dc-shadow-lg, 0 10px 32px rgba(0,0,0,.6));
+                        color: var(--dc-text, #f3f0ef);
+                    }
+                    .drawer-header-bar {
+                        display: flex; align-items: center; justify-content: space-between;
+                        padding: 12px 14px;
+                        border-bottom: 1px solid var(--dc-border, rgba(255,255,255,0.08));
+                        color: var(--dc-text, #f3f0ef);
+                        background: var(--dc-surface-2, rgba(255,255,255,0.03));
+                    }
+                    .drawer-header-title { font-weight: 700; font-size: 0.95rem; }
+                    .drawer-close-btn {
+                        background: var(--dc-surface-3, #2c2222);
+                        color: var(--dc-text, #fff);
+                        border: 1px solid var(--dc-border, #222);
+                        border-radius: 8px;
+                        width: 32px; height: 32px;
+                        display: flex; align-items: center; justify-content: center;
+                        cursor: pointer; font-size: 1.2rem;
+                    }
+                    .drawer-close-btn:hover {
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                    }
+                    .drawer-quicklinks a { margin: 6px 0; font-weight: 800; letter-spacing: .2px; }
+                    .drawer-nav { padding: 10px 12px; }
+                    .drawer-nav a {
+                        display: block;
+                        background: var(--dc-surface-2, #221a1a);
+                        border: 1px solid var(--dc-border, #2e2222);
+                        color: var(--dc-text, #f3f0ef);
+                        text-decoration: none;
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        text-align: center;
+                        transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+                    }
+                    .drawer-nav a + a { margin-top: 8px; }
+                    .drawer-nav a:hover {
+                        background: var(--dc-hover, #261e1e);
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                    }
+                    .drawer-nav a.active {
+                        background: var(--dc-primary-soft, rgba(232,25,44,0.12));
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                        position: relative;
+                    }
+                    .drawer-nav a.active::after {
+                        content: "";
+                        display: block;
+                        height: 2px;
+                        background: var(--dc-primary, #e8192c);
+                        width: 80%;
+                        margin: 8px auto 0;
+                        border-radius: 2px;
+                    }
+                    /* Botones de auth del drawer */
+                    #drawerAuthButtons a {
+                        background: var(--dc-primary, #e8192c) !important;
+                        border-color: var(--dc-primary, #e8192c) !important;
+                        color: #fff !important;
+                        border-radius: 999px;
+                        padding: 10px 14px;
+                        text-decoration: none;
+                        font-weight: 700;
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    #drawerAuthButtons a:hover {
+                        background: var(--dc-primary-hover, #c0121f) !important;
+                        border-color: var(--dc-primary-hover, #c0121f) !important;
+                    }
+                    /* Botones usuario logueado del drawer */
+                    #drawerUserLogged a {
+                        background: var(--dc-surface-2, #221a1a) !important;
+                        color: var(--dc-text, #f3f0ef) !important;
+                        border: 1px solid var(--dc-border, #2e2222) !important;
+                        border-radius: 10px;
+                        padding: 10px 14px;
+                        text-decoration: none;
+                        font-weight: 700;
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    #drawerUserLogged a.drawer-logout-btn {
+                        color: var(--dc-danger, #f25f59) !important;
+                    }
+                    #drawerUserLogged a:hover {
+                        border-color: var(--dc-primary, #e8192c) !important;
+                    }
                 </style>
                 <nav class="drawer-nav" style="display:flex;flex-direction:column;align-items:stretch;padding:10px 12px;gap:8px">
                     <a href="<?php echo $bp; ?>/index.php" <?php echo $activeNav === 'inicio' ? 'class="active"' : ''; ?>>Inicio</a>
@@ -166,12 +259,12 @@ $bp = $basePath;
                     <a href="<?php echo $bp; ?>/sobre_nosotros.php" <?php echo $activeNav === 'nosotros' ? 'class="active"' : ''; ?>>Quienes Somos</a>
                 </nav>
                                 <div id="drawerAuthButtons" class="drawer-quicklinks" style="padding:8px 12px;gap:10px;display:flex;flex-direction:column;align-items:stretch">
-                    <a href="<?php echo $bp; ?>/login/login.php" style="background:#ff0000;color:#fff;border:1px solid #ff0000;border-radius:999px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="bi bi-box-arrow-in-right"></i> INICIAR SESIÓN</a>
-                    <a href="<?php echo $bp; ?>/login/register.php" style="background:#ff0000;color:#fff;border:1px solid #ff0000;border-radius:999px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="bi bi-person-plus-fill"></i> REGISTRARSE</a>
+                    <a href="<?php echo $bp; ?>/login/login.php"><i class="bi bi-box-arrow-in-right"></i> INICIAR SESIÓN</a>
+                    <a href="<?php echo $bp; ?>/login/register.php"><i class="bi bi-person-plus-fill"></i> REGISTRARSE</a>
                 </div>
                 <div id="drawerUserLogged" style="display:none;padding:8px 12px;gap:10px;flex-direction:column;align-items:stretch">
-                    <a href="<?php echo $bp; ?>/perfil.php" style="background:#111;color:#fff;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-user"></i> Mi Perfil</a>
-                     <a href="#" class="drawer-logout-btn" style="background:#111;color:#ff6b6b;border:1px solid #222;border-radius:10px;padding:10px 14px;text-decoration:none;font-weight:700;display:block;width:100%;text-align:center"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    <a href="<?php echo $bp; ?>/perfil.php"><i class="fas fa-user"></i> Mi Perfil</a>
+                    <a href="#" class="drawer-logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
                 </div>
             </aside>
         </div>
@@ -221,7 +314,7 @@ $bp = $basePath;
 
 
             <!-- Botones para usuario logueado (inicialmente ocultos) -->
-            <div id="userLoggedButtons" style="display: none; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+            <div id="userLoggedButtons" style="display: none;">
                 <div class="user-profile-container">
                     <button class="menu-button" id="userMenuBtn" aria-expanded="false"
                         aria-haspopup="true">
@@ -275,8 +368,8 @@ $bp = $basePath;
                             <div class="menu-divider"></div>
 
                             <a href="#" class="menu-item logout" onclick="logout()">
-                                <i class="fas fa-sign-out-alt" style="color: red;"></i>
-                                <span style="color: red;">Cerrar Sesión</span>
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
                             </a>
                         </div>
                     </div>
@@ -363,206 +456,141 @@ $bp = $basePath;
 
 
 
-                <!-- Estilos y funcionalidad mejorados PARA EL MENU DEL USUARIO LOGUEADO -->
+                <!-- Estilos del menú de usuario logueado — usa tokens de tema -->
                 <style>
-                    /* Contenedor principal con fondo negro y separación de bordes */
-
                     #userLoggedButtons {
-                        background-color: #000000;
-                        padding: 1rem;
-                        border-radius: 10px;
-                        margin: 0.5rem;
+                        background: transparent;
+                        padding: 0;
+                        margin: 0;
                     }
-
                     .user-profile-container {
                         position: relative;
                         display: inline-block;
                     }
-
                     .menu-button {
                         display: flex;
                         align-items: center;
                         gap: 0.75rem;
-                        background: linear-gradient(135deg, #000000 0%, #000000 100%);
-                        border: 2px solid #000000;
+                        background: var(--dc-surface-2, rgba(255,255,255,0.06));
+                        border: 2px solid var(--dc-border, rgba(255,255,255,0.1));
                         border-radius: 50px;
-                        padding: 0.75rem 1.5rem;
-                        color: #ffffff;
+                        padding: 0.6rem 1.25rem;
+                        color: var(--dc-text, #f3f0ef);
                         font-weight: 600;
                         cursor: pointer;
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
                     }
-
                     .menu-button:hover {
-                        border-color: #ff0000;
-                        background: linear-gradient(135deg, #000000 0%, #000000 100%);
-                        box-shadow: 0 6px 25px rgba(255, 0, 0, 0.25);
-                        transform: translateY(-2px);
+                        border-color: var(--dc-primary, #e8192c);
+                        box-shadow: 0 4px 18px var(--dc-ring, rgba(232,25,44,0.25));
+                        transform: translateY(-1px);
                     }
-
-                    .menu-button:active {
-                        transform: translateY(0);
-                    }
-
+                    .menu-button:active { transform: translateY(0); }
                     .user-avatar {
-                        width: 40px;
-                        height: 40px;
+                        width: 38px; height: 38px;
                         border-radius: 50%;
-                        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-weight: bold;
-                        font-size: 1.1rem;
-                        color: white;
-                        box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: bold; font-size: 1rem; color: #fff;
+                        box-shadow: 0 2px 8px var(--dc-ring, rgba(232,25,44,0.25));
+                        flex-shrink: 0;
                     }
-
                     .user-name {
-                        font-size: 0.95rem;
-                        color: #f0f0f0;
+                        font-size: 0.92rem;
+                        color: var(--dc-text, #f3f0ef);
                         max-width: 120px;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
+                        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
                     }
-
                     .dropdown-arrow {
-                        margin-left: 0.5rem;
+                        margin-left: 0.25rem;
                         transition: transform 0.3s ease;
-                        color: #ff0000;
+                        color: var(--dc-primary, #e8192c);
+                        font-size: 0.8rem;
                     }
-
-                    .menu-button[aria-expanded="true"] .dropdown-arrow {
-                        transform: rotate(180deg);
-                    }
-
+                    .menu-button[aria-expanded="true"] .dropdown-arrow { transform: rotate(180deg); }
                     .user-dropdown {
                         position: absolute;
-                        top: calc(100% + 12px);
+                        top: calc(100% + 10px);
                         right: 0;
-                        background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
-                        border: 2px solid #333;
-                        border-radius: 16px;
-                        min-width: 280px;
-                        max-width: 320px;
-                        opacity: 0;
-                        visibility: hidden;
-                        transform: translateY(-10px);
-                        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                        background: var(--dc-surface, #1a1414);
+                        border: 1px solid var(--dc-border, rgba(255,255,255,0.1));
+                        border-radius: var(--dc-radius-lg, 16px);
+                        min-width: 280px; max-width: 320px;
+                        opacity: 0; visibility: hidden;
+                        transform: translateY(-8px);
+                        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
                         z-index: 1000;
-                        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-                        backdrop-filter: blur(10px);
+                        box-shadow: var(--dc-shadow-lg, 0 20px 60px rgba(0,0,0,0.5));
                     }
-
                     .user-dropdown.active {
-                        opacity: 1;
-                        visibility: visible;
-                        transform: translateY(0);
+                        opacity: 1; visibility: visible; transform: translateY(0);
                     }
-
                     .user-info-dropdown {
-                        display: flex;
-                        align-items: center;
-                        gap: 1rem;
-                        padding: 1.5rem;
-                        border-bottom: 1px solid #333;
+                        display: flex; align-items: center; gap: 1rem;
+                        padding: 1.25rem 1.5rem;
+                        border-bottom: 1px solid var(--dc-border, rgba(255,255,255,0.1));
+                        background: var(--dc-surface-2, rgba(255,255,255,0.03));
+                        border-radius: var(--dc-radius-lg, 16px) var(--dc-radius-lg, 16px) 0 0;
                     }
-
                     .user-avatar-large {
-                        width: 60px;
-                        height: 60px;
+                        width: 54px; height: 54px;
                         border-radius: 50%;
-                        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-weight: bold;
-                        font-size: 1.5rem;
-                        color: white;
-                        box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: bold; font-size: 1.4rem; color: #fff;
+                        flex-shrink: 0;
                     }
-
                     .user-details h4 {
-                        color: #ffffff;
-                        margin: 0 0 0.25rem 0;
-                        font-size: 1.1rem;
-                        font-weight: 600;
+                        color: var(--dc-text, #f3f0ef);
+                        margin: 0 0 0.2rem; font-size: 1rem; font-weight: 600;
                     }
-
                     .user-details p {
-                        color: #cccccc;
-                        margin: 0 0 0.5rem 0;
-                        font-size: 0.85rem;
+                        color: var(--dc-text-muted, #b0a8a8);
+                        margin: 0 0 0.4rem; font-size: 0.82rem;
                     }
-
                     .user-role {
-                        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-                        color: white;
-                        padding: 0.25rem 0.75rem;
-                        border-radius: 20px;
-                        font-size: 0.75rem;
-                        font-weight: 600;
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        color: #fff;
+                        padding: 0.2rem 0.65rem;
+                        border-radius: 20px; font-size: 0.72rem; font-weight: 600;
                         display: inline-block;
                     }
-
-                    .menu-items {
-                        padding: 0.5rem 0;
-                    }
-
+                    .menu-items { padding: 0.4rem 0; }
                     .menu-item {
-                        display: flex;
-                        align-items: center;
-                        gap: 0.75rem;
-                        padding: 0.875rem 1.5rem;
-                        color: #e0e0e0;
+                        display: flex; align-items: center; gap: 0.75rem;
+                        padding: 0.8rem 1.25rem;
+                        color: var(--dc-text-muted, #b0a8a8);
                         text-decoration: none;
-                        transition: all 0.2s ease;
-                        border-radius: 8px;
-                        margin: 0 0.5rem;
+                        transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+                        border-radius: var(--dc-radius-sm, 8px);
+                        margin: 0 0.4rem;
+                        font-size: 0.9rem;
                     }
-
                     .menu-item:hover {
-                        background: rgba(255, 0, 0, 0.1);
-                        color: #ffffff;
-                        transform: translateX(4px);
+                        background: var(--dc-hover, #261e1e);
+                        color: var(--dc-text, #f3f0ef);
+                        transform: translateX(3px);
                     }
-
-                    .menu-item.logout {
-                        color: #ff6b6b;
-                    }
-
-                    .menu-item.logout:hover {
-                        background: rgba(255, 0, 0, 0.15);
-                        color: #ff4444;
-                    }
-
                     .menu-item i {
-                        width: 20px;
-                        text-align: center;
-                        color: #ff0000;
+                        width: 18px; text-align: center;
+                        color: var(--dc-primary, #e8192c);
+                        font-size: 0.95rem;
                     }
-
+                    .menu-item.logout, .menu-item.logout i {
+                        color: var(--dc-danger, #f25f59) !important;
+                    }
+                    .menu-item.logout:hover {
+                        background: rgba(242,95,89,0.1);
+                    }
                     .menu-divider {
                         height: 1px;
-                        background: linear-gradient(90deg, transparent 0%, #333 50%, transparent 100%);
-                        margin: 0.5rem 1.5rem;
+                        background: linear-gradient(90deg, transparent, var(--dc-border, rgba(255,255,255,0.1)), transparent);
+                        margin: 0.4rem 1.25rem;
                     }
-
                     @media (max-width: 768px) {
-                        .user-dropdown {
-                            right: -10px;
-                            min-width: 260px;
-                        }
-
-                        .menu-button {
-                            padding: 0.625rem 1.25rem;
-                        }
-
-                        .user-name {
-                            max-width: 80px;
-                        }
+                        .user-dropdown { right: -8px; min-width: 260px; }
+                        .menu-button { padding: 0.5rem 1rem; }
+                        .user-name { max-width: 80px; }
                     }
                 </style>
 

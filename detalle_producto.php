@@ -31,7 +31,7 @@ $total_reseñas = 0;
 try {
     // Verificar si la tabla existe
     $tableExists = $conexion->query("SELECT 1 FROM information_schema.tables WHERE table_name = 'resenas'")->fetch();
-    
+
     if ($tableExists) {
         // Obtener reseñas del producto
         $reseñasStmt = $conexion->prepare("
@@ -43,7 +43,7 @@ try {
         ");
         $reseñasStmt->execute([$id_producto]);
         $reseñas = $reseñasStmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
         // Calcular promedio
         if (count($reseñas) > 0) {
             $total_calificacion = array_sum(array_column($reseñas, 'calificacion'));
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     try {
         // Verificar si la tabla existe
         $tableExists = $conexion->query("SELECT 1 FROM information_schema.tables WHERE table_name = 'resenas'")->fetch();
-        
+
         if (!$tableExists) {
             // Crear tabla si no existe
             $conexion->exec("
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $conexion->exec("CREATE INDEX IF NOT EXISTS idx_resenas_producto ON resenas(id_producto)");
             $conexion->exec("CREATE INDEX IF NOT EXISTS idx_resenas_usuario ON resenas(id_usuario)");
         }
-        
+
         // Obtener usuario de la sesión
         $id_usuario = null;
         if (isset($_SESSION['id_usuario'])) {
@@ -90,12 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         } elseif (isset($_POST['id_usuario'])) {
             $id_usuario = intval($_POST['id_usuario']);
         }
-        
+
         if ($id_usuario && $id_producto > 0) {
             $calificacion = intval($_POST['calificacion']);
             $titulo = trim($_POST['titulo'] ?? '');
             $comentario = trim($_POST['comentario'] ?? '');
-            
+
             if ($calificacion >= 1 && $calificacion <= 5) {
                 $insertStmt = $conexion->prepare("
                     INSERT INTO resenas (id_producto, id_usuario, calificacion, titulo, comentario)
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $insertStmt->execute([$id_producto, $id_usuario, $calificacion, $titulo, $comentario]);
                 $mensaje_resena = '¡Gracias! Tu reseña ha sido publicada.';
                 $tipo_mensaje = 'success';
-                
+
                 // Recargar reseñas
                 $reseñasStmt = $conexion->prepare("
                     SELECT r.*, u.nombres_completos as usuario_nombre 
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 ");
                 $reseñasStmt->execute([$id_producto]);
                 $reseñas = $reseñasStmt->fetchAll(PDO::FETCH_ASSOC);
-                
+
                 if (count($reseñas) > 0) {
                     $total_calificacion = array_sum(array_column($reseñas, 'calificacion'));
                     $promedio_calificacion = round($total_calificacion / count($reseñas), 1);
@@ -243,7 +243,9 @@ $relatedProducts = [];
 // Usamos el nombre para derivar categoría
 $exclVencidosRel = producto_caducidad_filtro_excluir($conexion);
 $relatedSql = "SELECT * FROM producto WHERE id_producto != ?";
-if ($exclVencidosRel !== '') { $relatedSql .= " AND " . $exclVencidosRel; }
+if ($exclVencidosRel !== '') {
+    $relatedSql .= " AND " . $exclVencidosRel;
+}
 $relatedSql .= " AND (LOWER(nombre) LIKE ? OR LOWER(nombre) LIKE ?) LIMIT 4";
 $relatedStmt = $conexion->prepare($relatedSql);
 $catTerm = '%' . $cat . '%';
@@ -254,7 +256,9 @@ $relatedProducts = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 // Si hay pocos, rellenar con cualquiera
 if (count($relatedProducts) < 4) {
     $moreSql = "SELECT * FROM producto WHERE id_producto != ?";
-    if ($exclVencidosRel !== '') { $moreSql .= " AND " . $exclVencidosRel; }
+    if ($exclVencidosRel !== '') {
+        $moreSql .= " AND " . $exclVencidosRel;
+    }
     $moreSql .= " ORDER BY RANDOM() LIMIT " . (4 - count($relatedProducts));
     $moreStmt = $conexion->prepare($moreSql);
     $moreStmt->execute([$id_producto]);
@@ -272,11 +276,14 @@ if (count($relatedProducts) < 4) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($producto['nombre']); ?> - Detalles</title>
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
+    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/header_en_general.css" />
@@ -290,11 +297,9 @@ if (count($relatedProducts) < 4) {
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     <style>
         body {
-            background-color: #000000;
-            color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .product-detail-container {
             max-width: 1200px;
             margin: 4rem auto;
@@ -313,7 +318,7 @@ if (count($relatedProducts) < 4) {
             border: 1px solid #333;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(20,20,20,0.8);
+            box-shadow: 0 0 30px rgba(20, 20, 20, 0.8);
         }
 
         .viewer-tabs {
@@ -324,6 +329,7 @@ if (count($relatedProducts) < 4) {
             gap: 8px;
             z-index: 20;
         }
+
         .viewer-tab {
             padding: 6px 12px;
             border-radius: 8px;
@@ -334,11 +340,13 @@ if (count($relatedProducts) < 4) {
             cursor: pointer;
             font-size: 0.85rem;
         }
+
         .viewer-tab.active {
             background: #ff0000;
             color: #fff;
             border-color: #ff0000;
         }
+
         .viewer-tab.disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -370,8 +378,9 @@ if (count($relatedProducts) < 4) {
             will-change: transform;
             transition: transform 80ms linear, box-shadow 200ms ease;
             cursor: grab;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
         }
+
         .product-image-large.tilt-grabbing {
             cursor: grabbing;
         }
@@ -391,14 +400,14 @@ if (count($relatedProducts) < 4) {
             font-weight: bold;
             font-size: 0.9rem;
             text-transform: uppercase;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
         }
 
         .badge-category {
             background: #ff0000;
             color: white;
         }
-        
+
         .badge-stock {
             background: #28a745;
             color: white;
@@ -422,7 +431,7 @@ if (count($relatedProducts) < 4) {
             text-decoration: none;
             transition: color 0.2s;
         }
-        
+
         .breadcrumb-detail a:hover {
             color: #fff;
         }
@@ -503,7 +512,7 @@ if (count($relatedProducts) < 4) {
             gap: 15px;
             margin-bottom: 10px;
         }
-        
+
         .qty-label {
             font-weight: bold;
             color: #ccc;
@@ -544,7 +553,7 @@ if (count($relatedProducts) < 4) {
             font-size: 1.2rem;
             font-weight: bold;
         }
-        
+
         .qty-input-large:focus {
             outline: none;
         }
@@ -603,10 +612,13 @@ if (count($relatedProducts) < 4) {
                 gap: 2rem;
                 margin: 2rem auto;
             }
+
             .product-title-large {
                 font-size: 2.5rem;
             }
-            .detail-image-wrapper img, model-viewer.product-model {
+
+            .detail-image-wrapper img,
+            model-viewer.product-model {
                 max-height: 400px;
             }
         }
@@ -615,15 +627,19 @@ if (count($relatedProducts) < 4) {
             .product-title-large {
                 font-size: 2rem;
             }
+
             .product-price-large {
                 font-size: 2.2rem;
             }
+
             .meta-grid {
                 grid-template-columns: 1fr;
             }
+
             .action-buttons {
                 grid-template-columns: 1fr;
             }
+
             .detail-image-wrapper {
                 padding: 1rem;
             }
@@ -633,30 +649,34 @@ if (count($relatedProducts) < 4) {
             .product-title-large {
                 font-size: 1.8rem;
             }
+
             .product-price-large {
                 font-size: 2rem;
             }
+
             .qty-selector-wrapper {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .badges {
                 top: 10px;
                 left: 10px;
             }
+
             .badge {
                 font-size: 0.8rem;
                 padding: 4px 8px;
             }
         }
-        
+
         /* Productos Relacionados */
         .related-products {
             max-width: 1200px;
             margin: 0 auto 4rem auto;
             padding: 0 20px;
         }
-        
+
         .related-title {
             font-size: 2rem;
             color: #fff;
@@ -665,13 +685,13 @@ if (count($relatedProducts) < 4) {
             padding-bottom: 1rem;
             display: inline-block;
         }
-        
+
         .related-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 2rem;
         }
-        
+
         .related-card {
             background: #111;
             border: 1px solid #333;
@@ -679,22 +699,22 @@ if (count($relatedProducts) < 4) {
             overflow: hidden;
             transition: transform 0.3s;
         }
-        
+
         .related-card:hover {
             transform: translateY(-5px);
             border-color: #ff0000;
         }
-        
+
         .related-img {
             height: 180px;
             width: 100%;
             object-fit: cover;
         }
-        
+
         .related-info {
             padding: 1rem;
         }
-        
+
         .related-name {
             font-size: 1.1rem;
             font-weight: bold;
@@ -704,7 +724,7 @@ if (count($relatedProducts) < 4) {
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        
+
         .related-price {
             color: #ff0000;
             font-weight: bold;
@@ -717,9 +737,11 @@ if (count($relatedProducts) < 4) {
                 grid-template-columns: 1fr;
                 gap: 2rem;
             }
+
             .product-title-large {
                 font-size: 2.5rem;
             }
+
             .action-buttons {
                 grid-template-columns: 1fr;
             }
@@ -887,7 +909,8 @@ if (count($relatedProducts) < 4) {
             font-weight: 500;
         }
 
-        .form-input, .form-textarea {
+        .form-input,
+        .form-textarea {
             width: 100%;
             padding: 12px 15px;
             background: #000;
@@ -898,7 +921,8 @@ if (count($relatedProducts) < 4) {
             transition: border-color 0.3s;
         }
 
-        .form-input:focus, .form-textarea:focus {
+        .form-input:focus,
+        .form-textarea:focus {
             outline: none;
             border-color: #ff0000;
         }
@@ -991,114 +1015,112 @@ if (count($relatedProducts) < 4) {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .reviews-summary {
                 width: 100%;
                 justify-content: center;
             }
         }
     </style>
-    <link rel="stylesheet" href="<?php echo $basePath; ?>/static/css/theme.css" />
-    <script src="<?php echo $basePath; ?>/static/js/theme.js"></script>
 </head>
-<body class=" bg-black text-white ">
+
+<body class="">
     <!-- Header -->
-<?php
-$activeNav = 'productos';
-include __DIR__ . '/includes/header.php';
-?>
+    <?php
+    $activeNav = 'productos';
+    include __DIR__ . '/includes/header.php';
+    ?>
 
 
-                <script>
-                    // Función mejorada para toggle del dropdown
-                    function toggleUserDropdown() {
-                        const dropdown = document.getElementById('userDropdown');
-                        const button = document.querySelector('.menu-button');
-                        if (!dropdown || !button) return;
-                        
-                        const isOpen = dropdown.classList.contains('active');
+    <script>
+        // Función mejorada para toggle del dropdown
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            const button = document.querySelector('.menu-button');
+            if (!dropdown || !button) return;
 
-                        // Cerrar todos los dropdowns primero
-                        document.querySelectorAll('.user-dropdown').forEach(d => d.classList.remove('active'));
-                        document.querySelectorAll('.menu-button').forEach(b => b.setAttribute('aria-expanded', 'false'));
+            const isOpen = dropdown.classList.contains('active');
 
-                        if (!isOpen) {
-                            dropdown.classList.add('active');
-                            dropdown.style.display = 'block';
-                            button.setAttribute('aria-expanded', 'true');
-                        } else {
-                            dropdown.style.display = 'none';
-                        }
-                    }
+            // Cerrar todos los dropdowns primero
+            document.querySelectorAll('.user-dropdown').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.menu-button').forEach(b => b.setAttribute('aria-expanded', 'false'));
 
-                    document.addEventListener('click', function (event) {
-                        const container = document.querySelector('.user-profile-container');
-                        if (!container || !container.contains(event.target)) {
-                            const dd = document.getElementById('userDropdown');
-                            if (dd) {
-                                dd.classList.remove('active');
-                                dd.style.display = 'none';
-                            }
-                            const btn = document.querySelector('.menu-button');
-                            if (btn) btn.setAttribute('aria-expanded', 'false');
-                        }
-                    });
+            if (!isOpen) {
+                dropdown.classList.add('active');
+                dropdown.style.display = 'block';
+                button.setAttribute('aria-expanded', 'true');
+            } else {
+                dropdown.style.display = 'none';
+            }
+        }
 
-                    document.addEventListener('keydown', function (event) {
-                        if (event.key === 'Escape') {
-                            const dd = document.getElementById('userDropdown');
-                            if (dd) {
-                                dd.classList.remove('active');
-                                dd.style.display = 'none';
-                            }
-                            const btn = document.querySelector('.menu-button');
-                            if (btn) btn.setAttribute('aria-expanded', 'false');
-                        }
-                    });
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.user-profile-container');
+            if (!container || !container.contains(event.target)) {
+                const dd = document.getElementById('userDropdown');
+                if (dd) {
+                    dd.classList.remove('active');
+                    dd.style.display = 'none';
+                }
+                const btn = document.querySelector('.menu-button');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+        });
 
-                    function updateUserProfile(userData) {
-                        if (!userData) return;
-                        const name = userData.name || userData.nombres_completos || userData.nombre || 'Usuario';
-                        const emailVal = userData.email || userData.correo_electronico || '';
-                        const roleVal = userData.role || userData.rol || 'Usuario';
-                        const photo = userData.usuario_foto || userData.foto || userData.picture || '';
-                        const initials = (name.charAt(0) || 'U').toUpperCase();
-                        const avatar = document.getElementById('userAvatar');
-                        const userName = document.getElementById('userName');
-                        const avatarLarge = document.getElementById('userAvatarLarge');
-                        const fullName = document.getElementById('userFullName');
-                        const email = document.getElementById('userEmail');
-                        const role = document.getElementById('userRole');
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const dd = document.getElementById('userDropdown');
+                if (dd) {
+                    dd.classList.remove('active');
+                    dd.style.display = 'none';
+                }
+                const btn = document.querySelector('.menu-button');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            }
+        });
 
-                        const applyPhoto = (el, url) => {
-                            if (!el || !url) return;
-                            el.style.backgroundImage = `url("${url}")`;
-                            el.style.backgroundSize = 'cover';
-                            el.style.backgroundPosition = 'center';
-                            el.style.backgroundRepeat = 'no-repeat';
-                            el.textContent = '';
-                            el.classList.add('has-photo');
-                        };
+        function updateUserProfile(userData) {
+            if (!userData) return;
+            const name = userData.name || userData.nombres_completos || userData.nombre || 'Usuario';
+            const emailVal = userData.email || userData.correo_electronico || '';
+            const roleVal = userData.role || userData.rol || 'Usuario';
+            const photo = userData.usuario_foto || userData.foto || userData.picture || '';
+            const initials = (name.charAt(0) || 'U').toUpperCase();
+            const avatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+            const avatarLarge = document.getElementById('userAvatarLarge');
+            const fullName = document.getElementById('userFullName');
+            const email = document.getElementById('userEmail');
+            const role = document.getElementById('userRole');
 
-                        if (photo) {
-                            applyPhoto(avatar, photo);
-                            applyPhoto(avatarLarge, photo);
-                        } else {
-                            if (avatar) avatar.textContent = initials;
-                            if (avatarLarge) avatarLarge.textContent = initials;
-                        }
-                        if (userName) userName.textContent = name;
-                        if (fullName) fullName.textContent = userData.fullName || name;
-                        if (email) email.textContent = emailVal;
-                        if (role) role.textContent = roleVal;
-                    }
+            const applyPhoto = (el, url) => {
+                if (!el || !url) return;
+                el.style.backgroundImage = `url("${url}")`;
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition = 'center';
+                el.style.backgroundRepeat = 'no-repeat';
+                el.textContent = '';
+                el.classList.add('has-photo');
+            };
 
-                    
-                 </script>
-    
+            if (photo) {
+                applyPhoto(avatar, photo);
+                applyPhoto(avatarLarge, photo);
+            } else {
+                if (avatar) avatar.textContent = initials;
+                if (avatarLarge) avatarLarge.textContent = initials;
+            }
+            if (userName) userName.textContent = name;
+            if (fullName) fullName.textContent = userData.fullName || name;
+            if (email) email.textContent = emailVal;
+            if (role) role.textContent = roleVal;
+        }
+    </script>
+
 
     <!-- Contenido Detalle -->
     <div class="product-detail-container product-detail" id="main-content"> <!-- clase product-detail añadida para cart_utils -->
-        
+
         <!-- Columna Izquierda -->
         <div class="detail-image-wrapper">
             <div class="badges">
@@ -1106,36 +1128,36 @@ include __DIR__ . '/includes/header.php';
                 <?php if ($producto['stock'] > 0): ?>
                     <span class="badge badge-stock">En Stock</span>
                 <?php
-else: ?>
+                else: ?>
                     <span class="badge" style="background: #666;">Agotado</span>
                 <?php
-endif; ?>
+                endif; ?>
             </div>
             <div class="viewer-tabs">
                 <button class="viewer-tab active" data-view="image">Imagen</button>
-                <button class="viewer-tab" 
-                        data-view="3d">
+                <button class="viewer-tab"
+                    data-view="3d">
                     Vista 3D
                 </button>
             </div>
             <img id="productImage" src="<?php echo htmlspecialchars($imagen_producto); ?>" class="product-image-large" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" loading="lazy" decoding="async">
             <?php if ($model_glb_url): ?>
-            <model-viewer id="productModel"
-                          class="product-model"
-                          src="<?php echo htmlspecialchars($model_glb_url); ?>"
-                          <?php if ($model_usdz_url) {
-        echo 'ios-src="' . htmlspecialchars($model_usdz_url) . '"';
-    }?>
-                          shadow-intensity="1"
-                          camera-controls
-                          auto-rotate
-                          ar
-                          ar-modes="webxr scene-viewer quick-look"
-                          exposure="1.0"
-                          disable-zoom="false">
-            </model-viewer>
+                <model-viewer id="productModel"
+                    class="product-model"
+                    src="<?php echo htmlspecialchars($model_glb_url); ?>"
+                    <?php if ($model_usdz_url) {
+                        echo 'ios-src="' . htmlspecialchars($model_usdz_url) . '"';
+                    } ?>
+                    shadow-intensity="1"
+                    camera-controls
+                    auto-rotate
+                    ar
+                    ar-modes="webxr scene-viewer quick-look"
+                    exposure="1.0"
+                    disable-zoom="false">
+                </model-viewer>
             <?php
-endif; ?>
+            endif; ?>
         </div>
 
         <!-- Columna Derecha -->
@@ -1148,7 +1170,7 @@ endif; ?>
             <!--estilos de las estrellas de calificacion -->
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
                 <div style="color: #ffc107; font-size: 1.2rem;">
-                    <?php 
+                    <?php
                     if ($promedio_calificacion > 0) {
                         $fullStars = floor($promedio_calificacion);
                         $hasHalf = ($promedio_calificacion - $fullStars) >= 0.5;
@@ -1226,11 +1248,11 @@ endif; ?>
                     </div>
                 <?php else: ?>
                     <div class="action-buttons" style="grid-template-columns: 1fr;">
-                        <button class="btn-large btn-add-cart-large add-to-cart" 
-                                data-id="<?php echo $producto['id_producto']; ?>"
-                                data-title="<?php echo htmlspecialchars($producto['nombre']); ?>"
-                                data-price="<?php echo $producto['precio_venta']; ?>"
-                                data-image="<?php echo htmlspecialchars($imagen_producto); ?>">
+                        <button class="btn-large btn-add-cart-large add-to-cart"
+                            data-id="<?php echo $producto['id_producto']; ?>"
+                            data-title="<?php echo htmlspecialchars($producto['nombre']); ?>"
+                            data-price="<?php echo $producto['precio_venta']; ?>"
+                            data-image="<?php echo htmlspecialchars($imagen_producto); ?>">
                             <i class="fas fa-shopping-cart"></i> Agregar al Carrito
                         </button>
                     </div>
@@ -1247,7 +1269,7 @@ endif; ?>
                 <span class="reviews-average"><?php echo $promedio_calificacion > 0 ? $promedio_calificacion : '0'; ?></span>
                 <div>
                     <div class="reviews-stars">
-                        <?php 
+                        <?php
                         if ($promedio_calificacion > 0) {
                             $fullStars = floor($promedio_calificacion);
                             $hasHalf = ($promedio_calificacion - $fullStars) >= 0.5;
@@ -1311,93 +1333,93 @@ endif; ?>
         </div>
 
         <!-- Formulario de Reseña -->
-        <?php 
+        <?php
         // Verificar si el usuario está logueado (se detectará con JavaScript en el cliente)
         $usuario_logueado = false;
         $id_usuario_actual = 0;
         ?>
 
-        <?php 
+        <?php
         // Determinar si mostrar formulario o prompt de login usando JavaScript
         ?>
-            <div class="review-form-container" id="reviewFormContainer" style="display: none;">
-                <h3 class="review-form-title">Deja tu Reseña</h3>
-                
-                <?php if ($mensaje_resena): ?>
-                    <div class="alert alert-<?php echo $tipo_mensaje; ?>">
-                        <?php echo htmlspecialchars($mensaje_resena); ?>
-                    </div>
-                <?php endif; ?>
+        <div class="review-form-container" id="reviewFormContainer" style="display: none;">
+            <h3 class="review-form-title">Deja tu Reseña</h3>
 
-                <form method="POST" id="resenaForm">
-                    <input type="hidden" name="action" value="agregar_resena">
-                    <input type="hidden" name="id_usuario" id="resenaIdUsuario" value="0">
-                    
-                    <div class="form-group">
-                        <label class="form-label">Calificación *</label>
-                        <div class="rating-select" id="ratingSelect">
-                            <i class="rating-star fas fa-star" data-value="1"></i>
-                            <i class="rating-star fas fa-star" data-value="2"></i>
-                            <i class="rating-star fas fa-star" data-value="3"></i>
-                            <i class="rating-star fas fa-star" data-value="4"></i>
-                            <i class="rating-star fas fa-star" data-value="5"></i>
-                        </div>
-                        <input type="hidden" name="calificacion" id="calificacionInput" value="0" required>
-                    </div>
+            <?php if ($mensaje_resena): ?>
+                <div class="alert alert-<?php echo $tipo_mensaje; ?>">
+                    <?php echo htmlspecialchars($mensaje_resena); ?>
+                </div>
+            <?php endif; ?>
 
-                    <div class="form-group">
-                        <label class="form-label">Título de tu reseña</label>
-                        <input type="text" name="titulo" class="form-input" placeholder="Ej: Excelente calidad de carne" maxlength="100">
-                    </div>
+            <form method="POST" id="resenaForm">
+                <input type="hidden" name="action" value="agregar_resena">
+                <input type="hidden" name="id_usuario" id="resenaIdUsuario" value="0">
 
-                    <div class="form-group">
-                        <label class="form-label">Tu opinión *</label>
-                        <textarea name="comentario" class="form-textarea" placeholder="Comparte tu experiencia con este producto..." required></textarea>
+                <div class="form-group">
+                    <label class="form-label">Calificación *</label>
+                    <div class="rating-select" id="ratingSelect">
+                        <i class="rating-star fas fa-star" data-value="1"></i>
+                        <i class="rating-star fas fa-star" data-value="2"></i>
+                        <i class="rating-star fas fa-star" data-value="3"></i>
+                        <i class="rating-star fas fa-star" data-value="4"></i>
+                        <i class="rating-star fas fa-star" data-value="5"></i>
                     </div>
+                    <input type="hidden" name="calificacion" id="calificacionInput" value="0" required>
+                </div>
 
-                    <button type="submit" class="btn-submit-review">
-                        <i class="fas fa-paper-plane"></i> Publicar Reseña
-                    </button>
-                </form>
-            </div>
-            <div class="login-prompt" id="loginPromptDiv">
-                <i class="fas fa-user-lock" style="font-size: 2rem; color: #ff0000; margin-bottom: 1rem;"></i>
-                <p>Debes iniciar sesión para dejar una reseña</p>
-                <a href="./login/login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
-                </a>
-                <span style="color: #666;"> | </span>
-                <a href="./login/register.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('register');return false;}">
-                    Registrarse
-                </a>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Título de tu reseña</label>
+                    <input type="text" name="titulo" class="form-input" placeholder="Ej: Excelente calidad de carne" maxlength="100">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tu opinión *</label>
+                    <textarea name="comentario" class="form-textarea" placeholder="Comparte tu experiencia con este producto..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit-review">
+                    <i class="fas fa-paper-plane"></i> Publicar Reseña
+                </button>
+            </form>
+        </div>
+        <div class="login-prompt" id="loginPromptDiv">
+            <i class="fas fa-user-lock" style="font-size: 2rem; color: #ff0000; margin-bottom: 1rem;"></i>
+            <p>Debes iniciar sesión para dejar una reseña</p>
+            <a href="./login/login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+            </a>
+            <span style="color: #666;"> | </span>
+            <a href="./login/register.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" onclick="if(window.openAuthModal){window.openAuthModal('register');return false;}">
+                Registrarse
+            </a>
+        </div>
     </div>
 
     <!-- Productos Relacionados -->
     <?php if (count($relatedProducts) > 0): ?>
-    <div class="related-products">
-        <h2 class="related-title">También te podría gustar</h2>
-        <div class="related-grid">
-            <?php foreach ($relatedProducts as $rel):
-        $relImg = imageFromRow($rel);
-        if (!$relImg) {
-            $relCat = deriveCategoryFromName($rel['nombre']);
-            $relImg = imageForCategory($relCat);
-        }
-?>
-            <a href="detalle_producto.php?id=<?php echo $rel['id_producto']; ?>" class="related-card" style="text-decoration: none;">
-                <img src="<?php echo htmlspecialchars($relImg); ?>" alt="<?php echo htmlspecialchars($rel['nombre']); ?>" class="related-img">
-                <div class="related-info">
-                    <div class="related-name"><?php echo htmlspecialchars($rel['nombre']); ?></div>
-                    <div class="related-price">$<?php echo number_format($rel['precio_venta'], 0, ',', '.'); ?></div>
-                </div>
-            </a>
-            <?php
-    endforeach; ?>
+        <div class="related-products">
+            <h2 class="related-title">También te podría gustar</h2>
+            <div class="related-grid">
+                <?php foreach ($relatedProducts as $rel):
+                    $relImg = imageFromRow($rel);
+                    if (!$relImg) {
+                        $relCat = deriveCategoryFromName($rel['nombre']);
+                        $relImg = imageForCategory($relCat);
+                    }
+                ?>
+                    <a href="detalle_producto.php?id=<?php echo $rel['id_producto']; ?>" class="related-card" style="text-decoration: none;">
+                        <img src="<?php echo htmlspecialchars($relImg); ?>" alt="<?php echo htmlspecialchars($rel['nombre']); ?>" class="related-img">
+                        <div class="related-info">
+                            <div class="related-name"><?php echo htmlspecialchars($rel['nombre']); ?></div>
+                            <div class="related-price">$<?php echo number_format($rel['precio_venta'], 0, ',', '.'); ?></div>
+                        </div>
+                    </a>
+                <?php
+                endforeach; ?>
+            </div>
         </div>
-    </div>
     <?php
-endif; ?>
+    endif; ?>
 
     <!--Footer Original-->
     <footer class="footer">
@@ -1447,7 +1469,8 @@ endif; ?>
                 <p>Suscríbete a nuestros boletines ahora y mantente al día con nuevas colecciones y ofertas exclusivas.</p>
                 <form class="newsletter-form">
                     <input type="email" placeholder="Ingresa el correo aquí..." required />
-                    <button type="submit" style="background-color: #ff0000;">SUSCRÍBETE</button> </form>
+                    <button type="submit" style="background-color: #ff0000;">SUSCRÍBETE</button>
+                </form>
             </div>
 
         </div>
@@ -1492,7 +1515,7 @@ endif; ?>
         <div class="chatbot-input">
             <div class="input-container">
                 <input type="text" class="chat-input" id="userInput" placeholder="¿Qué deseas saber sobre nuestras carnes?"
-                       onkeypress="handleKeyPress(event)" autocomplete="off" />
+                    onkeypress="handleKeyPress(event)" autocomplete="off" />
                 <button class="voice-btn" title="Entrada de voz (No implementado)">
                     <i class="fas fa-microphone"></i>
                 </button>
@@ -1525,31 +1548,38 @@ endif; ?>
     <script src="./static/js/index.js"></script>
     <script src="./static/js/chatbot.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var toggle = document.querySelector('.chatbot-toggle');
             var container = document.querySelector('.chatbot-container');
             if (!toggle || !container) return;
+
             function openClose(e) {
-                if (e) { e.preventDefault(); e.stopPropagation(); }
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
                 container.classList.toggle('active');
                 if (container.classList.contains('active')) {
-                    setTimeout(function () {
+                    setTimeout(function() {
                         var input = document.getElementById('userInput') || document.querySelector('.chat-input');
                         if (input) input.focus();
                     }, 200);
                 }
             }
             toggle.addEventListener('click', openClose);
-            toggle.addEventListener('keydown', function (e) {
+            toggle.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') openClose(e);
             });
         });
     </script>
     <style>
-      /* Desactivar sticky del header solo en detalle de producto */
-      .header { position: static !important; top: auto !important; }
+        /* Desactivar sticky del header solo en detalle de producto */
+        .header {
+            position: static !important;
+            top: auto !important;
+        }
     </style>
-    
+
     <script>
         function updateQty(change) {
             const input = document.querySelector('.qty-input-large');
@@ -1559,21 +1589,21 @@ endif; ?>
             if (val < 1) val = 1;
             if (val > max) val = max;
             input.value = val;
-            
+
             // Actualizar data-qty del botón
             const btn = document.querySelector('.add-to-cart');
-            if(btn) btn.dataset.qty = val;
+            if (btn) btn.dataset.qty = val;
         }
 
         function buyNow() {
             // Simular clic en agregar al carrito y luego redirigir
             const addBtn = document.querySelector('.add-to-cart');
-            if(addBtn) {
+            if (addBtn) {
                 // Verificar sesión antes de acción
                 const userData = localStorage.getItem('userData');
                 const sessionData = sessionStorage.getItem('currentSession');
-                
-                if(!userData && !sessionData) {
+
+                if (!userData && !sessionData) {
                     Swal.fire({
                         icon: 'warning',
                         title: 'Debes iniciar sesión',
@@ -1588,27 +1618,27 @@ endif; ?>
                     });
                     return;
                 }
-                
+
                 // Si hay sesión, agregar y redirigir
                 addBtn.click();
                 setTimeout(() => {
-                     window.location.href = './carrito-de-compras/index.php';
+                    window.location.href = './carrito-de-compras/index.php';
                 }, 800);
             }
         }
-        
+
         // Verificar sesión al cargar
         document.addEventListener('DOMContentLoaded', function() {
             const userData = localStorage.getItem('userData');
             const sessionData = sessionStorage.getItem('currentSession');
-            
+
             const authBtns = document.getElementById('authButtons');
             const userBtns = document.getElementById('userLoggedButtons');
-            
-            if(userData || sessionData) {
-                if(authBtns) authBtns.style.display = 'none';
-                if(userBtns) userBtns.style.display = 'block';
-                
+
+            if (userData || sessionData) {
+                if (authBtns) authBtns.style.display = 'none';
+                if (userBtns) userBtns.style.display = 'block';
+
                 // Cargar nombre
                 try {
                     const u = JSON.parse(userData || sessionData);
@@ -1616,34 +1646,34 @@ endif; ?>
                     const initials = name.charAt(0).toUpperCase();
                     document.getElementById('userName').textContent = name;
                     document.getElementById('userAvatar').textContent = initials;
-                } catch(e) {}
+                } catch (e) {}
             } else {
-                if(authBtns) authBtns.style.display = 'flex';
-                if(userBtns) userBtns.style.display = 'none';
+                if (authBtns) authBtns.style.display = 'flex';
+                if (userBtns) userBtns.style.display = 'none';
             }
         });
-        
+
         // === FUNCIONALIDAD DE RESEÑAS ===
         document.addEventListener('DOMContentLoaded', function() {
             // Detectar usuario logueado y mostrar formulario
             const reviewFormContainer = document.getElementById('reviewFormContainer');
             const loginPromptDiv = document.getElementById('loginPromptDiv');
-            
+
             let isLoggedIn = false;
-            
+
             try {
                 const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
                 if (rawStr) {
                     const raw = JSON.parse(rawStr);
                     const user = raw && raw.user ? raw.user : raw;
                     const userId = user && (user.id || user.id_usuario);
-                    
+
                     if (userId) {
                         // Usuario logueado - mostrar formulario
                         isLoggedIn = true;
                         if (reviewFormContainer) reviewFormContainer.style.display = 'block';
                         if (loginPromptDiv) loginPromptDiv.style.display = 'none';
-                        
+
                         // Llenar el input oculto con el ID del usuario
                         const idInput = document.getElementById('resenaIdUsuario');
                         if (idInput) idInput.value = userId;
@@ -1664,13 +1694,13 @@ endif; ?>
 
             const ratingStars = document.querySelectorAll('.rating-star');
             const calificacionInput = document.getElementById('calificacionInput');
-            
+
             if (ratingStars.length > 0) {
                 ratingStars.forEach(star => {
                     star.addEventListener('click', function() {
                         const value = parseInt(this.dataset.value);
                         calificacionInput.value = value;
-                        
+
                         ratingStars.forEach(s => {
                             if (parseInt(s.dataset.value) <= value) {
                                 s.classList.add('active');
@@ -1679,7 +1709,7 @@ endif; ?>
                             }
                         });
                     });
-                    
+
                     star.addEventListener('mouseenter', function() {
                         const value = parseInt(this.dataset.value);
                         ratingStars.forEach(s => {
@@ -1688,7 +1718,7 @@ endif; ?>
                             }
                         });
                     });
-                    
+
                     star.addEventListener('mouseleave', function() {
                         ratingStars.forEach(s => {
                             if (!s.classList.contains('active')) {
@@ -1718,4 +1748,5 @@ endif; ?>
         });
     </script>
 </body>
+
 </html>
