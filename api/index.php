@@ -3,32 +3,48 @@
 // VERCEL SERVERLESS PHP GATEWAY - DISTRICARNES
 // ==========================================================
 
-// 1. Configuración de Sesiones en entorno Serverless (/tmp es la única carpeta con permisos de escritura en AWS Lambda / Vercel)
-if (session_status() === PHP_SESSION_NONE) {
-    $tempDir = sys_get_temp_dir();
-    if (is_dir($tempDir) && is_writable($tempDir)) {
-        ini_set('session.save_path', $tempDir);
+// Prevenir caída de la función Lambda capturando cualquier error o excepción fatal
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE);
+ini_set('display_errors', '0');
+
+// Manejador de shutdown para capturar errores fatales de PHP y mostrarlos claramente
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: text/html; charset=utf-8');
+        }
+        echo '<div style="font-family:sans-serif;padding:2rem;max-width:800px;margin:2rem auto;background:#fff1f0;border:1px solid #ffa39e;border-radius:8px;">';
+        echo '<h2 style="color:#cf1322;margin-top:0;">Error del Servidor (PHP Fatal Error)</h2>';
+        echo '<p><strong>Mensaje:</strong> ' . htmlspecialchars($error['message'], ENT_QUOTES, 'UTF-8') . '</p>';
+        echo '<p><strong>Archivo:</strong> ' . htmlspecialchars($error['file'], ENT_QUOTES, 'UTF-8') . ' (Línea ' . $error['line'] . ')</p>';
+        echo '</div>';
     }
+});
+
+// Configuración de Sesiones en /tmp (único directorio con permisos de escritura en Vercel Serverless)
+$tempDir = sys_get_temp_dir() ?: '/tmp';
+if (is_dir($tempDir) && is_writable($tempDir)) {
+    session_save_path($tempDir);
+    ini_set('session.save_path', $tempDir);
 }
 
-// 2. Obtener y normalizar la URI solicitada
+// Obtener y normalizar la URI solicitada
 $uri = $_SERVER['REQUEST_URI'] ?? '/';
-$uri = explode('?', $uri)[0]; // Remover query string para la resolución de ruta
+$uri = explode('?', $uri)[0];
 $uri = ltrim($uri, '/');
 
-// Directorio raíz del proyecto en el contenedor / función
+// Directorio raíz del proyecto
 $rootDir = dirname(__DIR__);
 
-// 3. Emulación de seguridad y bloqueo de accesos no autorizados (.htaccess)
-
-// 3a. Bloquear acceso a archivos ocultos (que empiezan con .)
+// Seguridad - Bloqueos emulando .htaccess
 if (str_starts_with(basename($uri), '.')) {
     http_response_code(403);
     echo "403 Forbidden - Acceso Denegado";
     exit;
 }
 
-// 3b. Bloquear extensiones sensibles
 $ext = strtolower(pathinfo($uri, PATHINFO_EXTENSION));
 $blockedExtensions = ['env', 'json', 'md', 'sql', 'log', 'txt', 'pem', 'key', 'yml', 'yaml', 'xml', 'dockerignore', 'lock'];
 if (in_array($ext, $blockedExtensions, true)) {
@@ -37,7 +53,6 @@ if (in_array($ext, $blockedExtensions, true)) {
     exit;
 }
 
-// 3c. Bloquear acceso directo a archivos clave de configuración y conexión
 $filename = basename($uri);
 if (in_array($filename, ['conexion.php', 'config.php', 'security.php'], true)) {
     http_response_code(403);
@@ -45,14 +60,12 @@ if (in_array($filename, ['conexion.php', 'config.php', 'security.php'], true)) {
     exit;
 }
 
-// 3d. Bloquear acceso a directorios protegidos
 if (str_starts_with($uri, 'db/') || $uri === 'db' || str_starts_with($uri, 'config/') || $uri === 'config' || str_starts_with($uri, 'tests/') || $uri === 'tests') {
     http_response_code(403);
     echo "403 Forbidden - Directorio Protegido";
     exit;
 }
 
-// 3e. Bloquear acceso a backend/php/.*.php excepto APIs públicas (lista blanca)
 if (preg_match('/^backend\/php\/(.*)\.php$/i', $uri, $matches)) {
     $subpath = $matches[1];
     $allowed = [
@@ -116,7 +129,6 @@ if (preg_match('/^backend\/php\/(.*)\.php$/i', $uri, $matches)) {
     }
 }
 
-// 3f. Bloquear acceso a backend/api/.*.php excepto chat.php
 if (preg_match('/^backend\/api\/(.*)\.php$/i', $uri, $matches)) {
     $subpath = $matches[1];
     if ($subpath !== 'chat') {
@@ -126,7 +138,7 @@ if (preg_match('/^backend\/api\/(.*)\.php$/i', $uri, $matches)) {
     }
 }
 
-// 4. Mapeo y Resolución del archivo correspondiente en el proyecto
+// Mapeo y Resolución del archivo solicitado
 if ($uri === '' || $uri === 'index.php') {
     $target = 'index.php';
 } elseif ($uri === 'admin' || $uri === 'admin/') {
@@ -144,40 +156,46 @@ if ($uri === '' || $uri === 'index.php') {
 
 $file = $rootDir . '/' . $target;
 
-// Si es un directorio, buscar index.php
 if (is_dir($file)) {
     $file = rtrim($file, '/') . '/index.php';
 }
 
-// Soporte para URLs limpias (sin .php): si no existe directamente, probar con .php
 if (!is_file($file) && is_file($file . '.php')) {
     $file .= '.php';
 }
 
-// 5. Si el archivo existe y es PHP, ejecutarlo en el contexto de la raíz
+// Ejecución segura de PHP
 if (is_file($file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-    // Ajustar variables del servidor para emular ejecución nativa
     $_SERVER['SCRIPT_FILENAME'] = realpath($file) ?: $file;
     $relPath = str_replace('\\', '/', substr($_SERVER['SCRIPT_FILENAME'], strlen(realpath($rootDir) ?: $rootDir)));
     $_SERVER['SCRIPT_NAME'] = '/' . ltrim($relPath, '/');
     $_SERVER['PHP_SELF'] = '/' . ltrim($relPath, '/');
     $_SERVER['DOCUMENT_ROOT'] = realpath($rootDir) ?: $rootDir;
 
-    // Cambiar directorio de trabajo a la raíz para includes relativos
     chdir($rootDir);
 
-    // Cargar autoload de composer si existe
     $vendorAutoload = $rootDir . '/vendor/autoload.php';
     if (file_exists($vendorAutoload)) {
         require_once $vendorAutoload;
     }
 
-    // Ejecutar el archivo PHP solicitado
-    require $file;
+    try {
+        require $file;
+    } catch (Throwable $e) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: text/html; charset=utf-8');
+        }
+        echo '<div style="font-family:sans-serif;padding:2rem;max-width:800px;margin:2rem auto;background:#fff1f0;border:1px solid #ffa39e;border-radius:8px;">';
+        echo '<h2 style="color:#cf1322;margin-top:0;">Error de Ejecución en la Aplicación</h2>';
+        echo '<p><strong>Mensaje:</strong> ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</p>';
+        echo '<p><strong>Archivo:</strong> ' . htmlspecialchars($e->getFile(), ENT_QUOTES, 'UTF-8') . ' (Línea ' . $e->getLine() . ')</p>';
+        echo '<pre style="background:#f5f5f5;padding:1rem;border-radius:4px;overflow-x:auto;">' . htmlspecialchars($e->getTraceAsString(), ENT_QUOTES, 'UTF-8') . '</pre>';
+        echo '</div>';
+    }
     exit;
 }
 
-// 6. Si el archivo es HTML o estático y llegó hasta aquí
 if (is_file($file)) {
     $mime = mime_content_type($file);
     if ($mime) {
@@ -187,7 +205,6 @@ if (is_file($file)) {
     exit;
 }
 
-// 7. Retornar 404 si el recurso no existe
 http_response_code(404);
 echo "404 Not Found - El recurso solicitado no existe.";
 exit;
