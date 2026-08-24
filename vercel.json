@@ -1,7 +1,28 @@
 {
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.7.4"
+      "runtime": "vercel-php@0.7.4",
+      "includeFiles": [
+        "index.php",
+        "contacto.php",
+        "detalle_producto.php",
+        "favoritos.php",
+        "historial.php",
+        "navegame.php",
+        "perfil.php",
+        "politica-de-privacidad.php",
+        "productos.php",
+        "promociones.php",
+        "sobre_nosotros.php",
+        "terminos-y-condiciones.php",
+        "config/**",
+        "includes/**",
+        "backend/**",
+        "admin/**",
+        "login/**",
+        "carrito-de-compras/**",
+        "checkout/**"
+      ]
     }
   },
   "routes": [
