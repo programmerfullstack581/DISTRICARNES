@@ -10,3 +10,5 @@ db/db/*.txt
 node_modules
 composer.json
 composer.lock
+assets/icon/*.mp4
+assets/img-sobre-nosotros/

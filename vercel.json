@@ -2,9 +2,7 @@
   "version": 2,
   "functions": {
     "api/index.php": {
-      "runtime": "vercel-php@0.7.4",
-      "includeFiles": "**",
-      "excludeFiles": "{vendor/**,node_modules/**,tests/**,.git/**,assets/icon/*.mp4,assets/icon/*.png,assets/img-sobre-nosotros/**}"
+      "runtime": "vercel-php@0.7.4"
     }
   },
   "routes": [
