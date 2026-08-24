@@ -8,3 +8,5 @@ tests/
 db/db/*.sql
 db/db/*.txt
 node_modules
+composer.json
+composer.lock
