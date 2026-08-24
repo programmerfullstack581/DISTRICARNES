@@ -129,6 +129,12 @@ if (is_dir($file)) {
     $uri = rtrim($uri, '/') . '/index.php';
 }
 
+// Soporte para URLs limpias (sin extensión .php): si no existe el archivo directo pero sí agregando .php
+if (!is_file($file) && is_file($file . '.php')) {
+    $file .= '.php';
+    $uri .= '.php';
+}
+
 // 4. Si el archivo es PHP y existe, ejecutarlo configurando $_SERVER
 if (is_file($file) && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
     // Configurar adecuadamente las variables del servidor para emular ejecución nativa
