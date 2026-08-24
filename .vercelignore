@@ -1,10 +1,10 @@
 .git
 .dockerignore
 Dockerfile
+Dockerfile.vercel
 docker-compose.yml
 phpunit.xml
 tests/
 db/db/*.sql
 db/db/*.txt
-composer.lock
 node_modules
