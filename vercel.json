@@ -11,7 +11,15 @@
       "dest": "/403"
     },
     {
-      "src": "/([^.]+|.*\\.php)$",
+      "src": "/$",
+      "dest": "/api/index.php"
+    },
+    {
+      "src": "/([^.]+)",
+      "dest": "/api/index.php"
+    },
+    {
+      "src": "/(.*)\\.php",
       "dest": "/api/index.php"
     },
     {
