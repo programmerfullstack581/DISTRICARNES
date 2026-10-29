@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ofertas & Promociones Cárnicas | DISTRICARNES Hermanos Navarro</title>
+    <meta name="description" content="Aprovecha las mejores ofertas en cortes selectos de res, cerdo, aves y combos parrilleros en Cartagena y Villanueva, Bolívar. Calidad premium y cadena de frío." />
+    <meta property="og:title" content="Ofertas y Promociones Cárnicas - DISTRICARNES" />
+    <meta property="og:description" content="Cortes selectos con descuentos reales y combos parrilleros al mejor precio en Cartagena." />
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Tailwind Browser Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['selector', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        dcRed: '#ba1a28',
+                        dcRedBright: '#e8192c',
+                        dcDark: '#0c0b0b',
+                        dcSurface: '#161313',
+                        dcSurface2: '#221c1c',
+                        dcGold: '#d4a373'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- App Stylesheets -->
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+    <link rel="stylesheet" href="/static/css/responsive.css" />
+    <link rel="stylesheet" href="/static/css/promociones.css" />
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        :root {
+            --dc-bg-deep: #0c0b0b;
+            --dc-bg-card: #151313;
+            --dc-bg-elevated: #1e1b1b;
+            --dc-red-primary: #ba1a28;
+            --dc-red-hover: #981220;
+            --dc-red-glow: rgba(186, 26, 40, 0.25);
+            --dc-gold: #d4a373;
+            --dc-border: rgba(255, 255, 255, 0.08);
+            --dc-border-hover: rgba(186, 26, 40, 0.4);
+            --dc-text-main: #f5f2ef;
+            --dc-text-muted: #9e9492;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dc-bg-deep);
+            color: var(--dc-text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .promo-page-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        /* Banner Hero Promociones */
+        .promo-hero-banner {
+            background: linear-gradient(135deg, rgba(16, 12, 12, 0.94) 0%, rgba(10, 8, 8, 0.98) 100%), url('/static/images/imagenhero1.jpeg');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--dc-border);
+            border-radius: 20px;
+            padding: 48px 36px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .promo-hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(to bottom, #e8192c, #800f19);
+        }
+
+        .promo-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dc-gold);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .promo-hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin: 0 0 14px 0;
+            line-height: 1.15;
+        }
+
+        .promo-hero-title span {
+            color: #e8192c;
+            text-shadow: 0 0 24px rgba(232, 25, 44, 0.35);
+        }
+
+        .promo-hero-desc {
+            color: #b8b0ae;
+            font-size: 1.05rem;
+            max-width: 680px;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+
+        .promo-badges-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #cfc6c4;
+            font-size: 0.88rem;
+        }
+
+        .promo-badge-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .promo-badge-item i {
+            color: #e8192c;
+        }
+
+        /* Sección Combos Especiales */
+        .combos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+
+        .combo-card {
+            background: linear-gradient(180deg, #181414 0%, #120f0f 100%);
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .combo-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232, 25, 44, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .combo-ribbon {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #ba1a28, #e8192c);
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .combo-header {
+            margin-bottom: 16px;
+        }
+
+        .combo-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .combo-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 6px 0;
+        }
+
+        .combo-items-list {
+            color: #a39b99;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        .combo-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+        }
+
+        .combo-old-price {
+            text-decoration: line-through;
+            color: #8c8280;
+            font-size: 0.95rem;
+        }
+
+        .combo-new-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: #e8192c;
+        }
+
+        .combo-btn {
+            background: linear-gradient(135deg, #ba1a28 0%, #e8192c 100%);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .combo-btn:hover {
+            background: linear-gradient(135deg, #d31e30 0%, #ff2b3f 100%);
+            box-shadow: 0 4px 18px rgba(232, 25, 44, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Grid de Cortes en Oferta */
+        .section-header-offers {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--dc-border);
+        }
+
+        .section-header-offers h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header-offers h2 span {
+            color: #e8192c;
+        }
+
+        .offers-grid-custom {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .offer-card-custom {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .offer-card-custom:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232, 25, 44, 0.45);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+        }
+
+        .offer-img-box {
+            position: relative;
+            aspect-ratio: 4 / 3;
+            width: 100%;
+            background: #1c1818;
+            overflow: hidden;
+        }
+
+        .offer-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .offer-card-custom:hover .offer-img-box img {
+            transform: scale(1.05);
+        }
+
+        .offer-badge-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #e8192c;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .offer-stock-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(15, 12, 12, 0.85);
+            backdrop-filter: blur(4px);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .offer-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .offer-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            line-height: 1.3;
+        }
+
+        .offer-desc {
+            color: #9e9492;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin: 0 0 14px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.6em;
+        }
+
+        .offer-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #8c8280;
+            font-size: 0.78rem;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .offer-prices-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .offer-old-val {
+            text-decoration: line-through;
+            color: #8c8280;
+            font-size: 0.9rem;
+        }
+
+        .offer-new-val {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: #e8192c;
+        }
+
+        .offer-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qty-controls {
+            display: inline-flex;
+            align-items: center;
+            background: #1f1b1b;
+            border: 1px solid var(--dc-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .qty-controls button {
+            background: transparent;
+            color: #f5f2ef;
+            border: none;
+            width: 32px;
+            height: 36px;
+            cursor: pointer;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s ease;
+        }
+
+        .qty-controls button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .qty-controls input {
+            width: 36px;
+            height: 36px;
+            text-align: center;
+            background: transparent;
+            color: #fff;
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .btn-add-offer {
+            flex: 1;
+            background: linear-gradient(135deg, #ba1a28, #e8192c);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-add-offer:hover {
+            background: linear-gradient(135deg, #d31e30, #ff2b3f);
+            box-shadow: 0 4px 14px rgba(232, 25, 44, 0.35);
+        }
+
+        /* Banner Asesoría WhatsApp */
+        .whatsapp-vip-banner {
+            background: linear-gradient(135deg, #131c16 0%, #0d1410 100%);
+            border: 1px solid rgba(37, 211, 102, 0.25);
+            border-radius: 18px;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-vip-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .vip-left h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vip-left p {
+            color: #a7b5ac;
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .btn-whatsapp-vip {
+            background: #25d366;
+            color: #0b2213;
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-whatsapp-vip:hover {
+            background: #20ba5a;
+            transform: translateY(-2px);
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header compartido con nav_pills y botones de autenticación -->
+    <%- include("partials/header", { activeNav: "ofertas" }) %>
+    <%- include("partials/header_scripts") %>
+
+    <main class="promo-page-container" id="main-content">
+        <!-- Hero Promociones -->
+        <section class="promo-hero-banner">
+            <div class="promo-kicker">
+                <i class="fas fa-certificate"></i> Precios Especiales de Carnicería
+            </div>
+            <h1 class="promo-hero-title">
+                Ofertas & Promociones de <span>Maestría Carnicera</span>
+            </h1>
+            <p class="promo-hero-desc">
+                Cortes premium de res seleccionada, cerdo fresco y combos parrilleros con descuentos reales. Pesaje digital verificado y empacado hermético para que disfrutes la máxima terneza en tu mesa.
+            </p>
+            <div class="promo-badges-bar">
+                <div class="promo-badge-item">
+                    <i class="fas fa-temperature-low"></i> Cadena de frío ininterrumpida (0°C a 4°C)
+                </div>
+                <div class="promo-badge-item">
+                    <i class="fas fa-balance-scale"></i> 100% Balanza digital sin merma
+                </div>
+                <div class="promo-badge-item">
+                    <i class="fas fa-truck"></i> Despacho en Cartagena y Bolívar
+                </div>
+            </div>
+        </section>
+
+        <!-- Combos Parrilleros & Familiares Destacados -->
+        <section style="margin-bottom: 40px;">
+            <div class="section-header-offers">
+                <h2>Combos <span>Parrilleros & Familiares</span></h2>
+                <span class="text-xs text-stone-400 font-semibold tracking-wide uppercase">Ahorro garantizado</span>
+            </div>
+
+            <div class="combos-grid">
+                <!-- Combo 1: Asado Master -->
+                <div class="combo-card">
+                    <span class="combo-ribbon">Ahorras $12.000</span>
+                    <div class="combo-header">
+                        <span class="combo-icon">🥩</span>
+                        <h3 class="combo-title">Combo Asador Maestro</h3>
+                        <p class="combo-items-list">
+                            1 kg Vacío de res + 1 kg Punta gorda asado + 6 Chorizos artesanales con receta de la casa.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="combo-price-row">
+                            <span class="combo-old-price">$74.000</span>
+                            <span class="combo-new-price">$62.000</span>
+                        </div>
+                        <button class="combo-btn add-combo-cart"
+                            data-id="combo-asador"
+                            data-title="Combo Asador Maestro"
+                            data-price="62000"
+                            data-image="/static/images/products/prod_68ebea69caa298.78139733.jpeg">
+                            <i class="fas fa-shopping-cart"></i> Agregar Combo al Pedido
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Combo 2: Pack Familiar Semanal -->
+                <div class="combo-card">
+                    <span class="combo-ribbon">Ahorras $9.500</span>
+                    <div class="combo-header">
+                        <span class="combo-icon">🍖</span>
+                        <h3 class="combo-title">Pack Ahorro Familiar</h3>
+                        <p class="combo-items-list">
+                            1 kg Carne molida magra de res + 1 kg Chuleta de cerdo fresca + 1 Pollo campesino entero limpio.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="combo-price-row">
+                            <span class="combo-old-price">$58.500</span>
+                            <span class="combo-new-price">$49.000</span>
+                        </div>
+                        <button class="combo-btn add-combo-cart"
+                            data-id="combo-familiar"
+                            data-title="Pack Ahorro Familiar"
+                            data-price="49000"
+                            data-image="/static/images/chuleta de cerdo.jpg">
+                            <i class="fas fa-shopping-cart"></i> Agregar Combo al Pedido
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Combo 3: Dúo Cerdo & Costilla -->
+                <div class="combo-card">
+                    <span class="combo-ribbon">Ahorras $7.000</span>
+                    <div class="combo-header">
+                        <span class="combo-icon">🥓</span>
+                        <h3 class="combo-title">Dúo Costilla & Tocino Carnudo</h3>
+                        <p class="combo-items-list">
+                            1 kg Costilla especial tierna para dorar + 1 kg Tocino carnudo seleccionado para chicharrón crocante.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="combo-price-row">
+                            <span class="combo-old-price">$42.000</span>
+                            <span class="combo-new-price">$35.000</span>
+                        </div>
+                        <button class="combo-btn add-combo-cart"
+                            data-id="combo-costilla-tocino"
+                            data-title="Dúo Costilla & Tocino Carnudo"
+                            data-price="35000"
+                            data-image="/static/images/products/prod_costilla-de-cerdo_68ebe9c0ebcd8.jpeg">
+                            <i class="fas fa-shopping-cart"></i> Agregar Combo al Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vitrina de Cortes Individuales en Promoción -->
+        <section>
+            <div class="section-header-offers">
+                <h2>Cortes de la Semana con <span>Descuento Directo</span></h2>
+                <a href="/productos.php" class="text-sm font-semibold text-red-500 hover:text-red-400 transition">
+                    Ver Catálogo Completo &rarr;
+                </a>
+            </div>
+
+            <div class="offers-grid-custom">
+                <% if (typeof offers !== "undefined" && offers.length > 0) { %>
+                    <% offers.forEach(function(oferta) {
+                        var tag = '';
+                        var precio_actual = 0;
+                        var precio_antes_mostrar = '';
+                        var precio_actual_mostrar = '';
+                        var val = Number(oferta.discount_value || oferta.valor_descuento || 0);
+                        var tipo = oferta.type || oferta.tipo || 'percentage';
+                        
+                        if (tipo === 'percentage') {
+                            tag = '-' + Math.round(val) + '%';
+                            var precio_base_ficticio = 26000;
+                            var descuento = (precio_base_ficticio * val) / 100;
+                            precio_actual = precio_base_ficticio - descuento;
+                            precio_antes_mostrar = '$' + Number(precio_base_ficticio).toLocaleString('es-CO');
+                            precio_actual_mostrar = '$' + Number(precio_actual).toLocaleString('es-CO');
+                        } else if (tipo === 'bogo') {
+                            tag = '2x1 ESPECIAL';
+                            precio_actual = val > 0 ? val : 24000;
+                            precio_actual_mostrar = '$' + Number(precio_actual).toLocaleString('es-CO');
+                            precio_antes_mostrar = '$' + Number(precio_actual * 1.5).toLocaleString('es-CO');
+                        } else {
+                            tag = 'OFERTA DIRECTA';
+                            precio_actual = val || 22000;
+                            precio_antes_mostrar = '$' + Number(precio_actual * 1.2).toLocaleString('es-CO');
+                            precio_actual_mostrar = '$' + Number(precio_actual).toLocaleString('es-CO');
+                        }
+                        var imgSrc = oferta.image || oferta.imagen || '/static/images/image.png';
+                        var prodTitle = oferta.title || oferta.nombre || 'Corte Selecto';
+                        var prodDesc = oferta.description || oferta.descripcion || 'Corte premium tierno y jugoso con trazabilidad garantizada.';
+                    %>
+                    <div class="offer-card-custom" id="offer-card-<%= oferta.id %>">
+                        <div class="offer-img-box">
+                            <img src="<%= imgSrc %>" alt="<%= prodTitle %>" loading="lazy" />
+                            <span class="offer-badge-tag"><%= tag %></span>
+                            <span class="offer-stock-tag"><i class="fas fa-check-circle"></i> En stock</span>
+                        </div>
+                        <div class="offer-body">
+                            <div>
+                                <h3 class="offer-title"><%= prodTitle %></h3>
+                                <p class="offer-desc"><%= prodDesc %></p>
+                                <div class="offer-meta-row">
+                                    <span><i class="fas fa-weight-hanging text-red-500 mr-1"></i> 1 Libra / 500g</span>
+                                    <span><i class="fas fa-shield-alt text-amber-500 mr-1"></i> Vacío Grado Alimentario</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="offer-prices-row">
+                                    <% if (precio_antes_mostrar) { %>
+                                        <span class="offer-old-val"><%= precio_antes_mostrar %></span>
+                                    <% } %>
+                                    <span class="offer-new-val"><%= precio_actual_mostrar %></span>
+                                </div>
+                                <div class="offer-actions-row">
+                                    <div class="qty-controls">
+                                        <button type="button" onclick="changeOfferQty(this, -1)">-</button>
+                                        <input type="number" class="offer-qty-val" value="1" min="1" max="10" readonly />
+                                        <button type="button" onclick="changeOfferQty(this, 1)">+</button>
+                                    </div>
+                                    <button type="button"
+                                        class="btn-add-offer btn-add-promo"
+                                        data-id="promo-<%= oferta.id %>"
+                                        data-title="<%= prodTitle %>"
+                                        data-price="<%= precio_actual %>"
+                                        data-image="<%= imgSrc %>">
+                                        <i class="fas fa-cart-plus"></i> Añadir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-span-full p-8 text-center bg-[#151313] border border-stone-800 rounded-xl">
+                        <p class="text-stone-400">Pronto publicaremos nuevas ofertas de la semana. ¡Consulta nuestros cortes diarios en el catálogo!</p>
+                    </div>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Banner Asesoría VIP WhatsApp -->
+        <section class="whatsapp-vip-banner">
+            <div class="vip-left">
+                <h3><i class="fab fa-whatsapp text-green-400 text-2xl"></i> ¿Buscas un corte o peso personalizado?</h3>
+                <p>Contáctate directamente con nuestro maestro carnicero Francisco Navarro para pedidos especiales, parrilladas para eventos o asesoría de preparación.</p>
+            </div>
+            <div>
+                <a href="https://wa.me/573015210177?text=Hola%20Districarnes,%20quiero%20consultar%20por%20las%20ofertas%20y%20hacer%20un%20pedido%20especial." target="_blank" rel="noopener noreferrer" class="btn-whatsapp-vip">
+                    <i class="fab fa-whatsapp text-lg"></i> Asesoría WhatsApp (+57 301 5210177)
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Unificado -->
+    <footer class="footer" style="background:#0c0b0b; border-top:1px solid rgba(255,255,255,0.08); padding:50px 20px 24px;">
+        <div class="footer-container" style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:32px;">
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">DISTRICARNES NAVARRO</h4>
+                <p style="color:#9e9492; font-size:0.9rem; line-height:1.6; margin-bottom:12px;">Maestría cárnica artesanal y cortes seleccionados con el más estricto control de higiene, balanza digital y cadena de frío.</p>
+                <p style="color:#d4a373; font-size:0.88rem; font-weight:700;"><i class="fas fa-map-marker-alt mr-2"></i> Olaya Herrera, Cartagena de Indias & Villanueva, Bolívar</p>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ENLACES RÁPIDOS</h4>
+                <ul style="list-style:none; padding:0; margin:0; line-height:2.2; font-size:0.9rem;">
+                    <li><a href="/index.php" style="color:#cfc6c4; text-decoration:none;">Inicio</a></li>
+                    <li><a href="/productos.php" style="color:#cfc6c4; text-decoration:none;">Catálogo de Cortes</a></li>
+                    <li><a href="/promociones.php" style="color:#e8192c; font-weight:700; text-decoration:none;">Ofertas & Promociones</a></li>
+                    <li><a href="/sobre_nosotros.php" style="color:#cfc6c4; text-decoration:none;">Quiénes Somos</a></li>
+                    <li><a href="/contacto.php" style="color:#cfc6c4; text-decoration:none;">Contacto & Sedes</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ATENCIÓN AL CLIENTE</h4>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-phone mr-2 text-red-500"></i> +57 301 5210177</p>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-envelope mr-2 text-red-500"></i> districarneshermanosnavarro@gmail.com</p>
+                <p style="color:#9e9492; font-size:0.9rem;"><i class="fas fa-clock mr-2 text-red-500"></i> Lun - Sáb: 6:30 AM - 6:30 PM</p>
+            </div>
+        </div>
+        <div style="text-align:center; padding-top:32px; margin-top:32px; border-top:1px solid rgba(255,255,255,0.06); color:#7d7472; font-size:0.85rem;">
+            &copy; 2026 DISTRICARNES HERMANOS NAVARRO. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Chatbot flotante -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Abrir chat DISTRICARNES" aria-label="Abrir chat DISTRICARNES">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Scripts de interactividad y Carrito -->
+    <script src="/static/js/cart_utils.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+    <script>
+        function changeOfferQty(btn, delta) {
+            const container = btn.closest('.qty-controls');
+            const input = container.querySelector('.offer-qty-val');
+            let val = parseInt(input.value, 10) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            if (val > 10) val = 10;
+            input.value = val;
+        }
+
+        // Manejador para agregar cortes en promoción al carrito
+        document.addEventListener('DOMContentLoaded', function() {
+            // Promo buttons
+            document.querySelectorAll('.btn-add-promo').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const card = btn.closest('.offer-card-custom');
+                    const qtyInput = card ? card.querySelector('.offer-qty-val') : null;
+                    const qty = qtyInput ? parseInt(qtyInput.value, 10) || 1 : 1;
+                    const id = btn.getAttribute('data-id');
+                    const title = btn.getAttribute('data-title');
+                    const price = parseFloat(btn.getAttribute('data-price')) || 0;
+                    const image = btn.getAttribute('data-image');
+
+                    if (window.CartSystem && typeof window.CartSystem.addItem === 'function') {
+                        window.CartSystem.addItem({
+                            id: id,
+                            title: title,
+                            price: price,
+                            image: image,
+                            qty: qty
+                        });
+                    } else {
+                        // Fallback local storage
+                        try {
+                            const cart = JSON.parse(localStorage.getItem('districarnes_cart') || '[]');
+                            const existing = cart.find(i => String(i.id) === String(id));
+                            if (existing) {
+                                existing.qty = (existing.qty || 1) + qty;
+                            } else {
+                                cart.push({ id, title, price, image, qty });
+                            }
+                            localStorage.setItem('districarnes_cart', JSON.stringify(cart));
+                            const badge = document.getElementById('cartCount') || document.getElementById('mhCartCount');
+                            if (badge) {
+                                const totalCount = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+                                badge.textContent = totalCount;
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+
+                    if (window.Swal) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '¡Oferta añadida al carrito!',
+                            text: qty + 'x ' + title,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#1c1818',
+                            color: '#ffffff'
+                        });
+                    }
+                });
+            });
+
+            // Combo buttons
+            document.querySelectorAll('.add-combo-cart').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const id = btn.getAttribute('data-id');
+                    const title = btn.getAttribute('data-title');
+                    const price = parseFloat(btn.getAttribute('data-price')) || 0;
+                    const image = btn.getAttribute('data-image');
+
+                    if (window.CartSystem && typeof window.CartSystem.addItem === 'function') {
+                        window.CartSystem.addItem({ id, title, price, image, qty: 1 });
+                    } else {
+                        try {
+                            const cart = JSON.parse(localStorage.getItem('districarnes_cart') || '[]');
+                            const existing = cart.find(i => String(i.id) === String(id));
+                            if (existing) {
+                                existing.qty = (existing.qty || 1) + 1;
+                            } else {
+                                cart.push({ id, title, price, image, qty: 1 });
+                            }
+                            localStorage.setItem('districarnes_cart', JSON.stringify(cart));
+                            const badge = document.getElementById('cartCount') || document.getElementById('mhCartCount');
+                            if (badge) {
+                                const totalCount = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+                                badge.textContent = totalCount;
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+
+                    if (window.Swal) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '¡Combo añadido!',
+                            text: title,
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#1c1818',
+                            color: '#ffffff'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

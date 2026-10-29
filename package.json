@@ -1,0 +1,24 @@
+{
+  "name": "districarnes",
+  "version": "1.0.0",
+  "description": "DistriCarnes Hermanos Navarro — Plataforma e-commerce",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server.ts",
+    "build": "tsc",
+    "start": "tsx server.ts"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "ejs": "^3.1.10",
+    "cors": "^2.8.5",
+    "cookie-parser": "^1.4.7"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DISTRICARNES Hermanos Navarro | Maestros Carniceros en Cartagena y Bolívar</title>
+    <meta name="description" content="Carnicería artesanal premium en Cartagena y Villanueva, Bolívar. Cortes selectos de res, cerdo y aves a la medida con selector de grosor y peso. Cadena de frío estricta." />
+    <meta property="og:title" content="DISTRICARNES Hermanos Navarro - Carnicería Artesanal" />
+    <meta property="og:description" content="Cortes frescos de calidad superior. Elige tu corte, peso y empaque al vacío con despacho refrigerado en Cartagena." />
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Tailwind Browser Script for Utility Fallback -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['selector', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        dcRed: '#e8192c',
+                        dcDark: '#0d0b0b',
+                        dcSurface: '#161212'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- App Stylesheets -->
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/inicio_districarnes.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/responsive.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+
+    <!-- Core Scripts -->
+    <script src="/static/js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        /* Scoped High-Fidelity Butcher Shop Overrides */
+        :root {
+            --dc-hero-bg: #0d0b0b;
+            --dc-card-bg: #161313;
+            --dc-card-hover: #1f1919;
+            --dc-border-subtle: rgba(255, 255, 255, 0.08);
+            --dc-red-brand: #e8192c;
+            --dc-red-dark: #b81220;
+            --dc-gold-accent: #f59e0b;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif !important;
+            background-color: var(--dc-hero-bg);
+            color: #f5f2eb;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Hero Boutique Styling */
+        .dc-hero-wrapper {
+            position: relative;
+            background: radial-gradient(circle at 75% 25%, rgba(232, 25, 44, 0.16) 0%, transparent 55%),
+                        radial-gradient(circle at 20% 70%, rgba(245, 158, 11, 0.08) 0%, transparent 45%),
+                        #0d0b0b;
+            border-bottom: 1px solid var(--dc-border-subtle);
+            overflow: hidden;
+            padding: 48px 0 64px 0;
+        }
+
+        .dc-hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 36px;
+            align-items: center;
+        }
+
+        @media (min-width: 992px) {
+            .dc-hero-grid {
+                grid-template-columns: 1.15fr 0.85fr;
+                gap: 48px;
+            }
+        }
+
+        .dc-pill-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(232, 25, 44, 0.15);
+            border: 1px solid rgba(232, 25, 44, 0.4);
+            color: #ff6b78;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dc-hero-title {
+            font-family: 'Montserrat', sans-serif !important;
+            font-weight: 900 !important;
+            font-size: 2.5rem;
+            line-height: 1.15;
+            color: #ffffff !important;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin: 16px 0;
+            -webkit-text-stroke: 0 !important;
+            text-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
+        }
+
+        @media (min-width: 768px) {
+            .dc-hero-title {
+                font-size: 3.25rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .dc-hero-title {
+                font-size: 3.75rem;
+            }
+        }
+
+        .dc-hero-title span.red {
+            color: var(--dc-red-brand) !important;
+        }
+
+        .dc-hero-desc {
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: #d1cbc1 !important;
+            margin-bottom: 28px;
+            max-width: 620px;
+        }
+
+        .dc-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #e8192c 0%, #b81220 100%);
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 0.92rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none !important;
+            box-shadow: 0 8px 24px rgba(232, 25, 44, 0.35);
+            transition: all 0.25s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dc-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(232, 25, 44, 0.5);
+            filter: brightness(1.1);
+        }
+
+        .dc-btn-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #15803d;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none !important;
+            box-shadow: 0 8px 20px rgba(21, 128, 61, 0.3);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .dc-btn-whatsapp:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(22, 163, 74, 0.4);
+        }
+
+        /* Hero Highlights Metric row */
+        .dc-metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 28px;
+            max-width: 580px;
+        }
+
+        .dc-metric-val {
+            font-size: 1.45rem;
+            font-weight: 900;
+            color: var(--dc-gold-accent);
+            line-height: 1.2;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        .dc-metric-lbl {
+            font-size: 0.78rem;
+            color: #a8a29e;
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Butcher Visual Frame */
+        .dc-butcher-frame {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dc-butcher-glow {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, rgba(232, 25, 44, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            filter: blur(40px);
+            z-index: 1;
+        }
+
+        .dc-butcher-img {
+            position: relative;
+            z-index: 2;
+            max-height: 520px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.9));
+        }
+
+        .dc-butcher-badge {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            width: 90%;
+            max-width: 380px;
+            background: rgba(22, 19, 19, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Star Cuts Card System */
+        .dc-cut-card {
+            background: var(--dc-card-bg);
+            border: 1px solid var(--dc-border-subtle);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .dc-cut-card:hover {
+            border-color: rgba(232, 25, 44, 0.45);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+        }
+
+        .dc-cut-imgbox {
+            position: relative;
+            height: 200px;
+            width: 100%;
+            background: #110e0e;
+            overflow: hidden;
+        }
+
+        .dc-cut-imgbox img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .dc-cut-card:hover .dc-cut-imgbox img {
+            transform: scale(1.06);
+        }
+
+        .dc-badge-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(13, 11, 11, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .dc-badge-fresh {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--dc-red-brand);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 800;
+        }
+
+        .dc-weight-pill {
+            background: #221c1c;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d6d3d1;
+            border-radius: 8px;
+            padding: 6px 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            outline: none;
+        }
+
+        .dc-weight-pill:hover {
+            border-color: var(--dc-red-brand);
+            color: #fff;
+        }
+
+        .dc-weight-pill.active {
+            background: var(--dc-red-brand);
+            border-color: var(--dc-red-brand);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(232, 25, 44, 0.4);
+        }
+
+        .dc-cut-dropdown {
+            width: 100%;
+            background: #221c1c;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .dc-cut-dropdown:focus {
+            border-color: var(--dc-red-brand);
+        }
+
+        .dc-btn-order {
+            width: 100%;
+            background: var(--dc-red-brand);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-weight: 800;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .dc-btn-order:hover {
+            background: var(--dc-red-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(232, 25, 44, 0.4);
+        }
+
+        /* Order Guide Tabs */
+        .dc-tab-btn {
+            background: #1c1818;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #b0a8a8;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .dc-tab-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dc-tab-btn.active {
+            background: linear-gradient(135deg, rgba(232, 25, 44, 0.25), rgba(232, 25, 44, 0.05));
+            border-color: var(--dc-red-brand);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(232, 25, 44, 0.2);
+        }
+
+        .dc-tab-panel {
+            display: none;
+        }
+
+        .dc-tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toast feedback */
+        #dcToast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #141010;
+            border: 1px solid var(--dc-red-brand);
+            padding: 14px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999999;
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        #dcToast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <%- include('partials/header', { activeNav: 'inicio', headerExtra: '<style>a{text-decoration:none}</style>' }) %>
+
+    <!-- HERO SECTION -->
+    <section class="dc-hero-wrapper" id="main-content">
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10">
+            <div class="dc-hero-grid">
+                <!-- Text Column -->
+                <div>
+                    <div class="dc-pill-badge">
+                        <i class="fas fa-certificate text-red-500"></i>
+                        <span>Maestros Carniceros • Cartagena & Villanueva, Bolívar</span>
+                    </div>
+
+                    <h1 class="dc-hero-title">
+                        Cortes Selectos de Res, Cerdo y Aves con <span class="red">Calidad Superior</span>
+                    </h1>
+
+                    <p class="dc-hero-desc">
+                        Personaliza el <strong class="text-white">grosor del corte</strong> (asado, plancha o bistec), el <strong class="text-white">gramaje exacto</strong> y el <strong class="text-white">empaque al vacío</strong>. Seleccionado con maestría por los Hermanos Navarro y despachado con cadena de frío garantizada directo a tu cocina.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="/productos.php" class="dc-btn-primary">
+                            <i class="fas fa-drumstick-bite"></i>
+                            <span>Explorar Catálogo de Cortes</span>
+                        </a>
+
+                        <a href="https://wa.me/573015210177?text=Hola%20Districarnes,%20quiero%20hacer%20un%20pedido%20con%20corte%20personalizado" target="_blank" rel="noopener noreferrer" class="dc-btn-whatsapp">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                            <span>Asesoría por WhatsApp</span>
+                        </a>
+                    </div>
+
+                    <!-- Highlights Strip -->
+                    <div class="dc-metrics-strip">
+                        <div>
+                            <div class="dc-metric-val">0°C a 4°C</div>
+                            <div class="dc-metric-lbl">Cadena de frío continua</div>
+                        </div>
+                        <div>
+                            <div class="dc-metric-val">100%</div>
+                            <div class="dc-metric-lbl">Balanza digital exacta</div>
+                        </div>
+                        <div>
+                            <div class="dc-metric-val">Sellado</div>
+                            <div class="dc-metric-lbl">Al vacío grado alimentario</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Butcher Image Column (Francisco Navarro) -->
+                <div class="dc-butcher-frame">
+                    <div class="dc-butcher-glow"></div>
+                    <img src="/static/images/carnicero_navarro.png" alt="Maestro Carnicero Districarnes Navarro" class="dc-butcher-img" fetchpriority="high" decoding="async">
+                    
+                    <div class="dc-butcher-badge">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-lg">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-bold text-white uppercase tracking-wider">Hermanos Navarro</div>
+                                <div class="text-[11px] text-stone-400">Tradición cárnica en Bolívar</div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30">
+                            Atendiendo Hoy
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BRAND MARQUEE -->
+    <section class="brand-marquee" aria-label="Marcas y medios de pago">
+        <style>
+            .brand-marquee {
+                background: #151111;
+                border-top: 1px solid rgba(255,255,255,0.06);
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+                overflow: hidden;
+            }
+            .brand-marquee__viewport {
+                max-width: 1200px;
+                margin: 0 auto;
+                position: relative;
+            }
+            .brand-marquee__fade {
+                position: absolute;
+                top: 0; bottom: 0; width: 60px;
+                pointer-events: none; z-index: 1;
+            }
+            .brand-marquee__fade.left { left: 0; background: linear-gradient(90deg, #151111 0%, transparent 100%); }
+            .brand-marquee__fade.right { right: 0; background: linear-gradient(270deg, #151111 0%, transparent 100%); }
+            .brand-marquee__track {
+                display: flex; gap: 28px; align-items: center; width: max-content;
+                animation: brandScroll 28s linear infinite; padding: 12px 0;
+            }
+            .brand-item {
+                display: inline-flex; align-items: center; gap: 8px;
+                color: #b0a8a8; text-decoration: none; font-weight: 700; font-size: 0.88rem;
+                transition: color 0.2s, transform 0.2s;
+            }
+            .brand-item:hover { color: #fff; transform: scale(1.05); }
+            .brand-item .is-red { color: #e8192c; }
+            @keyframes brandScroll {
+                from { transform: translateX(0); }
+                to { transform: translateX(-50%); }
+            }
+        </style>
+        <div class="brand-marquee__viewport">
+            <div class="brand-marquee__fade left"></div>
+            <div class="brand-marquee__fade right"></div>
+            <div class="brand-marquee__track">
+                <span class="brand-item"><i class="fab fa-cc-visa is-red"></i><span>Visa</span></span>
+                <span class="brand-item"><i class="fab fa-cc-mastercard is-red"></i><span>Mastercard</span></span>
+                <span class="brand-item"><i class="fab fa-cc-amex"></i><span>Amex</span></span>
+                <span class="brand-item"><i class="fas fa-money-check-alt is-red"></i><span>PSE</span></span>
+                <span class="brand-item"><i class="fas fa-university"></i><span>Bancolombia</span></span>
+                <span class="brand-item"><i class="fas fa-wallet is-red"></i><span>Nequi</span></span>
+                <span class="brand-item"><i class="fas fa-wallet"></i><span>Daviplata</span></span>
+                <span class="brand-item"><i class="fab fa-whatsapp is-red"></i><span>WhatsApp Domicilios</span></span>
+                <span class="brand-item"><i class="fas fa-truck is-red"></i><span>Despacho Refrigerado</span></span>
+                <span class="brand-item"><i class="fas fa-shield-alt"></i><span>Pagos Seguros</span></span>
+                <span class="brand-item"><i class="fas fa-award is-red"></i><span>Calidad Superior</span></span>
+                <!-- Duplicate for continuous loop -->
+                <span class="brand-item"><i class="fab fa-cc-visa is-red"></i><span>Visa</span></span>
+                <span class="brand-item"><i class="fab fa-cc-mastercard is-red"></i><span>Mastercard</span></span>
+                <span class="brand-item"><i class="fab fa-cc-amex"></i><span>Amex</span></span>
+                <span class="brand-item"><i class="fas fa-money-check-alt is-red"></i><span>PSE</span></span>
+                <span class="brand-item"><i class="fas fa-university"></i><span>Bancolombia</span></span>
+                <span class="brand-item"><i class="fas fa-wallet is-red"></i><span>Nequi</span></span>
+                <span class="brand-item"><i class="fas fa-wallet"></i><span>Daviplata</span></span>
+                <span class="brand-item"><i class="fab fa-whatsapp is-red"></i><span>WhatsApp Domicilios</span></span>
+                <span class="brand-item"><i class="fas fa-truck is-red"></i><span>Despacho Refrigerado</span></span>
+                <span class="brand-item"><i class="fas fa-shield-alt"></i><span>Pagos Seguros</span></span>
+                <span class="brand-item"><i class="fas fa-award is-red"></i><span>Calidad Superior</span></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAR CUTS WITH WEIGHT & CUT SELECTOR -->
+    <section class="max-w-7xl mx-auto px-6 py-16">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/80 border border-red-700/50 text-red-400 text-xs font-bold tracking-wider uppercase mb-2">
+                    <i class="fas fa-fire text-red-500"></i>
+                    <span>Cortes Estrella en Mostrador</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                    Cortes Más Pedidos con Selector de Corte y Peso
+                </h2>
+                <p class="text-stone-400 text-sm mt-1.5 max-w-2xl">
+                    Elige el gramaje exacto y el tipo de corte (asado, plancha, bistec o entero). El precio se recalcula al instante.
+                </p>
+            </div>
+            <a href="/productos.php" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 text-sm font-bold transition-all">
+                <span>Ver Catálogo Completo</span>
+                <i class="fas fa-arrow-right text-xs text-red-500"></i>
+            </a>
+        </div>
+
+        <!-- Dynamic Product Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <% var _featured = (typeof featuredProducts !== 'undefined' && featuredProducts) ? featuredProducts : []; 
+               _featured.forEach(function(prod) { 
+                var basePrice = Number(prod.precio_venta || prod.precio || 20000);
+                var img = prod.imagen || prod.image || '/static/images/carne a a bbq.jpg';
+                var catName = (prod.categoria || 'Corte').toUpperCase();
+            %>
+            <div class="dc-cut-card" data-product-id="<%= prod.id_producto %>" data-base-price="<%= basePrice %>" data-name="<%= prod.nombre %>" data-image="<%= img %>">
+                <!-- Image -->
+                <div class="dc-cut-imgbox">
+                    <img src="<%= img %>" alt="<%= prod.nombre %>" loading="lazy">
+                    <span class="dc-badge-tag"><%= catName %></span>
+                    <span class="dc-badge-fresh"><i class="fas fa-check-circle mr-1"></i>Fresco</span>
+                </div>
+
+                <!-- Content -->
+                <div class="p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-white leading-snug">
+                            <a href="/detalle_producto.php?id=<%= prod.id_producto %>" class="hover:text-red-400 transition-colors">
+                                <%= prod.nombre %>
+                            </a>
+                        </h3>
+                        <div class="text-xs text-stone-400 mt-1">
+                            Precio base: <span class="text-stone-200 font-semibold">$<%= basePrice.toLocaleString('es-CO') %></span> / Kg
+                        </div>
+
+                        <!-- 1. Weight Selector -->
+                        <div class="mt-4">
+                            <label class="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-1.5">
+                                1. Peso del corte:
+                            </label>
+                            <div class="grid grid-cols-3 gap-1.5 weight-buttons-box">
+                                <button type="button" class="dc-weight-pill" data-weight="0.5" data-label="500g">500g</button>
+                                <button type="button" class="dc-weight-pill active" data-weight="1" data-label="1 Kg">1 Kg</button>
+                                <button type="button" class="dc-weight-pill" data-weight="2" data-label="2 Kg">2 Kg</button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Cut Selector -->
+                        <div class="mt-3.5">
+                            <label class="block text-[11px] font-bold text-stone-300 uppercase tracking-wider mb-1.5">
+                                2. Tipo de corte / Grosor:
+                            </label>
+                            <select class="dc-cut-dropdown cut-choice-select">
+                                <option value="Asado / Parrilla (2.5 cm)">Asado / Parrilla (2.5 cm)</option>
+                                <option value="Plancha / Bistec (1 cm)">Plancha / Bistec (1 cm)</option>
+                                <option value="Milanesa / Finito">Milanesa / Finito</option>
+                                <option value="Picado para Guiso / Sancocho">Picado para Guiso / Sancocho</option>
+                                <option value="Pieza Entera sin Porcionar">Pieza Entera sin Porcionar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Price & Action -->
+                    <div class="pt-4 mt-4 border-t border-white/5 space-y-3">
+                        <div class="flex items-baseline justify-between">
+                            <span class="text-xs text-stone-400">Total estimado:</span>
+                            <span class="text-lg font-black text-amber-400 card-total-price">
+                                $<%= basePrice.toLocaleString('es-CO') %>
+                            </span>
+                        </div>
+
+                        <button type="button" class="dc-btn-order btn-add-meat-card">
+                            <i class="fas fa-cart-plus"></i>
+                            <span>Agregar a la Orden</span>
+                        </button>
+
+                        <div class="text-center">
+                            <a href="/detalle_producto.php?id=<%= prod.id_producto %>" class="text-[11px] text-stone-400 hover:text-stone-200 underline">
+                                Ver ficha y tiempos de cocción
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+    </section>
+
+    <!-- GUÍA DEL MAESTRO CARNICERO (COOKING GUIDE TABS) -->
+    <section class="max-w-7xl mx-auto px-6 py-12">
+        <div class="text-center max-w-3xl mx-auto mb-10">
+            <span class="text-red-500 font-bold text-xs uppercase tracking-widest">Recomendaciones del Maestro</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1">¿Cómo lo vas a preparar?</h2>
+            <p class="text-stone-400 text-sm mt-2">
+                Cada receta y corte exige una técnica distinta. Elige el método que vas a usar y te orientamos sobre el corte ideal.
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-8">
+            <button class="dc-tab-btn active" onclick="setCookTab('asador')">
+                <i class="fas fa-fire-alt text-amber-500"></i>
+                <span>Parrilla & Asador</span>
+            </button>
+            <button class="dc-tab-btn" onclick="setCookTab('plancha')">
+                <i class="fas fa-utensils text-red-400"></i>
+                <span>Plancha & Bistec Rápido</span>
+            </button>
+            <button class="dc-tab-btn" onclick="setCookTab('sancocho')">
+                <i class="fas fa-drumstick-bite text-amber-400"></i>
+                <span>Sancocho & Olla Criolla</span>
+            </button>
+            <button class="dc-tab-btn" onclick="setCookTab('horno')">
+                <i class="fas fa-temperature-high text-orange-400"></i>
+                <span>Horno & Pieza Entera</span>
+            </button>
+        </div>
+
+        <!-- Tab 1: Asador -->
+        <div id="tab-asador" class="dc-tab-panel active">
+            <div class="bg-stone-900/80 border border-white/10 rounded-2xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-4 md:col-span-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-amber-950/80 border border-amber-600/40 text-amber-300 text-xs font-bold uppercase">
+                        Fuego Medio-Alto · Grosor 2.5 cm a 3.5 cm
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Cortes con Buen Marmoleo y Cobertura Grasa</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed">
+                        Para la parrilla abierta recomendamos <strong class="text-white">Punta Gorda, Lomo Ancho, Costilla de Cerdo y Tocino Carnudo</strong>. La grasa exterior protege los jugos interiores del calor radiante del carbón y aporta un dorado crocante.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-xs text-stone-300 pt-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Sal gruesa marina 10 min antes</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Sellar 4 min por lado a fuego vivo</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Reposar 3 min antes del corte</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Término medio a 3/4 recomendado</div>
+                    </div>
+                    <div class="pt-3">
+                        <a href="/productos.php?categoria=res" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                            <span>Ver Cortes para Asar</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden border border-white/10 h-56 bg-stone-950">
+                    <img src="/static/images/carne a a bbq.jpg" alt="Carne a la Parrilla" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Plancha -->
+        <div id="tab-plancha" class="dc-tab-panel">
+            <div class="bg-stone-900/80 border border-white/10 rounded-2xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-4 md:col-span-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-red-950/80 border border-red-600/40 text-red-300 text-xs font-bold uppercase">
+                        Fuego Rápido · Grosor 1.0 cm a 1.5 cm
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Ternura Instantánea y Cocción en Pocos Minutos</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed">
+                        Cortes magros y de fibra delicada: <strong class="text-white">Lomo Fino, Bistec, Solomito de Cerdo y Pechuga de Pollo</strong>. Un sartén bien caliente con gotas de aceite sella la humedad natural sin resecar la carne.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-xs text-stone-300 pt-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Temperatura ambiente antes de cocer</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Sartén de hierro o acero bien caliente</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> 2 minutos por lado máximo</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Ideal con chimichurri casero</div>
+                    </div>
+                    <div class="pt-3">
+                        <a href="/productos.php?q=lomo" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                            <span>Ver Lomo Fino & Solomito</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden border border-white/10 h-56 bg-stone-950">
+                    <img src="/static/images/products/prod_68ebea69caa298.78139733.jpeg" alt="Lomo Fino" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Sancocho -->
+        <div id="tab-sancocho" class="dc-tab-panel">
+            <div class="bg-stone-900/80 border border-white/10 rounded-2xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-4 md:col-span-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-amber-950/80 border border-amber-600/40 text-amber-300 text-xs font-bold uppercase">
+                        Hervor Lento · Hueso y Sustancia Criolla
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Sabor Tradicional del Caribe en Olla Criolla</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed">
+                        Para el tradicional sancocho de Bolívar nada supera la <strong class="text-white">Costilla Corriente, Rabo de Res, Huesos con Sustancia y Pollo Entero</strong>. Liberan gelatina y colágeno natural para un caldo espeso y lleno de energía.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-xs text-stone-300 pt-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Cocción suave de 60 a 90 minutos</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Yuca, plátano verde y ñame costeño</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Cilantro cimarrón y ají dulce</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Carne suave al deshebrar</div>
+                    </div>
+                    <div class="pt-3">
+                        <a href="/productos.php?categoria=otros" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                            <span>Ver Cortes para Sancocho</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden border border-white/10 h-56 bg-stone-950">
+                    <img src="/static/images/products/prod_68ebf69d90ca12.57469540.jpeg" alt="Costilla y Hueso" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Horno -->
+        <div id="tab-horno" class="dc-tab-panel">
+            <div class="bg-stone-900/80 border border-white/10 rounded-2xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="space-y-4 md:col-span-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded bg-orange-950/80 border border-orange-600/40 text-orange-300 text-xs font-bold uppercase">
+                        Horno 160°C · Asado Lento y Dorado
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Piezas Enteras con Corteza Crujiente</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed">
+                        Ideal para celebraciones con <strong class="text-white">Lomo de Cerdo Entero, Contra Codillo y Pollo Campesino</strong>. Pídelos en 'Pieza Entera' con corteza intacta para marinar con mostaza y especias.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-xs text-stone-300 pt-2">
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Cubrir con aluminio la primera hora</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Destapar al final para dorar</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Bañar con sus propios jugos</div>
+                        <div class="flex items-center gap-2"><i class="fas fa-check text-red-500"></i> Solicitar 'Pieza Entera' en la web</div>
+                    </div>
+                    <div class="pt-3">
+                        <a href="/productos.php?categoria=cerdo" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                            <span>Ver Piezas de Cerdo</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="rounded-xl overflow-hidden border border-white/10 h-56 bg-stone-950">
+                    <img src="/static/images/products/prod_68ebf6e13735c0.77130189.jpg" alt="Lomo de Cerdo al Horno" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ¿CÓMO PUEDES HACER TU PEDIDO? -->
+    <section class="max-w-7xl mx-auto px-6 py-12">
+        <h2 class="text-white font-extrabold text-2xl md:text-3xl mb-8 text-center">
+            ¿CÓMO PUEDES HACER TU PEDIDO?
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-gray-300 text-sm max-w-7xl mx-auto">
+            <!-- Telefono -->
+            <div class="bg-stone-900/60 border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center space-y-4">
+                <i class="fas fa-phone-alt text-red-500 text-4xl"></i>
+                <h3 class="text-white font-bold text-lg">Llámanos y te asesoramos al instante</h3>
+                <p class="text-xs text-stone-400">
+                    Asesoría personalizada con nuestros carniceros. Te recomendamos el mejor corte según tu presupuesto y receta.
+                </p>
+                <p class="font-bold text-white text-base">+57 301 5210177</p>
+                <a href="tel:+573015210177" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Llamar ahora</span>
+                </a>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="bg-stone-900/60 border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center space-y-4">
+                <i class="fab fa-whatsapp text-emerald-500 text-4xl"></i>
+                <h3 class="text-white font-bold text-lg">Atención personalizada por WhatsApp</h3>
+                <p class="text-xs text-stone-400">
+                    Envía tu lista de mercado cárnico y coordinamos el despacho inmediato en Cartagena y Villanueva.
+                </p>
+                <a href="https://wa.me/573015210177?text=Hola%20Districarnes,%20quiero%20hacer%20un%20pedido%20a%20domicilio" target="_blank" rel="noopener noreferrer" class="dc-btn-whatsapp" style="padding: 10px 20px; font-size: 0.82rem;">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Enviar WhatsApp</span>
+                </a>
+            </div>
+
+            <!-- Pedido Web -->
+            <div class="bg-stone-900/60 border border-white/10 rounded-2xl p-6 flex flex-col items-center text-center space-y-4">
+                <i class="fas fa-shopping-cart text-red-500 text-4xl"></i>
+                <h3 class="text-white font-bold text-lg">Haz tu pedido a través de la web</h3>
+                <p class="text-xs text-stone-400">
+                    Agrega tus cortes al carrito, elige la dirección y paga de forma segura o contra entrega.
+                </p>
+                <a href="/productos.php" class="dc-btn-primary" style="padding: 10px 20px; font-size: 0.82rem;">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Comprar online</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- UBICACIÓN, MAPA & SEDES -->
+    <section class="max-w-7xl mx-auto px-6 py-12" id="sobre_nosotros">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div class="lg:col-span-5 bg-stone-900/80 border border-white/10 rounded-2xl p-8 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Visítanos en Nuestra Sede</h3>
+                    <p class="text-stone-300 text-sm leading-relaxed mb-6">
+                        Puedes escoger tus cortes directamente en nuestro mostrador refrigerado en Olaya Herrera o programar entrega en tu domicilio.
+                    </p>
+                    <div class="space-y-4 text-sm text-stone-300">
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-red-500 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Dirección Principal:</strong>
+                                <span>Olaya Herrera #34-71A-60, Cartagena de Indias, Bolívar</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-clock text-red-500 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Horarios:</strong>
+                                <span>Lunes a Sábado: 8:00 AM – 8:00 PM<br>Domingos: 9:00 AM – 5:00 PM</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <i class="fas fa-phone-alt text-red-500 mt-1"></i>
+                            <div>
+                                <strong class="text-white block">Teléfono / WhatsApp:</strong>
+                                <a href="tel:+573015210177" class="text-red-400 font-bold">+57 301 521 0177</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 pt-6 mt-6 border-t border-white/10">
+                    <a href="https://www.google.com/maps?q=DistriCarnes+Cartagena&hl=es" target="_blank" rel="noopener noreferrer" class="dc-btn-primary" style="padding: 10px 18px; font-size: 0.8rem;">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Abrir en Google Maps</span>
+                    </a>
+                    <a href="https://wa.me/573015210177?text=Hola%20Districarnes,%20quiero%20hacer%20un%20pedido" target="_blank" rel="noopener noreferrer" class="dc-btn-whatsapp" style="padding: 10px 18px; font-size: 0.8rem;">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 bg-stone-900/50 border border-white/10 rounded-2xl p-8">
+                <div class="mb-6">
+                    <h3 class="text-2xl font-bold text-white">Solicita Cotización o Pedido Especial</h3>
+                    <p class="text-stone-400 text-xs mt-1">
+                        ¿Requieres pedidos para restaurantes, eventos familiares o cortes específicos? Escríbenos.
+                    </p>
+                </div>
+
+                <form id="contactForm" method="post" action="https://formspree.io/f/mnjbandn" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="name" class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-1.5">Nombre Completo</label>
+                            <input type="text" id="name" name="name" placeholder="Tu nombre" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-red-600 transition-colors">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-1.5">Correo Electrónico</label>
+                            <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-red-600 transition-colors">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="phone" class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-1.5">Teléfono / Celular</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+57 301 000 0000" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-red-600 transition-colors">
+                        </div>
+                        <div>
+                            <label for="address" class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-1.5">Barrio / Ciudad</label>
+                            <input type="text" id="address" name="address" placeholder="Ej: Olaya Herrera, Cartagena" class="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-2.5 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-red-600 transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-1.5">Detalle del Pedido o Consulta</label>
+                        <textarea id="message" name="message" rows="3" placeholder="Indícanos los cortes, peso o empaque al vacío que requieres..." required class="w-full bg-stone-950 border border-stone-800 rounded-xl p-4 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-red-600 transition-colors"></textarea>
+                    </div>
+                    <button type="submit" class="dc-btn-primary" style="width: auto;">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Enviar Mensaje al Carnicero</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h4>INFORMACIÓN DE CONTACTO</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Olaya Herrera #34-71A-60, Cartagena</p>
+                <p><i class="fas fa-phone"></i> Teléfono: +57 301 5210177</p>
+                <p><i class="fas fa-envelope"></i> districarneshermanosnavarro@gmail.com</p>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank" rel="noopener"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/573015210177" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>CORTES Y SELECCIÓN</h4>
+                <ul>
+                    <li><a href="/productos.php?categoria=res" style="color:inherit;"><i class="fas fa-check-circle"></i> Cortes de Res y Ternera</a></li>
+                    <li><a href="/productos.php?categoria=cerdo" style="color:inherit;"><i class="fas fa-check-circle"></i> Cortes de Cerdo Especial</a></li>
+                    <li><a href="/productos.php?categoria=pollo" style="color:inherit;"><i class="fas fa-check-circle"></i> Pollo y Aves de Granja</a></li>
+                    <li><a href="/promociones.php" style="color:inherit;"><i class="fas fa-tags"></i> Combos Parrilleros</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>INFORMACIÓN Y CUENTA</h4>
+                <ul>
+                    <li><a href="/perfil.php" style="color:inherit;"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="/historial.php" style="color:inherit;"><i class="fas fa-history"></i> Mis Pedidos</a></li>
+                    <li><a href="/politica-de-privacidad.php" style="color:inherit;"><i class="fas fa-shield-alt"></i> Privacidad</a></li>
+                    <li><a href="/terminos-y-condiciones.php" style="color:inherit;"><i class="fas fa-file-contract"></i> Términos</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>HORARIOS Y COBERTURA</h4>
+                <p>Despacho refrigerado diario en Cartagena y Villanueva, Bolívar.</p>
+                <p><strong>Lunes a Sábado:</strong> 8:00 AM – 8:00 PM</p>
+                <p><strong>Domingos:</strong> 9:00 AM – 5:00 PM</p>
+            </div>
+        </div>
+        <center>
+            <h4 style="margin-top: 24px; font-size: 0.82rem; color: #78716c;">&copy; 2026 DISTRICARNES HERMANOS NAVARRO. Todos los derechos reservados.</h4>
+        </center>
+    </footer>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="dcToast">
+        <i class="fas fa-check-circle text-emerald-400 text-xl"></i>
+        <div>
+            <div id="dcToastTitle" class="text-xs font-bold text-white uppercase tracking-wider">¡Agregado al Carrito!</div>
+            <div id="dcToastDesc" class="text-[11px] text-stone-300">Corte configurado en tu orden</div>
+        </div>
+    </div>
+
+    <!-- CHATBOT INTEGRATION -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Abrir chat DISTRICARNES" tabindex="0" aria-label="Abrir chat DISTRICARNES">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <div class="chatbot-container">
+        <div class="chatbot-header">
+            <div class="header-info">
+                <div class="bot-avatar"><i class="fas fa-robot"></i></div>
+                <div>
+                    <h3 style="margin:0; font-size:14px; color:#fff;">DISTRICARNES NAVARRO</h3>
+                    <p style="margin:0; font-size:11px; color:#ddd;">Asesor de Cortes & Pedidos</p>
+                </div>
+            </div>
+            <button class="close-btn" onclick="toggleChatbot()" aria-label="Cerrar chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatBox">
+            <div class="message bot-message">
+                ¡Hola! 🥩 Bienvenido a DISTRICARNES Hermanos Navarro. ¿Qué corte o pedido deseas realizar hoy?
+                <div class="menu-options" style="margin-top:8px;">
+                    <div class="menu-option" onclick="sendChatPrompt('Cortes para asado')"><i class="fas fa-fire"></i> Cortes para Asar</div>
+                    <div class="menu-option" onclick="sendChatPrompt('Lomo fino y precios')"><i class="fas fa-tag"></i> Lomo Fino & Precios</div>
+                    <div class="menu-option" onclick="sendChatPrompt('Domicilios y horarios')"><i class="fas fa-motorcycle"></i> Domicilios y Horarios</div>
+                </div>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <div class="input-container">
+                <input type="text" class="chat-input" id="userInput" placeholder="Pregunta por un corte o pedido..." onkeypress="if(event.key==='Enter') sendMessage()" autocomplete="off" />
+                <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App JavaScript Logic -->
+    <script src="/static/js/header_actions.js"></script>
+    <script src="/static/js/cart_badge.js"></script>
+    <script src="/static/js/cart_utils.js"></script>
+    <script src="/static/js/chatbot.js"></script>
+
+    <script>
+        // Tab switching for Preparation Guide
+        function setCookTab(tabName) {
+            document.querySelectorAll('.dc-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.dc-tab-panel').forEach(panel => panel.classList.remove('active'));
+            
+            const activePanel = document.getElementById('tab-' + tabName);
+            if (activePanel) activePanel.classList.add('active');
+            
+            const clickedBtn = event.currentTarget;
+            if (clickedBtn) clickedBtn.classList.add('active');
+        }
+
+        // Live Cut & Weight Selector Logic for Cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.dc-cut-card');
+
+            cards.forEach(card => {
+                const basePrice = parseFloat(card.dataset.basePrice) || 20000;
+                const weightPills = card.querySelectorAll('.dc-weight-pill');
+                const priceDisplay = card.querySelector('.card-total-price');
+                const cutSelect = card.querySelector('.cut-choice-select');
+                const addBtn = card.querySelector('.btn-add-meat-card');
+
+                let currentWeight = 1;
+                let currentWeightLabel = '1 Kg';
+
+                weightPills.forEach(pill => {
+                    pill.addEventListener('click', function() {
+                        weightPills.forEach(p => p.classList.remove('active'));
+                        pill.classList.add('active');
+                        currentWeight = parseFloat(pill.dataset.weight) || 1;
+                        currentWeightLabel = pill.dataset.label || (currentWeight + ' Kg');
+
+                        const calcTotal = Math.round(basePrice * currentWeight);
+                        if (priceDisplay) {
+                            priceDisplay.textContent = '$' + calcTotal.toLocaleString('es-CO');
+                        }
+                    });
+                });
+
+                if (addBtn) {
+                    addBtn.addEventListener('click', function() {
+                        const prodId = parseInt(card.dataset.productId, 10);
+                        const prodName = card.dataset.name || 'Corte Seleccionado';
+                        const prodImg = card.dataset.image || '';
+                        const cutType = cutSelect ? cutSelect.value : 'Asado / Parrilla';
+                        const finalPrice = Math.round(basePrice * currentWeight);
+
+                        const itemTitle = `${prodName} (${currentWeightLabel} - ${cutType})`;
+
+                        // Save item using the application's cart schema
+                        try {
+                            const userKey = (function() {
+                                try {
+                                    const u = localStorage.getItem('userData');
+                                    if (u) {
+                                        const parsed = JSON.parse(u);
+                                        return parsed.id || parsed.id_usuario || parsed.email || 'guest';
+                                    }
+                                } catch (_) {}
+                                return 'guest';
+                            })();
+
+                            const cartStorageKey = 'cart_items:' + userKey;
+                            let currentItems = [];
+                            try {
+                                currentItems = JSON.parse(localStorage.getItem(cartStorageKey) || '[]');
+                            } catch (_) { currentItems = []; }
+
+                            // Check existing
+                            const existingIndex = currentItems.findIndex(it => it.id === prodId && it.cutType === cutType && it.weight === currentWeight);
+                            if (existingIndex >= 0) {
+                                currentItems[existingIndex].qty = (currentItems[existingIndex].qty || 1) + 1;
+                            } else {
+                                currentItems.push({
+                                    id: prodId,
+                                    title: itemTitle,
+                                    name: itemTitle,
+                                    price: finalPrice,
+                                    image: prodImg,
+                                    qty: 1,
+                                    weight: currentWeight,
+                                    weightLabel: currentWeightLabel,
+                                    cutType: cutType
+                                });
+                            }
+
+                            localStorage.setItem(cartStorageKey, JSON.stringify(currentItems));
+                            window.dispatchEvent(new CustomEvent('cart:updated', { detail: { items: currentItems } }));
+
+                            showToast(`Agregado: ${prodName}`, `${currentWeightLabel} · ${cutType}`);
+                        } catch (err) {
+                            console.error('Error adding to cart:', err);
+                            showToast('Agregado al Pedido', `${prodName} en tu carrito`);
+                        }
+                    });
+                }
+            });
+        });
+
+        // Toast feedback
+        function showToast(title, desc) {
+            const toast = document.getElementById('dcToast');
+            const titleEl = document.getElementById('dcToastTitle');
+            const descEl = document.getElementById('dcToastDesc');
+            if (!toast) return;
+
+            if (titleEl) titleEl.textContent = title;
+            if (descEl) descEl.textContent = desc;
+
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Chatbot helper
+        function sendChatPrompt(promptText) {
+            const input = document.getElementById('userInput');
+            if (input) {
+                input.value = promptText;
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+
+</html>

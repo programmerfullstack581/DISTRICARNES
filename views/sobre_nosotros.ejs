@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiénes Somos & Historia | DISTRICARNES Hermanos Navarro</title>
+    <meta name="description" content="Conoce la historia, tradición y maestros carniceros de DISTRICARNES Hermanos Navarro en Cartagena y Villanueva, Bolívar. Pasión por la carne de calidad superior." />
+    <meta property="og:title" content="Quiénes Somos - DISTRICARNES Hermanos Navarro" />
+    <meta property="og:description" content="Tradición familiar en carnes selectas de res, cerdo y aves con cadena de frío y pesaje digital exacto." />
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Tailwind Browser Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['selector', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        dcRed: '#ba1a28',
+                        dcRedBright: '#e8192c',
+                        dcDark: '#0c0b0b',
+                        dcSurface: '#161313',
+                        dcSurface2: '#221c1c',
+                        dcGold: '#d4a373'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- App Stylesheets -->
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+    <link rel="stylesheet" href="/static/css/responsive.css" />
+    <link rel="stylesheet" href="/static/css/sobre_nosotros.css" />
+    <link rel="stylesheet" href="/css/sobre_nosotros.css" />
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        :root {
+            --dc-bg-deep: #0c0b0b;
+            --dc-bg-card: #151313;
+            --dc-bg-elevated: #1e1b1b;
+            --dc-red-primary: #ba1a28;
+            --dc-red-hover: #981220;
+            --dc-red-glow: rgba(186, 26, 40, 0.25);
+            --dc-gold: #d4a373;
+            --dc-border: rgba(255, 255, 255, 0.08);
+            --dc-border-hover: rgba(186, 26, 40, 0.4);
+            --dc-text-main: #f5f2ef;
+            --dc-text-muted: #9e9492;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dc-bg-deep);
+            color: var(--dc-text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .about-page-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        /* Hero Sobre Nosotros */
+        .about-hero-banner {
+            background: linear-gradient(135deg, rgba(16, 12, 12, 0.94) 0%, rgba(10, 8, 8, 0.98) 100%), url('/static/images/carnicero_navarro.png');
+            background-size: cover;
+            background-position: center 20%;
+            border: 1px solid var(--dc-border);
+            border-radius: 20px;
+            padding: 50px 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .about-hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(to bottom, #e8192c, #800f19);
+        }
+
+        .about-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dc-gold);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .about-hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin: 0 0 16px 0;
+            line-height: 1.15;
+        }
+
+        .about-hero-title span {
+            color: #e8192c;
+            text-shadow: 0 0 24px rgba(232, 25, 44, 0.35);
+        }
+
+        .about-hero-desc {
+            color: #b8b0ae;
+            font-size: 1.05rem;
+            max-width: 760px;
+            line-height: 1.6;
+            margin: 0 0 28px 0;
+        }
+
+        /* Stats Rápidas */
+        .about-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .about-stat-card {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .about-stat-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(232, 25, 44, 0.4);
+        }
+
+        .stat-icon-wrap {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(232, 25, 44, 0.12);
+            color: #e8192c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 1.3rem;
+        }
+
+        .about-stat-val {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .about-stat-label {
+            color: #9e9492;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        /* 4 Pilares de Excelencia */
+        .pillars-section {
+            margin-bottom: 60px;
+        }
+
+        .section-headline {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-headline span {
+            color: #e8192c;
+        }
+
+        .section-subheadline {
+            color: #9e9492;
+            font-size: 0.95rem;
+            margin: 0 0 28px 0;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .pillar-card {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 28px 24px;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232, 25, 44, 0.45);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+        }
+
+        .pillar-num {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #ba1a28;
+            opacity: 0.8;
+            margin-bottom: 12px;
+        }
+
+        .pillar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 10px 0;
+        }
+
+        .pillar-text {
+            color: #9e9492;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Equipo Districarnes */
+        .team-grid-custom {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .team-card-custom {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .team-card-custom:hover {
+            transform: translateY(-4px);
+            border-color: rgba(232, 25, 44, 0.4);
+        }
+
+        .team-avatar-box {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #1c1818;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            transition: transform 0.3s ease;
+        }
+
+        .team-card-custom:hover .team-avatar-box img {
+            transform: scale(1.05);
+        }
+
+        .team-info-box {
+            padding: 20px 16px;
+        }
+
+        .team-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+        }
+
+        .team-role {
+            color: #e8192c;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
+        }
+
+        .team-bio {
+            color: #8c8280;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Banner CTA Catálogo */
+        .about-cta-banner {
+            background: linear-gradient(135deg, #1b1213 0%, #110d0e 100%);
+            border: 1px solid rgba(232, 25, 44, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .about-cta-banner h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+        }
+
+        .about-cta-banner h2 span {
+            color: #e8192c;
+        }
+
+        .about-cta-banner p {
+            color: #b8b0ae;
+            font-size: 1rem;
+            max-width: 640px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+
+        .about-cta-btns {
+            display: inline-flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-cta-catalog {
+            background: linear-gradient(135deg, #ba1a28, #e8192c);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-catalog:hover {
+            background: linear-gradient(135deg, #d31e30, #ff2b3f);
+            box-shadow: 0 4px 18px rgba(232, 25, 44, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-cta-contact {
+            background: #241d1d;
+            border: 1px solid var(--dc-border);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-contact:hover {
+            border-color: #e8192c;
+            color: #e8192c;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header compartido con nav_pills y botones de autenticación -->
+    <%- include("partials/header", { activeNav: "nosotros" }) %>
+    <%- include("partials/header_scripts") %>
+
+    <main class="about-page-container" id="main-content">
+        <!-- Hero Sobre Nosotros -->
+        <section class="about-hero-banner">
+            <div class="about-kicker">
+                <i class="fas fa-crown"></i> Tradición Cárnica en Bolívar
+            </div>
+            <h1 class="about-hero-title">
+                Pasión por la <span>Calidad & Maestría</span> Carnicera
+            </h1>
+            <p class="about-hero-desc">
+                En DISTRICARNES Hermanos Navarro honramos el arte del buen corte. Nacimos en el corazón de Bolívar con el compromiso inquebrantable de llevar a los hogares, asadores y restaurantes de Cartagena carnes con origen controlado, ternura excepcional y frescura absoluta.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-4 border-t border-white/10 text-stone-300 text-sm">
+                <div class="flex items-center gap-2"><i class="fas fa-shield-alt text-red-500"></i> Registro y control sanitario</div>
+                <div class="flex items-center gap-2"><i class="fas fa-check-circle text-amber-500"></i> Ganadería seleccionada de la región</div>
+                <div class="flex items-center gap-2"><i class="fas fa-snowflake text-sky-400"></i> Refrigeración de grado industrial</div>
+            </div>
+        </section>
+
+        <!-- Stats Rápidas -->
+        <section class="about-stats-grid">
+            <div class="about-stat-card">
+                <div class="stat-icon-wrap"><i class="fas fa-calendar-check"></i></div>
+                <div class="about-stat-val">+25</div>
+                <div class="about-stat-label">Años de Tradición y Oficio</div>
+            </div>
+            <div class="about-stat-card">
+                <div class="stat-icon-wrap"><i class="fas fa-users"></i></div>
+                <div class="about-stat-val">+12.000</div>
+                <div class="about-stat-label">Familias & Clientes Satisfechos</div>
+            </div>
+            <div class="about-stat-card">
+                <div class="stat-icon-wrap"><i class="fas fa-drumstick-bite"></i></div>
+                <div class="about-stat-val">100%</div>
+                <div class="about-stat-label">Cortes Frescos Diarios</div>
+            </div>
+            <div class="about-stat-card">
+                <div class="stat-icon-wrap"><i class="fas fa-truck"></i></div>
+                <div class="about-stat-val">0°C a 4°C</div>
+                <div class="about-stat-label">Cadena de Frío Estricta</div>
+            </div>
+        </section>
+
+        <!-- 4 Pilares de Excelencia -->
+        <section class="pillars-section">
+            <h2 class="section-headline">Los Pilares de <span>Districarnes Navarro</span></h2>
+            <p class="section-subheadline">Cuatro compromisos diarios que marcan la diferencia en cada libra de carne que llega a tu mesa.</p>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <div class="pillar-num">01</div>
+                    <h3 class="pillar-title">Cadena de Frío Ininterrumpida</h3>
+                    <p class="pillar-text">
+                        Desde el centro de acopio hasta tu refrigerador, la temperatura nunca supera los 4°C. Esto preserva los jugos naturales, textura y valor nutritivo de la res, cerdo y aves.
+                    </p>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">02</div>
+                    <h3 class="pillar-title">100% Balanza Digital Sin Merma</h3>
+                    <p class="pillar-text">
+                        Pesaje calibrado electrónicamente en cada pedido. Despachamos el gramaje exacto por el que pagas, sin sorpresas ni recargos ocultos.
+                    </p>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">03</div>
+                    <h3 class="pillar-title">Corte & Grosor a tu Medida</h3>
+                    <p class="pillar-text">
+                        ¿Parrillero de 3 cm, bistec fino marinado o medallones gruesos? Tú eliges la técnica y nuestros maestros carniceros realizan el despiece artesanal al instante.
+                    </p>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">04</div>
+                    <h3 class="pillar-title">Empaque al Vacío Grado Alimentario</h3>
+                    <p class="pillar-text">
+                        Sellado hermético que protege contra bacterias y quemaduras por congelación, manteniendo la carne lista para añejar o cocinar con máximo sabor.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nuestro Equipo de Trabajo -->
+        <section style="margin-bottom: 60px;">
+            <h2 class="section-headline">Conoce al <span>Equipo de Maestría</span></h2>
+            <p class="section-subheadline">El talento técnico y humano que hace posible la calidad superior de DISTRICARNES.</p>
+
+            <div class="team-grid-custom">
+                <!-- Miembro 1 -->
+                <div class="team-card-custom">
+                    <div class="team-avatar-box">
+                        <img src="/assets/img-sobre-nosotros/cv jaider navarro.png" alt="Jaider Alberto Navarro" />
+                    </div>
+                    <div class="team-info-box">
+                        <h3 class="team-name">Jaider Alberto Navarro</h3>
+                        <p class="team-role">Líder Operativo & Jefe de Proyecto</p>
+                        <p class="team-bio">Supervisa la cadena de suministro, calidad de corte y la satisfacción de cada entrega en Bolívar.</p>
+                    </div>
+                </div>
+
+                <!-- Miembro 2 -->
+                <div class="team-card-custom">
+                    <div class="team-avatar-box">
+                        <img src="/static/images/carnicero_navarro.png" alt="Francisco Navarro" />
+                    </div>
+                    <div class="team-info-box">
+                        <h3 class="team-name">Francisco Navarro</h3>
+                        <p class="team-role">Maestro Carnicero Principal</p>
+                        <p class="team-bio">Especialista en desposte artesanal, maduración y cortes parrilleros de alta gastronomía.</p>
+                    </div>
+                </div>
+
+                <!-- Miembro 3 -->
+                <div class="team-card-custom">
+                    <div class="team-avatar-box">
+                        <img src="/assets/img-sobre-nosotros/cv juan humberto .png" alt="Juan Humberto Vega" />
+                    </div>
+                    <div class="team-info-box">
+                        <h3 class="team-name">Juan Humberto Vega</h3>
+                        <p class="team-role">Desarrollador & Gestión Digital</p>
+                        <p class="team-bio">Encargado de la infraestructura digital, base de datos y plataforma de pedidos en línea.</p>
+                    </div>
+                </div>
+
+                <!-- Miembro 4 -->
+                <div class="team-card-custom">
+                    <div class="team-avatar-box">
+                        <img src="/assets/img-sobre-nosotros/cv jairo requena.png" alt="Jairo Requena" />
+                    </div>
+                    <div class="team-info-box">
+                        <h3 class="team-name">Jairo Requena Caraballo</h3>
+                        <p class="team-role">Analista de Procesos & Calidad</p>
+                        <p class="team-bio">Optimiza los procesos de inventario y monitoreo de frescura en almacén refrigerado.</p>
+                    </div>
+                </div>
+
+                <!-- Miembro 5 -->
+                <div class="team-card-custom">
+                    <div class="team-avatar-box">
+                        <img src="/assets/img-sobre-nosotros/cv diego andres cardona.png" alt="Diego Andrés Cardona" />
+                    </div>
+                    <div class="team-info-box">
+                        <h3 class="team-name">Diego Andrés Cardona</h3>
+                        <p class="team-role">Experiencia de Usuario & Soporte</p>
+                        <p class="team-bio">Diseña la interacción digital y atiende requerimientos de clientes en canales de compra.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Final -->
+        <section class="about-cta-banner">
+            <h2>¿Listo para probar la <span>verdadera carne premium</span>?</h2>
+            <p>Descubre nuestro catálogo de cortes frescos de res, cerdo y pollo con empaque hermético y despacho rápido en Cartagena.</p>
+            <div class="about-cta-btns">
+                <a href="/productos.php" class="btn-cta-catalog">
+                    <i class="fas fa-shopping-bag"></i> Ver Catálogo de Cortes
+                </a>
+                <a href="/contacto.php" class="btn-cta-contact">
+                    <i class="fas fa-headset"></i> Contactar un Asesor
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Unificado -->
+    <footer class="footer" style="background:#0c0b0b; border-top:1px solid rgba(255,255,255,0.08); padding:50px 20px 24px;">
+        <div class="footer-container" style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:32px;">
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">DISTRICARNES NAVARRO</h4>
+                <p style="color:#9e9492; font-size:0.9rem; line-height:1.6; margin-bottom:12px;">Maestría cárnica artesanal y cortes seleccionados con el más estricto control de higiene, balanza digital y cadena de frío.</p>
+                <p style="color:#d4a373; font-size:0.88rem; font-weight:700;"><i class="fas fa-map-marker-alt mr-2"></i> Olaya Herrera, Cartagena de Indias & Villanueva, Bolívar</p>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ENLACES RÁPIDOS</h4>
+                <ul style="list-style:none; padding:0; margin:0; line-height:2.2; font-size:0.9rem;">
+                    <li><a href="/index.php" style="color:#cfc6c4; text-decoration:none;">Inicio</a></li>
+                    <li><a href="/productos.php" style="color:#cfc6c4; text-decoration:none;">Catálogo de Cortes</a></li>
+                    <li><a href="/promociones.php" style="color:#cfc6c4; text-decoration:none;">Ofertas & Promociones</a></li>
+                    <li><a href="/sobre_nosotros.php" style="color:#e8192c; font-weight:700; text-decoration:none;">Quiénes Somos</a></li>
+                    <li><a href="/contacto.php" style="color:#cfc6c4; text-decoration:none;">Contacto & Sedes</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ATENCIÓN AL CLIENTE</h4>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-phone mr-2 text-red-500"></i> +57 301 5210177</p>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-envelope mr-2 text-red-500"></i> districarneshermanosnavarro@gmail.com</p>
+                <p style="color:#9e9492; font-size:0.9rem;"><i class="fas fa-clock mr-2 text-red-500"></i> Lun - Sáb: 6:30 AM - 6:30 PM</p>
+            </div>
+        </div>
+        <div style="text-align:center; padding-top:32px; margin-top:32px; border-top:1px solid rgba(255,255,255,0.06); color:#7d7472; font-size:0.85rem;">
+            &copy; 2026 DISTRICARNES HERMANOS NAVARRO. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Chatbot flotante -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Abrir chat DISTRICARNES" aria-label="Abrir chat DISTRICARNES">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/chatbot.js"></script>
+</body>
+</html>

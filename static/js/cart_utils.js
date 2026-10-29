@@ -3,30 +3,27 @@
   function getUserKey() {
     try {
       const rawStr = localStorage.getItem('userData') || sessionStorage.getItem('currentSession');
-      if (!rawStr) return null;
+      if (!rawStr) return 'guest';
       const raw = JSON.parse(rawStr);
       const user = raw && raw.user ? raw.user : raw;
       const email = (user && (user.correo_electronico || user.email)) || '';
       const id = (user && (user.id_usuario || user.id)) || '';
       const key = email || String(id || '').trim();
-      return key || null;
-    } catch (e) { return null; }
+      return key || 'guest';
+    } catch (e) { return 'guest'; }
   }
 
   function getCartKey() {
     const userKey = getUserKey();
-    // Si no hay usuario autenticado, no permitimos usar carrito
-    return userKey ? ('cart_items:' + userKey) : null;
+    return 'cart_items:' + userKey;
   }
 
   function getCart() {
     const key = getCartKey();
-    if (!key) return [];
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch (e) { return []; }
   }
   function saveCart(items) {
     const key = getCartKey();
-    if (!key) return;
     localStorage.setItem(key, JSON.stringify(items));
     window.dispatchEvent(new CustomEvent('cart:updated', { detail: { items } }));
   }
@@ -35,15 +32,25 @@
     const num = Number(str.replace(/[^0-9.,-]/g, '').replace(',', '.'));
     return isNaN(num) ? 0 : num;
   }
-  function addItem({ id, title, price, image, qty = 1 }) {
-    const key = getCartKey();
-    // Bloquear agregado si no hay sesión iniciada
-    if (!key) return false;
+  function addItem({ id, title, price, image, qty = 1, corte = 'Corte Estándar', empaque = 'Al Vacío', peso = '1 Kg' }) {
     const items = getCart();
-    const uniq = id || `${title}-${price}`;
-    const found = items.find(i => (i.id || `${i.title}-${i.price}`) === uniq);
-    if (found) { found.qty = (found.qty || 1) + qty; }
-    else { items.push({ id, title: title || 'Producto', price: Number(price) || 0, image: image || '', qty }); }
+    const uniq = `${id || title}-${corte}-${peso}`;
+    const found = items.find(i => (i.uniqId === uniq || (i.id === id && i.corte === corte)));
+    if (found) {
+      found.qty = (found.qty || 1) + qty;
+    } else {
+      items.push({
+        uniqId: uniq,
+        id: id || uniq,
+        title: title || 'Corte Premium',
+        price: Number(price) || 0,
+        image: image || '/static/images/image.png',
+        qty: Number(qty) || 1,
+        corte: corte,
+        empaque: empaque,
+        peso: peso
+      });
+    }
     saveCart(items);
     return true;
   }
@@ -101,37 +108,25 @@
         const price = priceText ? safeParsePrice(priceText) : Number(btn.dataset.price || 0);
         const image = btn.dataset.image || card.querySelector('img.product-image, img.img-item, .promo-img img, .product-image img, img')?.src || '';
         
-        const userKey = getCartKey();
-        if (!userKey) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'Debes iniciar sesión para continuar',
-            text: 'Inicia sesión para agregar productos al carrito.',
-            showCancelButton: true,
-            confirmButtonText: 'Iniciar sesión',
-            cancelButtonText: 'Cerrar',
-            confirmButtonColor: '#ff0000',
-            background: '#1a1a1a',
-            color: '#fff'
-          }).then((r) => { if (r && r.isConfirmed) { if (typeof window.openAuthModal === 'function') { try { sessionStorage.setItem('postLoginRedirect', window.location.pathname); } catch (e) {} window.openAuthModal('login'); } else { window.location.href = (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/login/')) ? '../login/login.php' : './login/login.php'; } } });
-          return;
-        }
+        const corte = btn.dataset.corte || card.querySelector('.selected-corte-text, .corte-value')?.textContent?.trim() || 'Corte Estándar';
+        const empaque = btn.dataset.empaque || 'Al Vacío Hermético';
+        const peso = btn.dataset.peso || '1 Kg';
 
-        const qty = await showQuantityModal({ title, price, image, id });
-        if (qty) {
-          const ok = addItem({ id, title, price, image, qty });
-          if (ok) {
-            Swal.fire({
-              toast: true,
-              position: 'top-end',
-              icon: 'success',
-              title: `¡${qty} Kg de ${title} agregados!`,
-              showConfirmButton: false,
-              timer: 3000,
-              background: '#1a1a1a',
-              color: '#fff'
-            });
-          }
+        const customQty = parseFloat(btn.dataset.qty || card.querySelector('input.qty-input, input.quantity-input')?.value || '1');
+        const qty = customQty > 0 ? customQty : 1;
+
+        const ok = addItem({ id, title, price, image, qty, corte, empaque, peso });
+        if (ok) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `¡${title} (${peso}) agregado al carrito!`,
+            showConfirmButton: false,
+            timer: 3000,
+            background: '#161414',
+            color: '#fff'
+          });
         }
       });
     });

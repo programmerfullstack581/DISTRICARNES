@@ -1,0 +1,8 @@
+{
+  "name": "DISTRICARNES Hermanos Navarro",
+  "description": "Plataforma e-commerce para ventas de carnes y productos relacionados con catálogo, promociones, carrito de compras y panel administrativo.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= producto.nombre %> - Corte Premium | DISTRICARNES Hermanos Navarro</title>
+    <meta name="description" content="Compra <%= producto.nombre %> fresco de primera calidad en DistriCarnes Hermanos Navarro. Elige el grosor del corte, peso y empaque al vacío con entrega rápida." />
+    <meta property="og:title" content="<%= producto.nombre %> - DistriCarnes" />
+    <meta property="og:description" content="<%= producto.descripcion %>" />
+
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        :root {
+            --dc-bg-deep: #0c0b0b;
+            --dc-bg-card: #151313;
+            --dc-bg-elevated: #1e1b1b;
+            --dc-red-primary: #ba1a28;
+            --dc-red-hover: #981220;
+            --dc-red-glow: rgba(186, 26, 40, 0.25);
+            --dc-gold: #d4a373;
+            --dc-border: rgba(255, 255, 255, 0.08);
+            --dc-border-hover: rgba(186, 26, 40, 0.5);
+            --dc-text-main: #f5f2ef;
+            --dc-text-muted: #9e9492;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dc-bg-deep);
+            color: var(--dc-text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .product-detail-page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 30px 20px 80px;
+        }
+
+        /* Breadcrumb boutique */
+        .dc-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            color: var(--dc-text-muted);
+            margin-bottom: 24px;
+        }
+        .dc-breadcrumb a {
+            color: var(--dc-text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .dc-breadcrumb a:hover {
+            color: var(--dc-red-primary);
+        }
+        .dc-breadcrumb .sep {
+            color: rgba(255, 255, 255, 0.2);
+        }
+        .dc-breadcrumb .current {
+            color: var(--dc-text-main);
+            font-weight: 600;
+        }
+
+        /* Grid principal */
+        .detail-hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.05fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .detail-hero-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        /* Visualizador de imagen */
+        .meat-gallery-card {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 20px;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-meat-visual {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #1c1919;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-meat-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .main-meat-visual:hover img {
+            transform: scale(1.05);
+        }
+
+        .butcher-seal-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: rgba(14, 13, 13, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--dc-border);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--dc-gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+        }
+
+        .meat-badges-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .meat-badge-item {
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--dc-text-muted);
+        }
+
+        .meat-badge-item i {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--dc-red-primary);
+            margin-bottom: 4px;
+        }
+
+        .meat-badge-item strong {
+            display: block;
+            color: var(--dc-text-main);
+            font-size: 0.82rem;
+        }
+
+        /* Columna de compra & personalización */
+        .meat-configurator {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .meat-header-info h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+            line-height: 1.15;
+        }
+
+        .meat-meta-line {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.88rem;
+            color: var(--dc-text-muted);
+        }
+
+        .meat-category-label {
+            color: var(--dc-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meat-rating-stars {
+            color: #eab308;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* Bloque de Precio */
+        .meat-price-box {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-left: 4px solid var(--dc-red-primary);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .meat-price-main {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ffffff;
+        }
+
+        .meat-price-unit {
+            font-size: 0.95rem;
+            color: var(--dc-text-muted);
+            font-weight: 500;
+            margin-left: 6px;
+        }
+
+        .meat-price-detail-sub {
+            font-size: 0.85rem;
+            color: var(--dc-gold);
+            font-weight: 600;
+        }
+
+        /* Descripción */
+        .meat-description {
+            font-size: 0.96rem;
+            color: var(--dc-text-muted);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CONFIGURADORES (Peso, Corte, Empaque) */
+        .config-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .config-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .config-title span.hint {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--dc-text-muted);
+        }
+
+        /* Selector de peso */
+        .weight-options-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 500px) {
+            .weight-options-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .weight-chip {
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .weight-chip:hover {
+            border-color: var(--dc-border-hover);
+        }
+
+        .weight-chip.active {
+            border-color: var(--dc-red-primary);
+            background: rgba(186, 26, 40, 0.15);
+            box-shadow: 0 0 12px var(--dc-red-glow);
+        }
+
+        .weight-chip .weight-val {
+            font-size: 1.05rem;
+            font-weight: 800;
+            display: block;
+            color: #fff;
+        }
+
+        .weight-chip .weight-sub {
+            font-size: 0.72rem;
+            color: var(--dc-text-muted);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .weight-chip.active .weight-sub {
+            color: #fca5a5;
+        }
+
+        /* Selector de Tipo de Corte (Grosor) */
+        .cuts-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cut-option-card {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cut-option-card:hover {
+            border-color: var(--dc-border-hover);
+            transform: translateY(-1px);
+        }
+
+        .cut-option-card.active {
+            border-color: var(--dc-red-primary);
+            background: rgba(186, 26, 40, 0.12);
+        }
+
+        .cut-info-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .cut-icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--dc-bg-elevated);
+            color: var(--dc-red-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid var(--dc-border);
+            flex-shrink: 0;
+        }
+
+        .cut-option-card.active .cut-icon-circle {
+            background: var(--dc-red-primary);
+            color: #fff;
+            border-color: var(--dc-red-primary);
+        }
+
+        .cut-text-group h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .cut-text-group p {
+            margin: 2px 0 0;
+            font-size: 0.8rem;
+            color: var(--dc-text-muted);
+        }
+
+        .cut-radio-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--dc-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .cut-option-card.active .cut-radio-indicator {
+            border-color: var(--dc-red-primary);
+            background: var(--dc-red-primary);
+        }
+
+        .cut-radio-indicator::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            display: none;
+        }
+
+        .cut-option-card.active .cut-radio-indicator::after {
+            display: block;
+        }
+
+        /* Selector de Empaque */
+        .pack-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .pack-options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pack-chip {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .pack-chip:hover {
+            border-color: var(--dc-border-hover);
+        }
+
+        .pack-chip.active {
+            border-color: var(--dc-red-primary);
+            background: rgba(186, 26, 40, 0.12);
+        }
+
+        .pack-chip i {
+            color: var(--dc-red-primary);
+            font-size: 1.2rem;
+        }
+
+        .pack-chip span.pack-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: block;
+            color: #fff;
+        }
+
+        .pack-chip span.pack-desc {
+            font-size: 0.72rem;
+            color: var(--dc-text-muted);
+            display: block;
+        }
+
+        /* Instrucciones carnicero */
+        .butcher-notes-input {
+            width: 100%;
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 10px;
+            color: #fff;
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            resize: vertical;
+            min-height: 54px;
+        }
+        .butcher-notes-input:focus {
+            outline: none;
+            border-color: var(--dc-red-primary);
+        }
+
+        /* Botones de acción */
+        .actions-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .btn-add-meat {
+            background: var(--dc-red-primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 18px 24px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px var(--dc-red-glow);
+            text-transform: uppercase;
+        }
+
+        .btn-add-meat:hover {
+            background: var(--dc-red-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(186, 26, 40, 0.4);
+        }
+
+        .btn-checkout-fast {
+            background: var(--dc-bg-elevated);
+            color: #fff;
+            border: 1px solid var(--dc-border);
+            border-radius: 12px;
+            padding: 18px 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-checkout-fast:hover {
+            border-color: #fff;
+            background: #252222;
+        }
+
+        /* Ficha técnica culinaria */
+        .meat-culinary-specs {
+            margin-top: 50px;
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .specs-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .specs-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .spec-item {
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .spec-item .spec-label {
+            font-size: 0.78rem;
+            color: var(--dc-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .spec-item .spec-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Cortes Relacionados */
+        .related-cuts-section {
+            margin-top: 60px;
+        }
+
+        .related-cuts-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            color: #fff;
+            letter-spacing: 0.5px;
+        }
+
+        .related-cuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .rel-cut-card {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 14px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rel-cut-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--dc-border-hover);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+        }
+
+        .rel-cut-img-wrap {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: #1c1919;
+            overflow: hidden;
+        }
+
+        .rel-cut-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .rel-cut-card:hover .rel-cut-img-wrap img {
+            transform: scale(1.06);
+        }
+
+        .rel-cut-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .rel-cut-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .rel-cut-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--dc-gold);
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header compartido -->
+    <%- include('partials/header', { activeNav: 'productos' }) %>
+    <%- include('partials/header_scripts') %>
+
+    <main class="product-detail-page">
+        <!-- Breadcrumb -->
+        <nav class="dc-breadcrumb" aria-label="Navegación de miga">
+            <a href="/"><i class="fas fa-home"></i> Inicio</a>
+            <span class="sep">›</span>
+            <a href="/productos.php">Catálogo de Carnes</a>
+            <span class="sep">›</span>
+            <span class="current"><%= producto.nombre %></span>
+        </nav>
+
+        <div class="detail-hero-grid">
+            <!-- Columna Izquierda: Galería y Sellos -->
+            <div class="meat-gallery-card">
+                <div class="main-meat-visual">
+                    <img id="mainMeatImg" src="<%= producto.imagen || '/static/images/image.png' %>" alt="<%= producto.nombre %>" loading="eager" />
+                    <div class="butcher-seal-badge">
+                        <i class="fas fa-award"></i> Selección Especial Navarro
+                    </div>
+                </div>
+
+                <div class="meat-badges-row">
+                    <div class="meat-badge-item">
+                        <i class="fas fa-snowflake"></i>
+                        <strong>Cadena de Frío</strong>
+                        0°C a 4°C
+                    </div>
+                    <div class="meat-badge-item">
+                        <i class="fas fa-shield-halved"></i>
+                        <strong>Origen Seguro</strong>
+                        Certificado Bolívar
+                    </div>
+                    <div class="meat-badge-item">
+                        <i class="fas fa-boxes-packing"></i>
+                        <strong>Empaque</strong>
+                        Al Vacío Seguro
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Configuración del Corte y Compra -->
+            <div class="meat-configurator">
+                <div class="meat-header-info">
+                    <div class="meat-meta-line">
+                        <span class="meat-category-label"><i class="fas fa-drumstick-bite"></i> <%= (producto.categoria || 'Corte').toUpperCase() %> SELECTO</span>
+                        <span>•</span>
+                        <div class="meat-rating-stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span style="color: #fff; font-weight: 700; margin-left: 4px;">4.9</span>
+                            <span style="color: var(--dc-text-muted); font-size: 0.8rem;">(14 reseñas)</span>
+                        </div>
+                    </div>
+                    <h1><%= producto.nombre %></h1>
+                    <p class="meat-description">
+                        <%= producto.descripcion || 'Corte selecto de máxima ternura y jugosidad, preparado bajo los más estrictos estándares de frescura por los maestros carniceros de DistriCarnes Hermanos Navarro.' %>
+                    </p>
+                </div>
+
+                <!-- Bloque de Precio Dinámico -->
+                <div class="meat-price-box">
+                    <div>
+                        <span class="meat-price-main" id="dynamicPriceDisplay">$<%= Number(producto.precio_venta || 0).toLocaleString('es-CO') %></span>
+                        <span class="meat-price-unit" id="dynamicUnitDisplay">por 1 Kg</span>
+                    </div>
+                    <div class="meat-price-detail-sub" id="pricePerKgNote">
+                        Precio base: $<%= Number(producto.precio_venta || 0).toLocaleString('es-CO') %> / Kg
+                    </div>
+                </div>
+
+                <!-- 1. SELECTOR DE PESO / GRAMAJE -->
+                <div class="config-block">
+                    <div class="config-title">
+                        <span>1. Selecciona el Peso / Porción</span>
+                        <span class="hint" id="selectedWeightText">1.000 gramos (1 Kg)</span>
+                    </div>
+                    <div class="weight-options-grid">
+                        <div class="weight-chip" data-weight="0.5" onclick="selectWeight(0.5, this)">
+                            <span class="weight-val">500 g</span>
+                            <span class="weight-sub">1/2 Kilo</span>
+                        </div>
+                        <div class="weight-chip active" data-weight="1" onclick="selectWeight(1, this)">
+                            <span class="weight-val">1.000 g</span>
+                            <span class="weight-sub">1 Kilo</span>
+                        </div>
+                        <div class="weight-chip" data-weight="1.5" onclick="selectWeight(1.5, this)">
+                            <span class="weight-val">1.500 g</span>
+                            <span class="weight-sub">1.5 Kilos</span>
+                        </div>
+                        <div class="weight-chip" data-weight="2" onclick="selectWeight(2, this)">
+                            <span class="weight-val">2.000 g</span>
+                            <span class="weight-sub">2 Kilos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. SELECTOR DE TIPO DE CORTE / GROSOR -->
+                <div class="config-block">
+                    <div class="config-title">
+                        <span>2. Grosor y Estilo del Corte</span>
+                        <span class="hint" id="selectedCutName">Parrilla / Asado (Grueso)</span>
+                    </div>
+                    <div class="cuts-options-list">
+                        <div class="cut-option-card active" data-cut="Corte para Asado (Grueso - 2.5 cm)" onclick="selectCut('Corte para Asado (Grueso - 2.5 cm)', this)">
+                            <div class="cut-info-left">
+                                <div class="cut-icon-circle"><i class="fas fa-fire"></i></div>
+                                <div class="cut-text-group">
+                                    <h4>Corte para Asado / Parrilla (Grueso • 2.5 cm)</h4>
+                                    <p>Grosor ideal para sellar por fuera y conservar jugos internos en asador o carbón.</p>
+                                </div>
+                            </div>
+                            <div class="cut-radio-indicator"></div>
+                        </div>
+
+                        <div class="cut-option-card" data-cut="Corte Plancha / Sartén (Medio - 1 cm)" onclick="selectCut('Corte Plancha / Sartén (Medio - 1 cm)', this)">
+                            <div class="cut-info-left">
+                                <div class="cut-icon-circle"><i class="fas fa-utensils"></i></div>
+                                <div class="cut-text-group">
+                                    <h4>Corte Plancha / Sartén (Medio • 1 cm)</h4>
+                                    <p>Grosor estándar balanceado para cocción rápida y tierna en sartén o plancha.</p>
+                                </div>
+                            </div>
+                            <div class="cut-radio-indicator"></div>
+                        </div>
+
+                        <div class="cut-option-card" data-cut="Corte Milanesa / Bistec Delgado (Fino)" onclick="selectCut('Corte Milanesa / Bistec Delgado (Fino)', this)">
+                            <div class="cut-info-left">
+                                <div class="cut-icon-circle"><i class="fas fa-layer-group"></i></div>
+                                <div class="cut-text-group">
+                                    <h4>Corte Delgado / Milanesa (Fino)</h4>
+                                    <p>Filetes delgados para apanar, sofreír o preparar bistec a caballo tradicional.</p>
+                                </div>
+                            </div>
+                            <div class="cut-radio-indicator"></div>
+                        </div>
+
+                        <div class="cut-option-card" data-cut="Pieza Entera sin Porcionar" onclick="selectCut('Pieza Entera sin Porcionar', this)">
+                            <div class="cut-info-left">
+                                <div class="cut-icon-circle"><i class="fas fa-cube"></i></div>
+                                <div class="cut-text-group">
+                                    <h4>Pieza Entera sin Porcionar</h4>
+                                    <p>Corte completo limpio en bloque para asar al horno o cortar a su gusto en casa.</p>
+                                </div>
+                            </div>
+                            <div class="cut-radio-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SELECTOR DE EMPAQUE -->
+                <div class="config-block">
+                    <div class="config-title">
+                        <span>3. Tipo de Empaque</span>
+                    </div>
+                    <div class="pack-options-grid">
+                        <div class="pack-chip active" data-pack="Al Vacío Hermético" onclick="selectPack('Al Vacío Hermético', this)">
+                            <i class="fas fa-shield-virus"></i>
+                            <div>
+                                <span class="pack-label">Al Vacío Hermético</span>
+                                <span class="pack-desc">Frescura garantizada hasta 15 días</span>
+                            </div>
+                        </div>
+                        <div class="pack-chip" data-pack="Bandeja Tradicional" onclick="selectPack('Bandeja Tradicional', this)">
+                            <i class="fas fa-box"></i>
+                            <div>
+                                <span class="pack-label">Bandeja Tradicional</span>
+                                <span class="pack-desc">Para consumo inmediato (1-2 días)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. NOTAS PARA EL CARNICERO -->
+                <div class="config-block">
+                    <div class="config-title">
+                        <span>4. Instrucciones Especiales para el Carnicero (Opcional)</span>
+                    </div>
+                    <textarea id="butcherNotesInput" class="butcher-notes-input" placeholder="Ej: Retirar exceso de grasa, marinar con sal marina gruesa, dividir en 2 paquetes..."></textarea>
+                </div>
+
+                <!-- BOTONES DE ACCIÓN -->
+                <div class="actions-row">
+                    <button id="mainAddToCartBtn" type="button" class="btn-add-meat" onclick="handleAddToCart()">
+                        <i class="fas fa-cart-plus"></i>
+                        <span id="btnActionText">Añadir al Carrito • $<%= Number(producto.precio_venta || 0).toLocaleString('es-CO') %></span>
+                    </button>
+                    <a href="/carrito-de-compras/index.php" class="btn-checkout-fast" title="Ver Carrito y Pagar">
+                        <i class="fas fa-bag-shopping"></i>
+                        <span>Ver Carrito</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ficha Técnica Culinaria del Maestro Carnicero -->
+        <section class="meat-culinary-specs">
+            <h3 class="specs-title"><i class="fas fa-kitchen-set"></i> Ficha del Maestro Carnicero</h3>
+            <div class="specs-grid">
+                <div class="spec-item">
+                    <span class="spec-label">Método Ideal</span>
+                    <span class="spec-value">Parrilla, Plancha o Asado</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Nivel de Ternura</span>
+                    <span class="spec-value">★★★★★ Extra Suave</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Maduración</span>
+                    <span class="spec-value">Natural en Frío (48-72h)</span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Temperatura de Conservación</span>
+                    <span class="spec-value">0°C a 4°C Refrigerado</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cortes Relacionados -->
+        <% if (typeof relatedProducts !== 'undefined' && relatedProducts.length > 0) { %>
+        <section class="related-cuts-section">
+            <h3 class="related-cuts-title">Otros Cortes Recomendados de <%= (producto.categoria || 'Res').toUpperCase() %></h3>
+            <div class="related-cuts-grid">
+                <% relatedProducts.forEach(function(rel) { %>
+                <a href="/detalle_producto.php?id=<%= rel.id_producto || rel.id %>" class="rel-cut-card">
+                    <div class="rel-cut-img-wrap">
+                        <img src="<%= rel.imagen || '/static/images/image.png' %>" alt="<%= rel.nombre %>" loading="lazy">
+                    </div>
+                    <div class="rel-cut-body">
+                        <h4 class="rel-cut-name"><%= rel.nombre %></h4>
+                        <div class="rel-cut-price">$<%= Number(rel.precio_venta || 0).toLocaleString('es-CO') %> <small style="font-size:0.75rem; color:var(--dc-text-muted);">/ Kg</small></div>
+                    </div>
+                </a>
+                <% }); %>
+            </div>
+        </section>
+        <% } %>
+    </main>
+
+    <!-- Script de Configuración Dinámica de la Ficha -->
+    <script>
+        const BASE_PRICE_PER_KG = <%= Number(producto.precio_venta || 0) %>;
+        const PRODUCT_ID = <%= producto.id_producto || producto.id || 1 %>;
+        const PRODUCT_NAME = <%- JSON.stringify(producto.nombre || 'Corte Premium') %>;
+        const PRODUCT_IMAGE = <%- JSON.stringify(producto.imagen || '/static/images/image.png') %>;
+
+        let selectedWeight = 1.0; // en Kilos
+        let selectedCut = 'Corte para Asado (Grueso - 2.5 cm)';
+        let selectedPack = 'Al Vacío Hermético';
+
+        function formatCOP(num) {
+            return '$' + Math.round(num).toLocaleString('es-CO');
+        }
+
+        function updatePrice() {
+            const currentTotal = BASE_PRICE_PER_KG * selectedWeight;
+            document.getElementById('dynamicPriceDisplay').textContent = formatCOP(currentTotal);
+            document.getElementById('btnActionText').textContent = 'Añadir al Carrito • ' + formatCOP(currentTotal);
+
+            const unitText = selectedWeight === 1 ? 'por 1 Kg' : `por ${selectedWeight * 1000} g`;
+            document.getElementById('dynamicUnitDisplay').textContent = unitText;
+            document.getElementById('selectedWeightText').textContent = `${selectedWeight * 1000} gramos (${selectedWeight} Kg)`;
+        }
+
+        function selectWeight(weight, el) {
+            selectedWeight = weight;
+            document.querySelectorAll('.weight-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            updatePrice();
+        }
+
+        function selectCut(cutName, el) {
+            selectedCut = cutName;
+            document.querySelectorAll('.cut-option-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('selectedCutName').textContent = cutName;
+        }
+
+        function selectPack(packName, el) {
+            selectedPack = packName;
+            document.querySelectorAll('.pack-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function handleAddToCart() {
+            const notes = document.getElementById('butcherNotesInput').value.trim();
+            const calculatedPrice = BASE_PRICE_PER_KG * selectedWeight;
+            const fullTitle = `${PRODUCT_NAME} (${selectedWeight * 1000}g - ${selectedCut})`;
+
+            if (window.CartUtils && typeof window.CartUtils.addItem === 'function') {
+                window.CartUtils.addItem({
+                    id: `${PRODUCT_ID}-${selectedWeight}-${selectedCut}`,
+                    title: fullTitle,
+                    price: calculatedPrice,
+                    image: PRODUCT_IMAGE,
+                    qty: 1,
+                    corte: selectedCut,
+                    empaque: selectedPack,
+                    peso: `${selectedWeight} Kg`
+                });
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `¡${fullTitle} agregado al carrito!`,
+                    showConfirmButton: false,
+                    timer: 3500,
+                    background: '#161414',
+                    color: '#fff'
+                });
+            } else {
+                alert('Producto añadido al carrito');
+            }
+        }
+    </script>
+</body>
+
+</html>

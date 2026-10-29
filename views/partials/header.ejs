@@ -1,0 +1,680 @@
+<header class="header ">
+        <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+        <style>
+            .skip-link {
+                position: absolute;
+                top: -40px;
+                left: 0;
+                background: #ff0000;
+                color: #fff;
+                padding: 8px 16px;
+                z-index: 100000;
+                text-decoration: none;
+                font-weight: 700;
+                border-radius: 0 0 8px 0;
+                transition: top 0.2s ease;
+            }
+            .skip-link:focus { top: 0; }
+
+            /* ── Header base ── */
+            .header { border-bottom: none !important; box-shadow: none !important; }
+
+            /* ── Barra móvil ── */
+            .mobile-header {
+                display: none;
+                grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+                align-items: center;
+                border-bottom: none;
+                padding: .4rem .5rem;
+                gap: 12px;
+                width: 100%;
+                box-sizing: border-box;
+                position: sticky;
+                top: 0;
+                z-index: 10002;
+                min-height: 50px;
+            }
+            .mh-left, .mh-right { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: nowrap; }
+            .mh-left  { padding-left: .25rem; }
+            .mh-right { padding-right: .25rem; justify-content: flex-end; }
+            .mh-icon  { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+            .mh-icon i { font-size: 1.2rem; }
+            .mh-cart  { position: relative; }
+            .mh-badge { position: absolute; top: -4px; right: -4px; background: var(--dc-primary, #e8192c); color: #fff; border-radius: 999px; font-size: .65rem; padding: 2px 6px; line-height: 1; }
+
+            @media (max-width: 992px) {
+                .mobile-header   { display: grid; }
+                .ml-search       { display: none; }
+                #quickLinks      { display: none; }
+                #userLoggedButtons { display: none !important; }
+                .nav-menu        { display: none; }
+                .header .logo    { display: none !important; }
+                .header .mobile-toggle { display: none !important; }
+                .header .header-content { padding: 0; margin: 0; }
+            }
+
+            .header-content, .nav-menu, .ml-search { border-bottom: none !important; box-shadow: none !important; }
+            .user-avatar.has-photo, .user-avatar-large.has-photo { background-color: transparent !important; }
+
+            @media (min-width: 993px) {
+                .mobile-drawer, .mobile-drawer-overlay { display: none !important; }
+
+                /* Escritorio: logo — nav — accesos en una fila */
+                .header .header-content {
+                    flex-wrap: nowrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    gap: 1.5rem;
+                }
+                .header .logo { order: 1; flex: 0 0 auto; }
+                .header .nav-menu {
+                    order: 2; flex: 1 1 auto;
+                    justify-content: center; align-items: center;
+                    flex-wrap: nowrap; width: auto; max-width: none;
+                    margin: 0; gap: 2.75rem;
+                    padding: 0 1rem;
+                    border: none; border-radius: 0;
+                    background: transparent !important;
+                }
+                #quickLinks, #authButtons, .header #userLoggedButtons { order: 3; flex: 0 0 auto; }
+            }
+
+            @media (max-width: 1200px) {
+                .header .header-content { gap: 0.75rem; }
+                .header .nav-menu      { gap: 0.75rem; }
+                .header .logo          { height: 48px; }
+                .header .nav-menu a    { padding: 0.25rem 0.4rem; font-size: 0.95rem; }
+                #authButtons button    { padding: 0.375rem 0.75rem !important; font-size: 0.8rem; }
+            }
+
+            @media (max-width: 1100px) {
+                .header .nav-menu   { gap: 0.5rem; }
+                .header .nav-menu a { padding: 0.2rem 0.3rem; font-size: 0.9rem; }
+                #authButtons button { padding: 0.3rem 0.5rem !important; font-size: 0.75rem; }
+                #authButtons button i { font-size: 1.1rem; }
+            }
+        </style>
+        <div class="mobile-header" id="mobileHeader">
+            <style>
+                .mh-center{display:flex;align-items:center;justify-content:center;min-width:0}
+                .mh-center a{display:inline-flex;align-items:center;justify-content:center}
+                .mh-center img{display:block;height:26px;max-width:120px}
+                @media (max-width:360px){
+                    .mobile-header{gap:8px;padding-left:.35rem;padding-right:.35rem}
+                    .mh-left,.mh-right{gap:6px}
+                    .mh-icon{width:34px;height:34px}
+                    .mh-center img{max-width:96px}
+                }
+            </style>
+            <div class="mh-left">
+                <button class="mh-icon" aria-label="Menú" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <div class="mh-center">
+                <a href="/index.php" aria-label="Inicio">
+                    <img src="/assets/icon/LOGO-DISTRICARNES.png" alt="DistriCarnes">
+                </a>
+            </div>
+            <div class="mh-right">
+                <div class="header-search-wrap">
+                    <button type="button" class="header-search-toggle mh-icon" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <a href="/carrito-de-compras/index.php" class="mh-icon mh-cart" aria-label="Carrito">
+                    <i class="bi bi-cart"></i>
+                    <span class="mh-badge" id="mhCartCount">0</span>
+                </a>
+                <a href="/perfil.php" class="mh-icon" id="mhUserLink" aria-label="Perfil o Iniciar sesión">
+                    <i class="far fa-user-circle" id="mhUserIcon"></i>
+                </a>
+            </div>
+            <div class="mobile-drawer-overlay" id="drawerOverlay"></div>
+            <aside class="mobile-drawer" id="mobileDrawer" style="z-index:10000">
+                <div class="drawer-header-bar">
+                    <span class="drawer-header-title">Menú</span>
+                    <button type="button" aria-label="Cerrar" id="drawerCloseBtn" class="drawer-close-btn">×</button>
+                </div>
+                <style>
+                    /* Drawer móvil — usa tokens de tema para respetar modo claro/oscuro */
+                    .mobile-drawer {
+                        background: var(--dc-surface, #1a1414);
+                        border: 1px solid var(--dc-border, rgba(255,255,255,0.08));
+                        border-radius: 12px;
+                        box-shadow: var(--dc-shadow-lg, 0 10px 32px rgba(0,0,0,.6));
+                        color: var(--dc-text, #f3f0ef);
+                    }
+                    .drawer-header-bar {
+                        display: flex; align-items: center; justify-content: space-between;
+                        padding: 12px 14px;
+                        border-bottom: 1px solid var(--dc-border, rgba(255,255,255,0.08));
+                        color: var(--dc-text, #f3f0ef);
+                        background: var(--dc-surface-2, rgba(255,255,255,0.03));
+                    }
+                    .drawer-header-title { font-weight: 700; font-size: 0.95rem; }
+                    .drawer-close-btn {
+                        background: var(--dc-surface-3, #2c2222);
+                        color: var(--dc-text, #fff);
+                        border: 1px solid var(--dc-border, #222);
+                        border-radius: 8px;
+                        width: 32px; height: 32px;
+                        display: flex; align-items: center; justify-content: center;
+                        cursor: pointer; font-size: 1.2rem;
+                    }
+                    .drawer-close-btn:hover {
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                    }
+                    .drawer-quicklinks a { margin: 6px 0; font-weight: 800; letter-spacing: .2px; }
+                    .drawer-nav { padding: 10px 12px; }
+                    .drawer-nav a {
+                        display: block;
+                        background: var(--dc-surface-2, #221a1a);
+                        border: 1px solid var(--dc-border, #2e2222);
+                        color: var(--dc-text, #f3f0ef);
+                        text-decoration: none;
+                        padding: 12px 14px;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        text-align: center;
+                        transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+                    }
+                    .drawer-nav a + a { margin-top: 8px; }
+                    .drawer-nav a:hover {
+                        background: var(--dc-hover, #261e1e);
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                    }
+                    .drawer-nav a.active {
+                        background: var(--dc-primary-soft, rgba(232,25,44,0.12));
+                        border-color: var(--dc-primary, #e8192c);
+                        color: var(--dc-primary, #e8192c);
+                        position: relative;
+                    }
+                    .drawer-nav a.active::after {
+                        content: "";
+                        display: block;
+                        height: 2px;
+                        background: var(--dc-primary, #e8192c);
+                        width: 80%;
+                        margin: 8px auto 0;
+                        border-radius: 2px;
+                    }
+                    /* Botones de auth del drawer */
+                    #drawerAuthButtons a {
+                        background: var(--dc-primary, #e8192c) !important;
+                        border-color: var(--dc-primary, #e8192c) !important;
+                        color: #fff !important;
+                        border-radius: 999px;
+                        padding: 10px 14px;
+                        text-decoration: none;
+                        font-weight: 700;
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    #drawerAuthButtons a:hover {
+                        background: var(--dc-primary-hover, #c0121f) !important;
+                        border-color: var(--dc-primary-hover, #c0121f) !important;
+                    }
+                    /* Botones usuario logueado del drawer */
+                    #drawerUserLogged a {
+                        background: var(--dc-surface-2, #221a1a) !important;
+                        color: var(--dc-text, #f3f0ef) !important;
+                        border: 1px solid var(--dc-border, #2e2222) !important;
+                        border-radius: 10px;
+                        padding: 10px 14px;
+                        text-decoration: none;
+                        font-weight: 700;
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                    }
+                    #drawerUserLogged a.drawer-logout-btn {
+                        color: var(--dc-danger, #f25f59) !important;
+                    }
+                    #drawerUserLogged a:hover {
+                        border-color: var(--dc-primary, #e8192c) !important;
+                    }
+                </style>
+                <nav class="drawer-nav" style="display:flex;flex-direction:column;align-items:stretch;padding:10px 12px;gap:8px">
+                    <a href="/index.php" >Inicio</a>
+                    <a href="/productos.php" >Productos</a>
+                    <a href="/promociones.php" >Ofertas</a>
+                    <a href="/contacto.php" >Contacto</a>
+                    <a href="/sobre_nosotros.php" >Quienes Somos</a>
+                </nav>
+                                <div id="drawerAuthButtons" class="drawer-quicklinks" style="padding:8px 12px;gap:10px;display:flex;flex-direction:column;align-items:stretch">
+                    <a href="/login/login.php"><i class="bi bi-box-arrow-in-right"></i> INICIAR SESIÓN</a>
+                    <a href="/login/register.php"><i class="bi bi-person-plus-fill"></i> REGISTRARSE</a>
+                </div>
+                <div id="drawerUserLogged" style="display:none;padding:8px 12px;gap:10px;flex-direction:column;align-items:stretch">
+                    <a href="/perfil.php"><i class="fas fa-user"></i> Mi Perfil</a>
+                    <a href="#" class="drawer-logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </aside>
+        </div>
+        <div class="header-content ">
+            <div class="logo ">
+                <a href="/index.php">
+                    <img src="/assets/icon/LOGO-DISTRICARNES.png" alt="DISTRICARNES Logo" style="cursor: pointer;">
+                </a>
+            </div>
+
+            <!-- Buscador central estilo ML y pill promocional -->
+            <div class="ml-search">
+                <form action="/productos.php" method="get">
+                    <input type="search" name="q" id="site-search" placeholder="Buscar productos, marcas y más…" />
+                    <button type="submit" aria-label="Buscar"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
+
+
+            <!-- Enlaces rápidos + botón de carrito (siempre visibles) -->
+            <div id="quickLinks" class="ml-actions">
+                <a id="cartButton" class="ml-icon-btn ml-icon-bounce" href="/carrito-de-compras/index.php"
+                    aria-label="Carrito">
+                    <i class="bi bi-cart"></i>
+                    <span class="ml-label">Carrito</span>
+                    <span class="ml-badge" id="cartCount">0</span>
+                </a>
+                <!-- Botones de acceso y registro -->
+                <div id="authButtons" class="flex gap-3" style="display: none;">
+                    <a href="/login/login.php" class="block">
+                        <button
+                            style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
+                            class="btn-auth-login bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
+                            <i class="bi bi-box-arrow-in-right" style="font-size: 1.5rem;"></i> INICIAR SESIÓN
+                        </button>
+                    </a>
+                    <a href="/login/register.php" class="block">
+                        <button
+                            style="background-color: rgb(255, 0, 0); border-radius: 50px; color: white; border: 2px solid red;"
+                            class="btn-auth-register bg-red-700 hover:bg-red-800 transition text-white text-sm font-semibold px-4 py-2 rounded">
+                            <i class="bi bi-person-plus-fill" style="font-size: 1.5rem;"></i>
+                            REGISTRARSE
+                        </button>
+                    </a>
+                </div>
+            </div>
+
+
+            <!-- Botones para usuario logueado (inicialmente ocultos) -->
+            <div id="userLoggedButtons" style="display: none;">
+                <div class="user-profile-container">
+                    <button class="menu-button" id="userMenuBtn" aria-expanded="false"
+                        aria-haspopup="true">
+                        <span class="user-avatar" id="userAvatar"></span>
+                        <span class="user-name" id="userName"></span>
+                        <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    </button>
+
+                    <!-- User Dropdown Menu -->
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="user-info-dropdown">
+                            <div class="user-avatar-large" id="userAvatarLarge"></div>
+                            <div class="user-details">
+                                <h4 id="userFullName"></h4>
+                                <p id="userEmail"></p>
+                                <span class="user-role" id="userRole"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="menu-divider"></div>
+
+                        <div class="menu-items">
+                            <a href="/perfil.php?tab=overview" class="menu-item">
+                                <i class="fas fa-user"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+
+
+                            <a href="/historial.php" class="menu-item">
+                                <i class="fas fa-clock"></i> Historial de compra
+                            </a>
+                            <a href="/favoritos.php" class="menu-item">
+                                <i class="fas fa-heart"></i> Mis favoritos
+                            </a>
+                            <a href="/perfil.php?tab=edit" class="menu-item">
+                                <i class="fas fa-edit"></i>
+                                <span>Editar Perfil</span>
+                            </a>
+                            <a href="/perfil.php?tab=password" class="menu-item">
+                                <i class="fas fa-key"></i>
+                                <span>Cambiar Contraseña</span>
+                            </a>
+
+                            <a href="/perfil.php?tab=settings" class="menu-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Configuración</span>
+                            </a>
+
+
+                            <div class="menu-divider"></div>
+
+                            <a href="#" class="menu-item logout" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu" id="navMenu">
+                <style>
+                    /* Contenedor centrado en la página */
+
+                    .nav-menu {
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 6rem;
+                        /* Increased spacing */
+                        width: 100%;
+                        max-width: 960px;
+                        /* ancho máximo del nav centrado */
+                        margin: 0 auto;
+                        /* centra horizontalmente dentro del header */
+                        box-sizing: border-box;
+                        padding: 0.25rem 0.5rem;
+                        text-align: center;
+                    }
+
+                    /* Asegura que los enlaces y botones queden centrados visualmente */
+
+                    .nav-menu>a,
+                    .nav-menu>div {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .nav-menu a {
+                        text-decoration: none;
+                        color: inherit;
+                        padding: 0.35rem 0.75rem;
+                        font-family: 'Montserrat', sans-serif;
+                        /* Applied Montserrat font */
+                    }
+
+                    /* Mantener los botones de auth alineados y centrados */
+
+                    #authButtons {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        justify-content: center;
+                    }
+
+                    /* En móvil, permitir que los elementos se apilen centrados */
+
+                    @media (max-width: 768px) {
+                        .nav-menu {
+                            justify-content: center;
+                            padding: 0.5rem;
+                        }
+
+                        /* Hacer los botones más compactos en móvil */
+                        #authButtons {
+                            width: 100%;
+                            justify-content: center;
+                            gap: 0.5rem;
+                        }
+                    }
+                </style>
+
+                <!-- Botones de navegación -->
+                <a href="/index.php" >Inicio</a>
+                <a href="/productos.php" >Productos</a>
+                <a href="/promociones.php" >Ofertas</a>
+                <a href="/contacto.php" >Contacto</a>
+                <a href="/sobre_nosotros.php" >Quienes Somos</a>
+
+                <!-- Lupa + botón de tema claro/oscuro junto a las etiquetas -->
+                <div class="nav-icons">
+                    <a href="/productos.php" class="header-search-toggle" role="button" aria-label="Buscar productos" title="Buscar" aria-expanded="false">
+                        <i class="fas fa-search"></i>
+                    </a>
+                </div>
+
+
+
+                <!-- Estilos del menú de usuario logueado — usa tokens de tema -->
+                <style>
+                    #userLoggedButtons {
+                        background: transparent;
+                        padding: 0;
+                        margin: 0;
+                    }
+                    .user-profile-container {
+                        position: relative;
+                        display: inline-block;
+                    }
+                    .menu-button {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.75rem;
+                        background: var(--dc-surface-2, rgba(255,255,255,0.06));
+                        border: 2px solid var(--dc-border, rgba(255,255,255,0.1));
+                        border-radius: 50px;
+                        padding: 0.6rem 1.25rem;
+                        color: var(--dc-text, #f3f0ef);
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+                    }
+                    .menu-button:hover {
+                        border-color: var(--dc-primary, #e8192c);
+                        box-shadow: 0 4px 18px var(--dc-ring, rgba(232,25,44,0.25));
+                        transform: translateY(-1px);
+                    }
+                    .menu-button:active { transform: translateY(0); }
+                    .user-avatar {
+                        width: 38px; height: 38px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: bold; font-size: 1rem; color: #fff;
+                        box-shadow: 0 2px 8px var(--dc-ring, rgba(232,25,44,0.25));
+                        flex-shrink: 0;
+                    }
+                    .user-name {
+                        font-size: 0.92rem;
+                        color: var(--dc-text, #f3f0ef);
+                        max-width: 120px;
+                        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+                    }
+                    .dropdown-arrow {
+                        margin-left: 0.25rem;
+                        transition: transform 0.3s ease;
+                        color: var(--dc-primary, #e8192c);
+                        font-size: 0.8rem;
+                    }
+                    .menu-button[aria-expanded="true"] .dropdown-arrow { transform: rotate(180deg); }
+                    .user-dropdown {
+                        position: absolute;
+                        top: calc(100% + 10px);
+                        right: 0;
+                        background: var(--dc-surface, #1a1414);
+                        border: 1px solid var(--dc-border, rgba(255,255,255,0.1));
+                        border-radius: var(--dc-radius-lg, 16px);
+                        min-width: 280px; max-width: 320px;
+                        opacity: 0; visibility: hidden;
+                        transform: translateY(-8px);
+                        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+                        z-index: 1000;
+                        box-shadow: var(--dc-shadow-lg, 0 20px 60px rgba(0,0,0,0.5));
+                    }
+                    .user-dropdown.active {
+                        opacity: 1; visibility: visible; transform: translateY(0);
+                    }
+                    .user-info-dropdown {
+                        display: flex; align-items: center; gap: 1rem;
+                        padding: 1.25rem 1.5rem;
+                        border-bottom: 1px solid var(--dc-border, rgba(255,255,255,0.1));
+                        background: var(--dc-surface-2, rgba(255,255,255,0.03));
+                        border-radius: var(--dc-radius-lg, 16px) var(--dc-radius-lg, 16px) 0 0;
+                    }
+                    .user-avatar-large {
+                        width: 54px; height: 54px;
+                        border-radius: 50%;
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        display: flex; align-items: center; justify-content: center;
+                        font-weight: bold; font-size: 1.4rem; color: #fff;
+                        flex-shrink: 0;
+                    }
+                    .user-details h4 {
+                        color: var(--dc-text, #f3f0ef);
+                        margin: 0 0 0.2rem; font-size: 1rem; font-weight: 600;
+                    }
+                    .user-details p {
+                        color: var(--dc-text-muted, #b0a8a8);
+                        margin: 0 0 0.4rem; font-size: 0.82rem;
+                    }
+                    .user-role {
+                        background: linear-gradient(135deg, var(--dc-primary, #e8192c), var(--dc-accent, #f04e23));
+                        color: #fff;
+                        padding: 0.2rem 0.65rem;
+                        border-radius: 20px; font-size: 0.72rem; font-weight: 600;
+                        display: inline-block;
+                    }
+                    .menu-items { padding: 0.4rem 0; }
+                    .menu-item {
+                        display: flex; align-items: center; gap: 0.75rem;
+                        padding: 0.8rem 1.25rem;
+                        color: var(--dc-text-muted, #b0a8a8);
+                        text-decoration: none;
+                        transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+                        border-radius: var(--dc-radius-sm, 8px);
+                        margin: 0 0.4rem;
+                        font-size: 0.9rem;
+                    }
+                    .menu-item:hover {
+                        background: var(--dc-hover, #261e1e);
+                        color: var(--dc-text, #f3f0ef);
+                        transform: translateX(3px);
+                    }
+                    .menu-item i {
+                        width: 18px; text-align: center;
+                        color: var(--dc-primary, #e8192c);
+                        font-size: 0.95rem;
+                    }
+                    .menu-item.logout, .menu-item.logout i {
+                        color: var(--dc-danger, #f25f59) !important;
+                    }
+                    .menu-item.logout:hover {
+                        background: rgba(242,95,89,0.1);
+                    }
+                    .menu-divider {
+                        height: 1px;
+                        background: linear-gradient(90deg, transparent, var(--dc-border, rgba(255,255,255,0.1)), transparent);
+                        margin: 0.4rem 1.25rem;
+                    }
+                    @media (max-width: 768px) {
+                        .user-dropdown { right: -8px; min-width: 260px; }
+                        .menu-button { padding: 0.5rem 1rem; }
+                        .user-name { max-width: 80px; }
+                    }
+                </style>
+
+            </nav>
+
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <i class="fas fa-bars "></i>
+            </button>
+        </div>
+    
+    </header>
+    <!-- Modal de búsqueda: aparece encima del header, alineado donde iba el buscador -->
+    <div class="header-search-modal" id="headerSearchModal" role="dialog" aria-modal="true" aria-label="Buscar productos">
+        <div class="header-search-modal-backdrop" data-search-close></div>
+        <div class="header-search-modal-box">
+            <button type="button" class="header-search-modal-close" data-search-close aria-label="Cerrar búsqueda">&times;</button>
+            <form action="/productos.php" method="get" class="header-search-modal-form">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" name="q" id="headerSearchInput" placeholder="Buscar productos, marcas y más…" autocomplete="off" />
+                <button type="submit" aria-label="Buscar"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+    <!-- Espaciador que compensa el header fijo (altura ajustada por JS) -->
+    <div class="header-spacer" aria-hidden="true"></div>
+    <script>
+        (function () {
+            function syncHeaderSpacer() {
+                var spacer = document.querySelector('.header-spacer');
+                if (!spacer) return;
+                var h = 0;
+                var els = document.querySelectorAll('.header, .mobile-header');
+                for (var i = 0; i < els.length; i++) {
+                    var eh = els[i].offsetHeight || 0;
+                    if (eh > 0) h += eh;
+                }
+                spacer.style.minHeight = '0px';
+                spacer.style.height = h + 'px';
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', syncHeaderSpacer);
+            } else {
+                syncHeaderSpacer();
+            }
+            window.addEventListener('load', syncHeaderSpacer);
+            window.addEventListener('resize', syncHeaderSpacer);
+            document.addEventListener('theme:changed', syncHeaderSpacer);
+            if (window.MutationObserver) {
+                var obs = new MutationObserver(function () { syncHeaderSpacer(); });
+                var headerEls = document.querySelectorAll('.header, .mobile-header');
+                for (var i = 0; i < headerEls.length; i++) {
+                    obs.observe(headerEls[i], { childList: true, subtree: true, attributes: true });
+                }
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            function openSearchModal() {
+                var modal = document.getElementById('headerSearchModal');
+                if (!modal) return;
+                modal.classList.add('open');
+                document.body.classList.add('header-search-open');
+                var input = document.getElementById('headerSearchInput');
+                if (input) setTimeout(function () { input.focus(); }, 60);
+                var toggles = document.querySelectorAll('.header-search-toggle');
+                for (var i = 0; i < toggles.length; i++) toggles[i].setAttribute('aria-expanded', 'true');
+            }
+            function closeSearchModal() {
+                var modal = document.getElementById('headerSearchModal');
+                if (!modal) return;
+                modal.classList.remove('open');
+                document.body.classList.remove('header-search-open');
+                var toggles = document.querySelectorAll('.header-search-toggle');
+                for (var i = 0; i < toggles.length; i++) toggles[i].setAttribute('aria-expanded', 'false');
+            }
+            function handleClick(e) {
+                var toggle = e.target.closest ? e.target.closest('.header-search-toggle') : null;
+                if (toggle) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openSearchModal();
+                    return;
+                }
+                var close = e.target.closest ? e.target.closest('[data-search-close]') : null;
+                if (close) {
+                    closeSearchModal();
+                    return;
+                }
+                var modal = document.getElementById('headerSearchModal');
+                if (modal && modal.classList.contains('open') && !modal.contains(e.target)) {
+                    closeSearchModal();
+                }
+            }
+            document.addEventListener('click', handleClick);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeSearchModal();
+            });
+        })();
+    </script>

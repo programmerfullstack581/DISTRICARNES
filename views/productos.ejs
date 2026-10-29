@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Catálogo de Cortes Selectos | DISTRICARNES Hermanos Navarro</title>
+    <meta name="description" content="Explora nuestro catálogo de cortes frescos de res, cerdo y aves. Elige tu grosor y peso con empaque al vacío y entrega rápida en Cartagena y Bolívar." />
+    <meta property="og:title" content="Catálogo de Carnes Premium - DISTRICARNES" />
+    <meta property="og:description" content="Cortes selectos para asado, plancha y guisados con calidad de origen." />
+
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        :root {
+            --dc-bg-deep: #0c0b0b;
+            --dc-bg-card: #151313;
+            --dc-bg-elevated: #1e1b1b;
+            --dc-red-primary: #ba1a28;
+            --dc-red-hover: #981220;
+            --dc-red-glow: rgba(186, 26, 40, 0.25);
+            --dc-gold: #d4a373;
+            --dc-border: rgba(255, 255, 255, 0.08);
+            --dc-border-hover: rgba(186, 26, 40, 0.4);
+            --dc-text-main: #f5f2ef;
+            --dc-text-muted: #9e9492;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dc-bg-deep);
+            color: var(--dc-text-main);
+            margin: 0;
+            padding: 0;
+        }
+
+        .catalog-page-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        /* Banner del Catálogo */
+        .catalog-hero-header {
+            background: linear-gradient(135deg, rgba(20, 15, 15, 0.95) 0%, rgba(10, 8, 8, 0.98) 100%), url('/static/images/fondo-sesion-districarnes.jpg');
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 40px 32px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catalog-hero-header::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: var(--dc-red-primary);
+        }
+
+        .catalog-hero-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .catalog-hero-header h1 span {
+            color: var(--dc-red-primary);
+        }
+
+        .catalog-hero-header p {
+            color: var(--dc-text-muted);
+            margin: 0;
+            font-size: 1.05rem;
+            max-width: 700px;
+            line-height: 1.5;
+        }
+
+        /* Barra de filtros de categoría superior */
+        .category-filter-tabs {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            scrollbar-width: none;
+        }
+        .category-filter-tabs::-webkit-scrollbar { display: none; }
+
+        .cat-tab-btn {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            color: var(--dc-text-muted);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .cat-tab-btn:hover {
+            color: #fff;
+            border-color: var(--dc-border-hover);
+            background: var(--dc-bg-elevated);
+        }
+
+        .cat-tab-btn.active {
+            background: var(--dc-red-primary);
+            color: #fff;
+            border-color: var(--dc-red-primary);
+            box-shadow: 0 4px 16px var(--dc-red-glow);
+        }
+
+        /* Layout con sidebar y productos */
+        .catalog-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 32px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .catalog-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar de filtros */
+        .catalog-sidebar {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 14px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .sidebar-search-box {
+            position: relative;
+        }
+
+        .sidebar-search-box input {
+            width: 100%;
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            border-radius: 10px;
+            padding: 12px 14px 12px 38px;
+            color: #fff;
+            font-size: 0.88rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .sidebar-search-box input:focus {
+            outline: none;
+            border-color: var(--dc-red-primary);
+        }
+
+        .sidebar-search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dc-text-muted);
+            font-size: 0.88rem;
+        }
+
+        .sidebar-group-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subcategories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .subcat-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--dc-text-muted);
+            text-decoration: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.86rem;
+            transition: all 0.15s;
+        }
+
+        .subcat-link:hover {
+            background: var(--dc-bg-elevated);
+            color: #fff;
+        }
+
+        .subcat-link.active {
+            background: rgba(186, 26, 40, 0.15);
+            color: var(--dc-red-primary);
+            font-weight: 700;
+        }
+
+        .subcat-link .count {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+
+        /* Banner de asesor carnicero */
+        .butcher-help-card {
+            background: linear-gradient(135deg, #1f1414 0%, #151010 100%);
+            border: 1px solid rgba(186, 26, 40, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .butcher-help-card i {
+            font-size: 1.8rem;
+            color: var(--dc-red-primary);
+            margin-bottom: 8px;
+        }
+
+        .butcher-help-card h4 {
+            margin: 0 0 6px 0;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        .butcher-help-card p {
+            margin: 0 0 12px 0;
+            font-size: 0.8rem;
+            color: var(--dc-text-muted);
+            line-height: 1.4;
+        }
+
+        .btn-chat-advisor {
+            display: inline-block;
+            background: var(--dc-red-primary);
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Cabecera del Grid de Productos */
+        .catalog-main-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .results-count-text {
+            color: var(--dc-text-muted);
+            font-size: 0.9rem;
+        }
+
+        .results-count-text strong {
+            color: #fff;
+        }
+
+        /* Grid de Tarjetas de Carnes */
+        .meat-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 24px;
+        }
+
+        /* TARJETA DE PRODUCTO BOUTIQUE */
+        .meat-card {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .meat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--dc-border-hover);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.45);
+        }
+
+        .meat-card-thumb {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #1c1919;
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+
+        .meat-card-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .meat-card:hover .meat-card-thumb img {
+            transform: scale(1.06);
+        }
+
+        .meat-origin-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(14, 13, 13, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid var(--dc-border);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--dc-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .meat-card-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .meat-card-title {
+            font-size: 1.12rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            text-decoration: none;
+            display: block;
+            line-height: 1.25;
+            transition: color 0.2s;
+        }
+
+        .meat-card-title:hover {
+            color: var(--dc-red-primary);
+        }
+
+        /* Selector de peso rápido en la tarjeta */
+        .card-weight-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            border-radius: 8px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .card-weight-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--dc-text-muted);
+            padding: 6px 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-align: center;
+        }
+
+        .card-weight-btn.active {
+            background: var(--dc-red-primary);
+            color: #fff;
+        }
+
+        /* Selector de corte rápido en la tarjeta */
+        .card-cut-select {
+            width: 100%;
+            background: var(--dc-bg-elevated);
+            border: 1px solid var(--dc-border);
+            color: #ddd;
+            font-size: 0.8rem;
+            font-family: inherit;
+            padding: 6px 10px;
+            border-radius: 8px;
+            outline: none;
+        }
+        .card-cut-select:focus {
+            border-color: var(--dc-red-primary);
+        }
+
+        /* Fila de precio */
+        .meat-card-price-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 4px;
+        }
+
+        .card-calculated-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .card-kilo-rate {
+            font-size: 0.75rem;
+            color: var(--dc-text-muted);
+        }
+
+        /* Acciones de la tarjeta */
+        .card-actions-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 8px;
+        }
+
+        .btn-card-add {
+            background: var(--dc-red-primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-card-add:hover {
+            background: var(--dc-red-hover);
+        }
+
+        .btn-card-inspect {
+            background: var(--dc-bg-elevated);
+            color: var(--dc-text-muted);
+            border: 1px solid var(--dc-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .btn-card-inspect:hover {
+            color: #fff;
+            border-color: #fff;
+        }
+
+        /* Paginación */
+        .catalog-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 48px;
+        }
+
+        .catalog-pagination a {
+            background: var(--dc-bg-card);
+            border: 1px solid var(--dc-border);
+            color: var(--dc-text-muted);
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .catalog-pagination a:hover {
+            border-color: var(--dc-red-primary);
+            color: #fff;
+        }
+
+        .catalog-pagination a.active {
+            background: var(--dc-red-primary);
+            border-color: var(--dc-red-primary);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header compartido -->
+    <%- include('partials/header', { activeNav: 'productos' }) %>
+    <%- include('partials/header_scripts') %>
+
+    <main class="catalog-page-container">
+        <!-- Banner del Catálogo -->
+        <section class="catalog-hero-header">
+            <h1>Cortes Selectos <span>Navarro</span></h1>
+            <p>Seleccionamos la mejor carne de res, cerdo y aves de la región. Elige el grosor del corte al gusto del maestro carnicero, peso exacto y empaque al vacío para máxima frescura.</p>
+        </section>
+
+        <!-- Filtros Rápidos de Categoría -->
+        <nav class="category-filter-tabs">
+            <a href="/productos.php" class="cat-tab-btn <%= (!categoria || categoria === '') ? 'active' : '' %>">
+                <i class="fas fa-drumstick-bite"></i> Todos los Cortes
+            </a>
+            <a href="/productos.php?categoria=res" class="cat-tab-btn <%= categoria === 'res' ? 'active' : '' %>">
+                <i class="fas fa-cow"></i> Res Selección (<%= categoryCounts['res'] || 0 %>)
+            </a>
+            <a href="/productos.php?categoria=cerdo" class="cat-tab-btn <%= categoria === 'cerdo' ? 'active' : '' %>">
+                <i class="fas fa-piggy-bank"></i> Cerdo Especial (<%= categoryCounts['cerdo'] || 0 %>)
+            </a>
+            <a href="/productos.php?categoria=pollo" class="cat-tab-btn <%= categoria === 'pollo' ? 'active' : '' %>">
+                <i class="fas fa-egg"></i> Aves de Granja (<%= categoryCounts['pollo'] || 0 %>)
+            </a>
+            <a href="/promociones.php" class="cat-tab-btn">
+                <i class="fas fa-percent"></i> Ofertas Activas
+            </a>
+        </nav>
+
+        <div class="catalog-layout">
+            <!-- Sidebar -->
+            <aside class="catalog-sidebar">
+                <!-- Buscador -->
+                <form action="/productos.php" method="get">
+                    <div class="sidebar-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="search" name="q" placeholder="Buscar corte o producto..." value="<%= typeof q !== 'undefined' ? q : '' %>">
+                    </div>
+                </form>
+
+                <!-- Subcategorías -->
+                <div>
+                    <h3 class="sidebar-group-title"><i class="fas fa-filter"></i> Tipos de Cortes</h3>
+                    <div class="subcategories-list">
+                        <% if (typeof tagCounts !== 'undefined') { %>
+                            <% Object.keys(tagCounts).forEach(function(tag) { 
+                                 var cnt = tagCounts[tag];
+                                 var isAct = (typeof subcategoria !== 'undefined' && subcategoria === tag);
+                            %>
+                            <a href="/productos.php?subcategoria=<%= encodeURIComponent(tag) %>" class="subcat-link <%= isAct ? 'active' : '' %>">
+                                <span><%= tag.toUpperCase() %></span>
+                                <span class="count"><%= cnt %></span>
+                            </a>
+                            <% }); %>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Banner de Asesor -->
+                <div class="butcher-help-card">
+                    <i class="fas fa-user-tie"></i>
+                    <h4>¿Dudas con tu corte?</h4>
+                    <p>Habla con nuestro maestro carnicero para recibir recomendaciones sobre porciones y cocción.</p>
+                    <button type="button" class="btn-chat-advisor" onclick="var t=document.querySelector('.chatbot-toggle'); if(t) t.click();">
+                        <i class="fas fa-comment-dots"></i> Consultar Carnicero
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Contenido Principal -->
+            <section>
+                <div class="catalog-main-header">
+                    <div class="results-count-text">
+                        Mostrando <strong><%= startDisplay %> a <%= endDisplay %></strong> de <strong><%= total %></strong> cortes disponibles
+                    </div>
+                    <% if (categoria || subcategoria || q) { %>
+                    <a href="/productos.php" style="color:var(--dc-red-primary); font-size:0.85rem; text-decoration:none;">
+                        <i class="fas fa-times-circle"></i> Limpiar filtros
+                    </a>
+                    <% } %>
+                </div>
+
+                <!-- Grid de Tarjetas -->
+                <div class="meat-catalog-grid">
+                    <% if (typeof pageProducts !== 'undefined' && pageProducts.length > 0) { %>
+                        <% pageProducts.forEach(function(p) { 
+                             var basePrice = Number(p.precio_venta || 0);
+                             var prodId = p.id_producto || p.id || 1;
+                        %>
+                        <div class="meat-card" id="card-<%= prodId %>" data-base-price="<%= basePrice %>" data-selected-weight="1">
+                            <a href="/detalle_producto.php?id=<%= prodId %>" class="meat-card-thumb">
+                                <img src="<%= p.imagen || '/static/images/image.png' %>" alt="<%= p.nombre %>" loading="lazy" />
+                                <span class="meat-origin-badge"><%= (p.categoria || 'Carne').toUpperCase() %></span>
+                            </a>
+
+                            <div class="meat-card-body">
+                                <a href="/detalle_producto.php?id=<%= prodId %>" class="meat-card-title">
+                                    <%= p.nombre %>
+                                </a>
+
+                                <!-- Selector de peso de la tarjeta -->
+                                <div>
+                                    <div style="font-size: 0.72rem; color: var(--dc-text-muted); margin-bottom: 4px; font-weight: 600;">SELECCIONA PORCIÓN:</div>
+                                    <div class="card-weight-selector">
+                                        <button type="button" class="card-weight-btn" onclick="setCardWeight('<%= prodId %>', 0.5, this)">500g</button>
+                                        <button type="button" class="card-weight-btn active" onclick="setCardWeight('<%= prodId %>', 1, this)">1 Kg</button>
+                                        <button type="button" class="card-weight-btn" onclick="setCardWeight('<%= prodId %>', 2, this)">2 Kg</button>
+                                    </div>
+                                </div>
+
+                                <!-- Selector de corte de la tarjeta -->
+                                <div>
+                                    <div style="font-size: 0.72rem; color: var(--dc-text-muted); margin-bottom: 4px; font-weight: 600;">TIPO DE CORTE:</div>
+                                    <select class="card-cut-select" id="cut-select-<%= prodId %>">
+                                        <option value="Corte para Asado (Grueso)">🥩 Para Asado / Parrilla (Grueso)</option>
+                                        <option value="Corte Plancha / Sartén (Medio)">🍳 Para Plancha (Medio)</option>
+                                        <option value="Corte Delgado / Milanesa (Fino)">🔪 Delgado / Milanesa</option>
+                                        <option value="Pieza Entera sin Porcionar">📦 Pieza Entera</option>
+                                    </select>
+                                </div>
+
+                                <!-- Fila de Precio Calculado -->
+                                <div class="meat-card-price-row">
+                                    <div>
+                                        <span class="card-calculated-price" id="calc-price-<%= prodId %>">$<%= basePrice.toLocaleString('es-CO') %></span>
+                                        <span style="font-size:0.75rem; color:var(--dc-text-muted);" id="weight-label-<%= prodId %>">(1 Kg)</span>
+                                    </div>
+                                    <span class="card-kilo-rate">$<%= basePrice.toLocaleString('es-CO') %>/Kg</span>
+                                </div>
+
+                                <!-- Acciones -->
+                                <div class="card-actions-row">
+                                    <button type="button" class="btn-card-add" onclick="addCardToCart('<%= prodId %>', <%- JSON.stringify(p.nombre) %>, <%- JSON.stringify(p.imagen) %>)">
+                                        <i class="fas fa-cart-plus"></i> Agregar
+                                    </button>
+                                    <a href="/detalle_producto.php?id=<%= prodId %>" class="btn-card-inspect" title="Personalizar corte y ver ficha completa">
+                                        <i class="fas fa-sliders"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-search" style="font-size: 2.5rem; color: var(--dc-text-muted); margin-bottom: 16px;"></i>
+                            <h3 style="color: #fff; margin: 0 0 8px 0;">No encontramos cortes con esos criterios</h3>
+                            <p style="color: var(--dc-text-muted); margin: 0 0 20px 0;">Prueba buscando otro nombre o explora todas las categorías.</p>
+                            <a href="/productos.php" class="cat-tab-btn active" style="display: inline-flex;">Ver Todos los Cortes</a>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Paginación -->
+                <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                <nav class="catalog-pagination">
+                    <% for (var p = 1; p <= totalPages; p++) { %>
+                    <a class="<%= p === page ? 'active' : '' %>" href="/productos.php?page=<%= p %><%= typeof q !== 'undefined' && q ? '&q=' + encodeURIComponent(q) : '' %><%= typeof categoria !== 'undefined' && categoria ? '&categoria=' + encodeURIComponent(categoria) : '' %>">
+                        <%= p %>
+                    </a>
+                    <% } %>
+                </nav>
+                <% } %>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts de interactividad del catálogo -->
+    <script>
+        function formatCOP(num) {
+            return '$' + Math.round(num).toLocaleString('es-CO');
+        }
+
+        function setCardWeight(prodId, weight, btn) {
+            const card = document.getElementById('card-' + prodId);
+            if (!card) return;
+
+            card.dataset.selectedWeight = weight;
+            card.querySelectorAll('.card-weight-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const basePrice = parseFloat(card.dataset.basePrice || '0');
+            const total = basePrice * weight;
+
+            document.getElementById('calc-price-' + prodId).textContent = formatCOP(total);
+            document.getElementById('weight-label-' + prodId).textContent = weight === 1 ? '(1 Kg)' : `(${weight * 1000}g)`;
+        }
+
+        function addCardToCart(prodId, name, image) {
+            const card = document.getElementById('card-' + prodId);
+            if (!card) return;
+
+            const weight = parseFloat(card.dataset.selectedWeight || '1');
+            const basePrice = parseFloat(card.dataset.basePrice || '0');
+            const calculatedPrice = basePrice * weight;
+            const cutSelect = document.getElementById('cut-select-' + prodId);
+            const cut = cutSelect ? cutSelect.value : 'Corte para Asado';
+
+            const title = `${name} (${weight * 1000}g - ${cut})`;
+
+            if (window.CartUtils && typeof window.CartUtils.addItem === 'function') {
+                window.CartUtils.addItem({
+                    id: `${prodId}-${weight}-${cut}`,
+                    title: title,
+                    price: calculatedPrice,
+                    image: image || '/static/images/image.png',
+                    qty: 1,
+                    corte: cut,
+                    empaque: 'Al Vacío',
+                    peso: `${weight} Kg`
+                });
+
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: `¡${name} (${weight * 1000}g) agregado!`,
+                    showConfirmButton: false,
+                    timer: 2800,
+                    background: '#161414',
+                    color: '#fff'
+                });
+            } else {
+                alert('Añadido al carrito: ' + title);
+            }
+        }
+    </script>
+</body>
+
+</html>

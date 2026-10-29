@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contacto & Sedes | DISTRICARNES Hermanos Navarro</title>
+    <meta name="description" content="Ponte en contacto con DISTRICARNES Hermanos Navarro en Cartagena y Villanueva, Bolívar. Pedidos personalizados, carnes al por mayor y domicilios refrigerados." />
+    <meta property="og:title" content="Contacto - DISTRICARNES Hermanos Navarro" />
+    <meta property="og:description" content="Atención personalizada por nuestros maestros carniceros. WhatsApp, líneas telefónicas y sedes de atención." />
+    <link rel="shortcut icon" href="/assets/icon/image-removebg-preview sin fondo (1).ico" type="image/x-icon">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Tailwind Browser Script -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['selector', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    colors: {
+                        dcRed: '#ba1a28',
+                        dcRedBright: '#e8192c',
+                        dcDark: '#0c0b0b',
+                        dcSurface: '#161313',
+                        dcSurface2: '#221c1c',
+                        dcGold: '#d4a373'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- App Stylesheets -->
+    <link rel="stylesheet" href="/static/css/nav_pills.css" />
+    <link rel="stylesheet" href="/static/css/header_en_general.css" />
+    <link rel="stylesheet" href="/static/css/base.css" />
+    <link rel="stylesheet" href="/static/css/theme.css" />
+    <link rel="stylesheet" href="/static/css/chatbot.css" />
+    <link rel="stylesheet" href="/static/css/responsive.css" />
+    <link rel="stylesheet" href="/static/css/contacto.css" />
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/theme.js"></script>
+
+    <style>
+        :root {
+            --dc-bg-deep: #0c0b0b;
+            --dc-bg-card: #151313;
+            --dc-bg-elevated: #1e1b1b;
+            --dc-red-primary: #ba1a28;
+            --dc-red-hover: #981220;
+            --dc-red-glow: rgba(186, 26, 40, 0.25);
+            --dc-gold: #d4a373;
+            --dc-border: rgba(255, 255, 255, 0.08);
+            --dc-border-hover: rgba(186, 26, 40, 0.4);
+            --dc-text-main: #f5f2ef;
+            --dc-text-muted: #9e9492;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--dc-bg-deep);
+            color: var(--dc-text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .contact-page-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px 20px 80px;
+        }
+
+        /* Hero de Contacto */
+        .contact-hero-banner {
+            background: linear-gradient(135deg, rgba(16, 12, 12, 0.94) 0%, rgba(10, 8, 8, 0.98) 100%), url('/static/images/carnicero_navarro.png');
+            background-size: cover;
+            background-position: center 25%;
+            border: 1px solid var(--dc-border);
+            border-radius: 20px;
+            padding: 44px 36px;
+            margin-bottom: 36px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(to bottom, #e8192c, #800f19);
+        }
+
+        .contact-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--dc-gold);
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .contact-hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            margin: 0 0 12px 0;
+            line-height: 1.15;
+        }
+
+        .contact-hero-title span {
+            color: #e8192c;
+            text-shadow: 0 0 24px rgba(232, 25, 44, 0.35);
+        }
+
+        .contact-hero-desc {
+            color: #b8b0ae;
+            font-size: 1.05rem;
+            max-width: 720px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Layout Principal 2 Columnas */
+        .contact-layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        @media (max-width: 960px) {
+            .contact-layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tarjetas de Información */
+        .contact-cards-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card-box {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .info-card-box:hover {
+            transform: translateY(-2px);
+            border-color: rgba(232, 25, 44, 0.4);
+        }
+
+        .info-card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(232, 25, 44, 0.15) 0%, rgba(186, 26, 40, 0.25) 100%);
+            border: 1px solid rgba(232, 25, 44, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e8192c;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .info-card-content h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 6px 0;
+        }
+
+        .info-card-content p {
+            color: #a8a09e;
+            font-size: 0.92rem;
+            margin: 0 0 6px 0;
+            line-height: 1.5;
+        }
+
+        .info-card-highlight {
+            color: var(--dc-gold);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        /* Formulario de Contacto Moderno */
+        .contact-form-panel {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-form-panel h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-form-panel h2 span {
+            color: #e8192c;
+        }
+
+        .contact-form-panel p {
+            color: #9e9492;
+            font-size: 0.9rem;
+            margin: 0 0 24px 0;
+        }
+
+        .form-row-duo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row-duo {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-control-wrap {
+            margin-bottom: 18px;
+        }
+
+        .form-control-wrap label {
+            display: block;
+            color: #e2dbd9;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .form-control-wrap input,
+        .form-control-wrap select,
+        .form-control-wrap textarea {
+            width: 100%;
+            background: #1d1919;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.92rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-control-wrap input:focus,
+        .form-control-wrap select:focus,
+        .form-control-wrap textarea:focus {
+            outline: none;
+            border-color: #e8192c;
+            box-shadow: 0 0 0 3px rgba(232, 25, 44, 0.2);
+        }
+
+        .btn-submit-message {
+            background: linear-gradient(135deg, #ba1a28 0%, #e8192c 100%);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 0.95rem;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit-message:hover {
+            background: linear-gradient(135deg, #d31e30 0%, #ff2b3f 100%);
+            box-shadow: 0 4px 18px rgba(232, 25, 44, 0.35);
+        }
+
+        /* Cobertura de Despacho */
+        .coverage-banner {
+            background: linear-gradient(135deg, #181414 0%, #100d0d 100%);
+            border: 1px solid var(--dc-border);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 48px;
+        }
+
+        .coverage-banner h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coverage-zones-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .coverage-tag {
+            background: #241d1d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #e5dfdd;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .coverage-tag i {
+            color: #e8192c;
+        }
+
+        /* Preguntas Frecuentes */
+        .faq-section {
+            margin-bottom: 60px;
+        }
+
+        .faq-section h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0 0 24px 0;
+            text-transform: uppercase;
+        }
+
+        .faq-accordion-item {
+            background: #151313;
+            border: 1px solid var(--dc-border);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .faq-question-btn {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 18px 20px;
+            text-align: left;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer-panel {
+            padding: 0 20px 18px;
+            color: #a8a09e;
+            font-size: 0.92rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .faq-accordion-item.active .faq-answer-panel {
+            display: block;
+        }
+
+        .faq-accordion-item.active .faq-chevron {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header compartido con nav_pills y botones de autenticación -->
+    <%- include("partials/header", { activeNav: "contacto" }) %>
+    <%- include("partials/header_scripts") %>
+
+    <main class="contact-page-container" id="main-content">
+        <!-- Hero Contacto -->
+        <section class="contact-hero-banner">
+            <div class="contact-kicker">
+                <i class="fas fa-headset"></i> Atención Directa & Asesoría
+            </div>
+            <h1 class="contact-hero-title">
+                Comunícate con <span>Districarnes Navarro</span>
+            </h1>
+            <p class="contact-hero-desc">
+                ¿Deseas realizar un pedido especial para asados familiares, eventos o abastecimiento para restaurantes? Nuestro maestro carnicero y equipo de atención están listos para asistirte.
+            </p>
+        </section>
+
+        <!-- Contenido en 2 Columnas -->
+        <div class="contact-layout-grid">
+            <!-- Columna Izquierda: Información de Sedes y Canales -->
+            <div class="contact-cards-stack">
+                <!-- Sede Olaya Herrera -->
+                <div class="info-card-box">
+                    <div class="info-card-icon">
+                        <i class="fas fa-store-alt"></i>
+                    </div>
+                    <div class="info-card-content">
+                        <h3>Sede Principal Cartagena</h3>
+                        <p>Barrio Olaya Herrera, Sector Fredonia / Calle Principal, Cartagena de Indias, Bolívar.</p>
+                        <div class="info-card-highlight">
+                            <i class="fas fa-clock mr-1"></i> Lunes a Sábado: 6:00 AM – 6:30 PM | Domingos: 6:30 AM – 2:00 PM
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sede Villanueva -->
+                <div class="info-card-box">
+                    <div class="info-card-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <div class="info-card-content">
+                        <h3>Sede Villanueva, Bolívar</h3>
+                        <p>Carrera 11B # 17-95, Villanueva, Bolívar.</p>
+                        <div class="info-card-highlight">
+                            <i class="fas fa-truck mr-1"></i> Despacho mayorista y distribución a municipios cercanos
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WhatsApp Directo -->
+                <div class="info-card-box" style="border-color: rgba(37, 211, 102, 0.3); background: linear-gradient(180deg, #151a16 0%, #121513 100%);">
+                    <div class="info-card-icon" style="background: rgba(37, 211, 102, 0.15); color: #25d366; border-color: rgba(37, 211, 102, 0.3);">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <div class="info-card-content">
+                        <h3 style="color: #25d366;">Línea Directa WhatsApp</h3>
+                        <p>Consulta cortes disponibles del día, gramajes personalizados y cotizaciones al instante.</p>
+                        <a href="https://wa.me/573015210177?text=Hola%20Districarnes,%20deseo%20hacer%20un%20pedido%20de%20cortes%20de%20carne." target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; color:#25d366; font-weight:800; font-size:0.95rem; text-decoration:none; margin-top:4px;">
+                            <i class="fab fa-whatsapp"></i> Chatear al +57 301 5210177 &rarr;
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Teléfono y Correo -->
+                <div class="info-card-box">
+                    <div class="info-card-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="info-card-content">
+                        <h3>Teléfonos & Correo Oficial</h3>
+                        <p><i class="fas fa-phone text-red-500 mr-2"></i> +57 301 5210177 / 310 8392866</p>
+                        <p><i class="fas fa-envelope text-red-500 mr-2"></i> districarneshermanosnavarro@gmail.com</p>
+                        <div class="info-card-highlight">
+                            <i class="fas fa-shield-alt mr-1"></i> Facturación electrónica y certificado sanitario
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Formulario de Mensaje -->
+            <div class="contact-form-panel">
+                <h2>Envíanos un <span>Mensaje</span></h2>
+                <p>Escríbenos para cotizaciones institucionales, dudas sobre envíos o sugerencias de pedidos.</p>
+
+                <form id="contactPageForm">
+                    <div class="form-row-duo">
+                        <div class="form-control-wrap">
+                            <label for="contactName">Nombre Completo *</label>
+                            <input type="text" id="contactName" name="name" placeholder="Ej. Carlos Mendoza" required />
+                        </div>
+                        <div class="form-control-wrap">
+                            <label for="contactPhone">Teléfono / WhatsApp *</label>
+                            <input type="tel" id="contactPhone" name="phone" placeholder="Ej. 301 000 0000" required />
+                        </div>
+                    </div>
+
+                    <div class="form-control-wrap">
+                        <label for="contactEmail">Correo Electrónico *</label>
+                        <input type="email" id="contactEmail" name="email" placeholder="carlos@ejemplo.com" required />
+                    </div>
+
+                    <div class="form-control-wrap">
+                        <label for="contactSubject">Tipo de Consulta *</label>
+                        <select id="contactSubject" name="subject" required>
+                            <option value="pedido_domicilio">Pedido a Domicilio / Consulta de Cortes</option>
+                            <option value="asado_evento">Parrillada Familiar / Evento Especial</option>
+                            <option value="institucional">Abastecimiento Restaurante / Hotel</option>
+                            <option value="otro">Otra Consulta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-control-wrap">
+                        <label for="contactMessage">Mensaje o Detalle del Pedido *</label>
+                        <textarea id="contactMessage" name="message" rows="4" placeholder="Indícanos los cortes de carne que necesitas, gramajes deseados o dirección de entrega..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit-message">
+                        <i class="fas fa-paper-plane"></i> Enviar Mensaje a Districarnes
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Cobertura de Despacho Refrigerado -->
+        <section class="coverage-banner">
+            <h3><i class="fas fa-truck-moving text-red-500"></i> Zonas de Cobertura en Bolívar</h3>
+            <p style="color:#b5aca9; margin:0 0 10px 0; font-size:0.95rem;">
+                Despachamos con empaque al vacío y conservadores térmicos para garantizar la cadena de frío (0°C – 4°C) hasta la puerta de tu cocina:
+            </p>
+            <div class="coverage-zones-list">
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Bocagrande & Castillogrande</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Manga & Pie de la Popa</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Crespo & Zona Norte</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Olaya Herrera & Fredonia</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> El Pozón & Blas de Lezo</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Turbaco</span>
+                <span class="coverage-tag"><i class="fas fa-check-circle"></i> Villanueva & San Estanislao</span>
+            </div>
+        </section>
+
+        <!-- Preguntas Frecuentes -->
+        <section class="faq-section">
+            <h2>Preguntas <span>Frecuentes</span></h2>
+
+            <div class="faq-accordion-item">
+                <button type="button" class="faq-question-btn" onclick="toggleFaq(this)">
+                    <span>¿Cómo garantizan que la carne llegue fresca y tierna?</span>
+                    <i class="fas fa-chevron-down faq-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="faq-answer-panel">
+                    Nuestros cortes son refrigerados inmediatamente tras el despiece artesanal y empacados en bolsas herméticas al vacío de grado alimentario. El despacho se hace en cajas isotérmicas con gel refrigerante, manteniendo la temperatura entre 0°C y 4°C en todo el trayecto.
+                </div>
+            </div>
+
+            <div class="faq-accordion-item">
+                <button type="button" class="faq-question-btn" onclick="toggleFaq(this)">
+                    <span>¿Puedo pedir cortes en un grosor o porción específica?</span>
+                    <i class="fas fa-chevron-down faq-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="faq-answer-panel">
+                    ¡Por supuesto! Tanto en nuestra tienda virtual como por WhatsApp puedes especificar si deseas corte para asado (grueso 2.5 - 3 cm), bistec a la plancha (fino), milanesa, cubos para guisar o la pieza entera para hornear.
+                </div>
+            </div>
+
+            <div class="faq-accordion-item">
+                <button type="button" class="faq-question-btn" onclick="toggleFaq(this)">
+                    <span>¿Qué métodos de pago reciben?</span>
+                    <i class="fas fa-chevron-down faq-chevron transition-transform duration-200"></i>
+                </button>
+                <div class="faq-answer-panel">
+                    Aceptamos transferencias directas por Nequi, Daviplata, Bancolombia, pago contra entrega en efectivo o datáfono, además de tarjetas de crédito/débito y PayPal mediante nuestra plataforma segura.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Unificado -->
+    <footer class="footer" style="background:#0c0b0b; border-top:1px solid rgba(255,255,255,0.08); padding:50px 20px 24px;">
+        <div class="footer-container" style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:32px;">
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">DISTRICARNES NAVARRO</h4>
+                <p style="color:#9e9492; font-size:0.9rem; line-height:1.6; margin-bottom:12px;">Maestría cárnica artesanal y cortes seleccionados con el más estricto control de higiene, balanza digital y cadena de frío.</p>
+                <p style="color:#d4a373; font-size:0.88rem; font-weight:700;"><i class="fas fa-map-marker-alt mr-2"></i> Olaya Herrera, Cartagena de Indias & Villanueva, Bolívar</p>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ENLACES RÁPIDOS</h4>
+                <ul style="list-style:none; padding:0; margin:0; line-height:2.2; font-size:0.9rem;">
+                    <li><a href="/index.php" style="color:#cfc6c4; text-decoration:none;">Inicio</a></li>
+                    <li><a href="/productos.php" style="color:#cfc6c4; text-decoration:none;">Catálogo de Cortes</a></li>
+                    <li><a href="/promociones.php" style="color:#cfc6c4; text-decoration:none;">Ofertas & Promociones</a></li>
+                    <li><a href="/sobre_nosotros.php" style="color:#cfc6c4; text-decoration:none;">Quiénes Somos</a></li>
+                    <li><a href="/contacto.php" style="color:#e8192c; font-weight:700; text-decoration:none;">Contacto & Sedes</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4 style="color:#ba1a28; font-weight:800; font-size:1.05rem; margin-bottom:16px;">ATENCIÓN AL CLIENTE</h4>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-phone mr-2 text-red-500"></i> +57 301 5210177</p>
+                <p style="color:#9e9492; font-size:0.9rem; margin-bottom:8px;"><i class="fas fa-envelope mr-2 text-red-500"></i> districarneshermanosnavarro@gmail.com</p>
+                <p style="color:#9e9492; font-size:0.9rem;"><i class="fas fa-clock mr-2 text-red-500"></i> Lun - Sáb: 6:30 AM - 6:30 PM</p>
+            </div>
+        </div>
+        <div style="text-align:center; padding-top:32px; margin-top:32px; border-top:1px solid rgba(255,255,255,0.06); color:#7d7472; font-size:0.85rem;">
+            &copy; 2026 DISTRICARNES HERMANOS NAVARRO. Todos los derechos reservados.
+        </div>
+    </footer>
+
+    <!-- Chatbot flotante -->
+    <div class="chatbot-toggle" onclick="toggleChatbot()" title="Abrir chat DISTRICARNES" aria-label="Abrir chat DISTRICARNES">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/chatbot.js"></script>
+    <script>
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-accordion-item');
+            item.classList.toggle('active');
+        }
+
+        document.getElementById('contactPageForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('contactName')?.value || '';
+            const phone = document.getElementById('contactPhone')?.value || '';
+            const email = document.getElementById('contactEmail')?.value || '';
+            const subject = document.getElementById('contactSubject')?.value || '';
+            const message = document.getElementById('contactMessage')?.value || '';
+
+            if (window.Swal) {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Mensaje Recibido!',
+                    text: `Gracias ${name}. Nuestro equipo carnicero te responderá al WhatsApp (${phone}) a la mayor brevedad.`,
+                    background: '#1c1818',
+                    color: '#ffffff',
+                    confirmButtonColor: '#ba1a28'
+                });
+            } else {
+                alert(`Gracias ${name}. Nos contactaremos contigo al ${phone}.`);
+            }
+            this.reset();
+        });
+    </script>
+</body>
+</html>

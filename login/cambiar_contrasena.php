@@ -1,31 +1,4 @@
-<?php
-require_once __DIR__ . '/../backend/php/core/conexion.php';
 
-$token = isset($_GET['token']) ? trim($_GET['token']) : '';
-$valid = false;
-$errorMessage = '';
-
-if ($token !== '') {
-  $tokenHash = hash('sha256', $token);
-  $stmt = $conexion->prepare('SELECT user_id, expires_at, used FROM password_resets WHERE token_hash = ? LIMIT 1');
-  $stmt->execute([$tokenHash]);
-  $row = $stmt->fetch(PDO::FETCH_ASSOC);
-  if ($row) {
-    $expired = (strtotime($row['expires_at']) < time());
-    $valid = !$expired && ((int)$row['used'] === 0 && $row['used'] !== true);
-    if (!$valid) {
-      $errorMessage = $expired ? 'El enlace ha expirado. Solicita uno nuevo.' : 'Este enlace ya fue usado.';
-    }
-  }
-  else {
-    $errorMessage = 'Token inválido.';
-  }
-}
-else {
-  $errorMessage = 'Falta el token de recuperación.';
-}
-
-?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -193,13 +166,12 @@ else {
   </div>
   <div class="container" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin-top:0;">
     <h1 class="title"><span style="color:white">Crear nueva</span> Contraseña</h1>
-    <?php if (!$valid): ?>
-      <div class="alert error" role="alert"><?php echo htmlspecialchars($errorMessage); ?></div>
+    
+      <div class="alert error" role="alert"></div>
       <a class="link-back" href="./restablecer_contrasena.php" onclick="if(window.openAuthModal){window.openAuthModal('forgot');return false;}">Solicitar nuevo enlace</a>
-    <?php
-else: ?>
+    
       <form id="changeForm">
-        <input type="hidden" id="token" name="token" value="<?php echo htmlspecialchars($token); ?>" />
+        <input type="hidden" id="token" name="token" value="" />
         <label for="password">Nueva contraseña</label>
         <div class="input-wrap">
           <input type="password" id="password" name="password" style="background-color:#000;color:#fff;" placeholder="Tu nueva contraseña" required />
@@ -214,23 +186,22 @@ else: ?>
         <div id="alert" class="alert" role="alert"></div>
       </form>
       <a class="link-back" href="./login.php" onclick="if(window.openAuthModal){window.openAuthModal('login');return false;}">Volver al inicio de sesión</a>
-    <?php
-endif; ?>
+    
   </div>
 
-  <?php if ($valid): ?>
+  
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       (function tryOpen() {
         if (typeof window.openChangeModal === 'function') {
-          window.openChangeModal(<?php echo json_encode($token); ?>);
+          window.openChangeModal();
         } else {
           setTimeout(tryOpen, 100);
         }
       })();
     });
   </script>
-  <?php endif; ?>
+  
 
   <script>
     const form = document.getElementById('changeForm');
